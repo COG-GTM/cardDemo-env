@@ -28,9 +28,9 @@ CASES = (
 )
 
 
-def scalar(value: Any) -> str:
+def scalar(value: Any, scale: int | None = None) -> str:
     if isinstance(value, Decimal):
-        return format(value, "f")
+        return format(value, f".{scale}f" if scale is not None else "f")
     return str(value)
 
 
@@ -38,7 +38,10 @@ def display_text(value: bytes | str) -> str:
     if isinstance(value, bytes):
         value = value.decode("ascii", errors="replace")
         value = "".join(char if char.isprintable() else "?" for char in value)
-    return value.strip().replace("|", "\\|")[:60]
+    value = value.strip().replace("|", "\\|")
+    if len(value) > 60:
+        value = value[:45] + "..." + value[-12:]
+    return value
 
 
 def normalized(value: str) -> str | Decimal:
@@ -100,6 +103,10 @@ def append_dataset_diffs(
     keys = metadata["key"]
     expected_rows = keyed_records(expected, metadata["copybook"], keys)
     actual_rows = keyed_records(actual, metadata["copybook"], keys)
+    scales = {
+        name: scale
+        for name, _, _, _, scale, _ in parse_copybook(metadata["copybook"])
+    }
     field_diffs = 0
     record_diffs = 0
     for key in sorted(set(expected_rows) | set(actual_rows)):
@@ -117,7 +124,8 @@ def append_dataset_diffs(
             if left[field] != right.get(field):
                 lines.append(
                     f"| {label} | {key_text} | {field} | "
-                    f"{scalar(left[field])} | {scalar(right.get(field))} |"
+                    f"{scalar(left[field], scales.get(field))} | "
+                    f"{scalar(right.get(field), scales.get(field))} |"
                 )
                 field_diffs += 1
     return field_diffs, record_diffs

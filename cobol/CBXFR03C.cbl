@@ -27,6 +27,13 @@
        01  WS-BOOK-AMT                  PIC S9(09)V99 COMP-3 VALUE 0.
        01  WS-BOOK-FEE                  PIC S9(09)V99 COMP-3 VALUE 0.
        01  WS-LAST-BOOK                 PIC X(10) VALUE SPACES.
+       01  WS-COUNT-EDIT                PIC Z(8)9.
+       01  WS-TRAN-AMT-EDIT             PIC Z(8)9.99-.
+       01  WS-FEE-AMT-EDIT              PIC Z(8)9.99-.
+       01  WS-GRAND-AMT-EDIT            PIC Z(8)9.99-.
+       01  WS-GRAND-FEE-EDIT            PIC Z(8)9.99-.
+       01  WS-BOOK-AMT-EDIT             PIC Z(8)9.99-.
+       01  WS-BOOK-FEE-EDIT             PIC Z(8)9.99-.
        01  WS-LINE                      PIC X(133).
        PROCEDURE DIVISION.
        0000-MAIN.
@@ -48,9 +55,13 @@
            END-PERFORM
            IF WS-COUNT > 0
                PERFORM 2000-SUBTOTAL
+               MOVE WS-COUNT TO WS-COUNT-EDIT
+               MOVE WS-GRAND-AMT TO WS-GRAND-AMT-EDIT
+               MOVE WS-GRAND-FEE TO WS-GRAND-FEE-EDIT
                MOVE SPACES TO WS-LINE
-               STRING " GRAND TOTAL COUNT " WS-COUNT
-                   " AMOUNT " WS-GRAND-AMT " FEE " WS-GRAND-FEE
+               STRING " GRAND TOTAL COUNT " WS-COUNT-EDIT
+                   " AMOUNT " WS-GRAND-AMT-EDIT
+                   " FEE " WS-GRAND-FEE-EDIT
                    DELIMITED BY SIZE INTO WS-LINE
                WRITE XFERRPT-REC FROM WS-LINE
                DISPLAY "CBXFR03C: GRAND TOTAL FEE " WS-GRAND-FEE
@@ -72,15 +83,19 @@
            ADD 1 TO WS-COUNT
            ADD XFE-TRAN-AMT TO WS-GRAND-AMT WS-BOOK-AMT
            ADD XFE-FEE-AMT TO WS-GRAND-FEE WS-BOOK-FEE
+           MOVE XFE-TRAN-AMT TO WS-TRAN-AMT-EDIT
+           MOVE XFE-FEE-AMT TO WS-FEE-AMT-EDIT
            MOVE SPACES TO WS-LINE
            STRING " " XFE-TRAN-ID " " XFE-TRAN-DT " "
-               XFE-BOOK-ID " " XFE-TRAN-AMT " " XFE-FEE-AMT
+               XFE-BOOK-ID " " WS-TRAN-AMT-EDIT " " WS-FEE-AMT-EDIT
                DELIMITED BY SIZE INTO WS-LINE
            WRITE XFERRPT-REC FROM WS-LINE.
        2000-SUBTOTAL.
+           MOVE WS-BOOK-AMT TO WS-BOOK-AMT-EDIT
+           MOVE WS-BOOK-FEE TO WS-BOOK-FEE-EDIT
            MOVE SPACES TO WS-LINE
            STRING " BOOK " WS-LAST-BOOK " SUBTOTAL AMOUNT "
-               WS-BOOK-AMT " FEE " WS-BOOK-FEE
+               WS-BOOK-AMT-EDIT " FEE " WS-BOOK-FEE-EDIT
                DELIMITED BY SIZE INTO WS-LINE
            WRITE XFERRPT-REC FROM WS-LINE
            MOVE 0 TO WS-BOOK-AMT WS-BOOK-FEE

@@ -186,17 +186,17 @@ def write_recon(out: Path, fees: list[dict[str, object]]) -> None:
         if last_book and last_book != book:
             lines.append(
                 f" BOOK {last_book.ljust(10)} SUBTOTAL AMOUNT ".encode()
-                + packed(f"{book_amount:.2f}")
-                + b" FEE " + packed(f"{book_fee:.2f}")
+                + edited_amount(book_amount)
+                + b" FEE " + edited_fee(book_fee)
             )
             book_amount = book_fee = Decimal("0")
         last_book = book
-        raw = encode_record("CVXFR02Y", fee)
         lines.append(
             b" " + str(fee["XFE-TRAN-ID"]).encode() + b" "
             + str(fee["XFE-TRAN-DT"]).encode() + b" "
             + book.encode().ljust(10) + b" "
-            + raw[58:64] + b" " + raw[68:74]
+            + edited_amount(Decimal(str(fee["XFE-TRAN-AMT"])))
+            + b" " + edited_fee(Decimal(str(fee["XFE-FEE-AMT"])))
         )
         amount = Decimal(str(fee["XFE-TRAN-AMT"]))
         value = Decimal(str(fee["XFE-FEE-AMT"]))
@@ -207,28 +207,27 @@ def write_recon(out: Path, fees: list[dict[str, object]]) -> None:
     if last_book:
         lines.append(
             f" BOOK {last_book.ljust(10)} SUBTOTAL AMOUNT ".encode()
-            + packed(f"{book_amount:.2f}")
-            + b" FEE " + packed(f"{book_fee:.2f}")
+            + edited_amount(book_amount)
+            + b" FEE " + edited_fee(book_fee)
         )
     lines.append(
-        f" GRAND TOTAL COUNT {len(fees):09d} AMOUNT ".encode()
-        + packed(f"{grand_amount:.2f}")
-        + b" FEE " + packed(f"{grand_fee:.2f}")
+        f" GRAND TOTAL COUNT {len(fees):>9d} AMOUNT ".encode()
+        + edited_amount(grand_amount)
+        + b" FEE " + edited_fee(grand_fee)
     )
     (out / "datasets" / "AWS.M2.CARDDEMO.XFER.RECON.RPT.G0001V00").write_bytes(
         b"\n".join(lines) + b"\n"
     )
 
 
-def packed(amount: str) -> bytes:
-    value = Decimal(amount)
-    digits = f"{abs(value) * 100:.0f}"
-    digits = digits.rjust(11, "0")
-    nibbles = [int(char) for char in digits] + [0xD if value < 0 else 0xC]
-    return bytes(
-        (nibbles[index] << 4) | nibbles[index + 1]
-        for index in range(0, len(nibbles), 2)
-    )
+def edited_amount(value: Decimal) -> bytes:
+    sign = "-" if value < 0 else ""
+    return f"{abs(value):>12.2f}{sign} ".encode()
+
+
+def edited_fee(value: Decimal) -> bytes:
+    sign = "-" if value < 0 else ""
+    return f"{abs(value):>12.2f}{sign}".encode()
 
 
 def main() -> int:
