@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import tempfile
 from decimal import Decimal, ROUND_FLOOR
 from pathlib import Path
 
@@ -251,18 +252,39 @@ def generate(case: str, root: Path) -> None:
     )
 
 
+def check(case: str, root: Path) -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        generated_root = Path(directory)
+        generate(case, generated_root)
+        expected_root = root / "fixtures" / "xferfee" / case
+        generated_case = generated_root / "fixtures" / "xferfee" / case
+        for relative in (
+            Path("input/ACCTDATA.PS"),
+            Path("input/CARDXREF.PS"),
+            Path("input/DALYTRAN.PS"),
+            Path("case.json"),
+        ):
+            expected = expected_root / relative
+            generated = generated_case / relative
+            if not expected.exists() or expected.read_bytes() != generated.read_bytes():
+                raise SystemExit(f"fixture is stale: {expected}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", default="default")
     parser.add_argument("--all", action="store_true")
+    parser.add_argument("--check", action="store_true")
     parser.add_argument("--root", default=None, type=Path)
     args = parser.parse_args()
     root = args.root or Path(__file__).resolve().parents[2]
-    if args.all:
-        for case in CASES:
-            generate(case, root)
+    cases = CASES if args.all or args.check else (args.case,)
+    if args.check:
+        for case in cases:
+            check(case, root)
     else:
-        generate(args.case, root)
+        for case in cases:
+            generate(case, root)
 
 
 if __name__ == "__main__":
