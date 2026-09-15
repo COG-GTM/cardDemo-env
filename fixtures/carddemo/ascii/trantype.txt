@@ -5,3 +5,4 @@
 05Refund                                            00000000
 06Reversal                                          00000000
 07Adjustment                                        00000000
+08Transfer                                          00000000
