@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:15
+    pull_policy: missing
     environment:
       POSTGRES_DB: carddemo
       POSTGRES_USER: carddemo
@@ -17,9 +18,12 @@ services:
       - ./db2/data/CTL_XFER_PARM.sql:/docker-entrypoint-initdb.d/03-seed.sql:ro
 
   estate:
+    pull_policy: missing
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: ${ESTATE_BASE_IMAGE:-ubuntu:22.04}
     depends_on:
       db:
         condition: service_healthy

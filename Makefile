@@ -13,6 +13,7 @@ run:
 	docker compose exec -T estate python3 tools/runjcl/runjcl.py --chain $(CHAIN) --load-fixtures default --db-reset
 
 reset:
+	-docker compose exec -T estate sh -c 'rm -rf /estate/datasets /estate/work /estate/loadlib'
 	rm -rf datasets work loadlib
 	docker compose down -v
 

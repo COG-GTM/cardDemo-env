@@ -26,15 +26,15 @@
        FD  XFEREXTR RECORD CONTAINS 120 CHARACTERS.
            COPY CVXFR01Y.
        FD  ACCTFILE RECORD CONTAINS 300 CHARACTERS.
-           COPY CVACT01Y.
+           COPY CVACT01Y REPLACING ==ACCOUNT-RECORD==
+               BY ==OLD-ACCT==.
        FD  ACCTOUT RECORD CONTAINS 300 CHARACTERS.
-           COPY CVACT01Y.
+           COPY CVACT01Y REPLACING ==ACCOUNT-RECORD==
+               BY ==NEW-ACCT==.
        FD  XFERFEE RECORD CONTAINS 100 CHARACTERS.
            COPY CVXFR02Y.
        WORKING-STORAGE SECTION.
-           EXEC SQL
-               INCLUDE SQLCA
-           END-EXEC.
+       EXEC SQL INCLUDE SQLCA END-EXEC.
        01  WS-STATUS-CODES.
            05  WS-XFER-STATUS             PIC XX.
            05  WS-ACCT-STATUS             PIC XX.
@@ -69,11 +69,26 @@
        01  WS-DB-NAME                     PIC X(64).
        01  WS-DB-USER                     PIC X(64).
        01  WS-DB-PASS                     PIC X(128).
+       01  WS-SQL-XFER.
+           05  WS-XFR-TRAN-ID              PIC X(16).
+           05  WS-XFR-TRAN-DT              PIC X(10).
+           05  WS-XFR-SRC-ACCT-ID          PIC 9(11).
+           05  WS-XFR-TGT-ACCT-ID          PIC 9(11).
+           05  WS-XFR-BOOK-ID              PIC X(10).
+           05  WS-XFR-TRAN-AMT             PIC S9(09)V99.
+       01  WS-SQL-FEE.
+           05  WS-XFE-TRAN-ID              PIC X(16).
+           05  WS-XFE-TRAN-DT              PIC X(10).
+           05  WS-XFE-SRC-ACCT-ID          PIC 9(11).
+           05  WS-XFE-TGT-ACCT-ID          PIC 9(11).
+           05  WS-XFE-BOOK-ID              PIC X(10).
+           05  WS-XFE-TRAN-AMT             PIC S9(09)V99 COMP-3.
+           05  WS-XFE-FEE-AMT              PIC S9(09)V99 COMP-3.
+           05  WS-XFE-CAP-APPLIED          PIC X.
        01  WS-FEE-PCT                     PIC S9(1)V9(6) COMP-3.
        01  WS-FEE-CAP                     PIC S9(09)V99 COMP-3.
        01  WS-FEE-AMT                     PIC S9(09)V99 COMP-3.
        01  WS-RULE-EFF-DT                 PIC X(10).
-       01  WS-LEGACY-CONTROL.
            COPY CVXFR09Y.
        PROCEDURE DIVISION.
        0000-MAIN.
@@ -87,8 +102,8 @@
            END-IF
            PERFORM 1000-LOAD-MASTER
            EXEC SQL
-               CONNECT TO :WS-DB-NAME USER :WS-DB-USER
-                   USING :WS-DB-PASS
+               CONNECT :WS-DB-USER IDENTIFIED BY :WS-DB-PASS
+                   USING :WS-DB-NAME
            END-EXEC
            IF SQLCODE NOT = 0
                DISPLAY "XFERFEE: DATABASE CONNECT FAILED " SQLCODE
@@ -111,28 +126,29 @@
                    NOT AT END
                        IF WS-ACCT-COUNT < 500
                            ADD 1 TO WS-ACCT-COUNT
-                           MOVE ACCT-ID TO WS-A-ID(WS-ACCT-COUNT)
-                           MOVE ACCT-ACTIVE-STATUS
+                           MOVE ACCT-ID OF OLD-ACCT
+                             TO WS-A-ID(WS-ACCT-COUNT)
+                           MOVE ACCT-ACTIVE-STATUS OF OLD-ACCT
                              TO WS-A-ACTIVE(WS-ACCT-COUNT)
-                           MOVE ACCT-CURR-BAL
+                           MOVE ACCT-CURR-BAL OF OLD-ACCT
                              TO WS-A-BAL(WS-ACCT-COUNT)
-                           MOVE ACCT-CREDIT-LIMIT
+                           MOVE ACCT-CREDIT-LIMIT OF OLD-ACCT
                              TO WS-A-CREDIT-LIMIT(WS-ACCT-COUNT)
-                           MOVE ACCT-CASH-CREDIT-LIMIT
+                           MOVE ACCT-CASH-CREDIT-LIMIT OF OLD-ACCT
                              TO WS-A-CASH-LIMIT(WS-ACCT-COUNT)
-                           MOVE ACCT-OPEN-DATE
+                           MOVE ACCT-OPEN-DATE OF OLD-ACCT
                              TO WS-A-OPEN-DATE(WS-ACCT-COUNT)
-                           MOVE ACCT-EXPIRAION-DATE
+                           MOVE ACCT-EXPIRAION-DATE OF OLD-ACCT
                              TO WS-A-EXP-DATE(WS-ACCT-COUNT)
-                           MOVE ACCT-REISSUE-DATE
+                           MOVE ACCT-REISSUE-DATE OF OLD-ACCT
                              TO WS-A-REISSUE-DATE(WS-ACCT-COUNT)
-                           MOVE ACCT-CURR-CYC-CREDIT
+                           MOVE ACCT-CURR-CYC-CREDIT OF OLD-ACCT
                              TO WS-A-CYC-CREDIT(WS-ACCT-COUNT)
-                           MOVE ACCT-CURR-CYC-DEBIT
+                           MOVE ACCT-CURR-CYC-DEBIT OF OLD-ACCT
                              TO WS-A-CYC-DEBIT(WS-ACCT-COUNT)
-                           MOVE ACCT-ADDR-ZIP
+                           MOVE ACCT-ADDR-ZIP OF OLD-ACCT
                              TO WS-A-ZIP(WS-ACCT-COUNT)
-                           MOVE ACCT-GROUP-ID
+                           MOVE ACCT-GROUP-ID OF OLD-ACCT
                              TO WS-A-BOOK(WS-ACCT-COUNT)
                        END-IF
                END-READ
@@ -142,7 +158,14 @@
            PERFORM UNTIL WS-XFER-EOF = "Y"
                READ XFEREXTR
                    AT END MOVE "Y" TO WS-XFER-EOF
-                   NOT AT END PERFORM 2100-POST-ONE
+                   NOT AT END
+                       MOVE XFR-TRAN-ID TO WS-XFR-TRAN-ID
+                       MOVE XFR-TRAN-DT TO WS-XFR-TRAN-DT
+                       MOVE XFR-SRC-ACCT-ID TO WS-XFR-SRC-ACCT-ID
+                       MOVE XFR-TGT-ACCT-ID TO WS-XFR-TGT-ACCT-ID
+                       MOVE XFR-BOOK-ID TO WS-XFR-BOOK-ID
+                       MOVE XFR-TRAN-AMT TO WS-XFR-TRAN-AMT
+                       PERFORM 2100-POST-ONE
                END-READ
            END-PERFORM.
        2100-POST-ONE.
@@ -153,12 +176,12 @@
                SELECT FEE_PCT, FEE_CAP, EFF_DT
                  INTO :WS-FEE-PCT, :WS-FEE-CAP, :WS-RULE-EFF-DT
                  FROM CTL_XFER_PARM
-                WHERE BOOK_ID = :XFR-BOOK-ID
-                  AND EFF_DT <= CAST(:XFR-TRAN-DT AS DATE)
-                  AND EXP_DT > CAST(:XFR-TRAN-DT AS DATE)
+                WHERE BOOK_ID = :WS-XFR-BOOK-ID
+                  AND EFF_DT <= CAST(:WS-XFR-TRAN-DT AS DATE)
+                  AND EXP_DT > CAST(:WS-XFR-TRAN-DT AS DATE)
            END-EXEC
            IF SQLCODE = 100
-               DISPLAY "XFERFEE: NO FEE RULE FOR BOOK " XFR-BOOK-ID
+               DISPLAY "XFERFEE: NO FEE RULE FOR BOOK " WS-XFR-BOOK-ID
                MOVE 8 TO RETURN-CODE
                PERFORM 9999-ABEND-PROGRAM
            ELSE
@@ -186,14 +209,15 @@
            ADD XFR-TRAN-AMT TO WS-A-BAL(WS-TGT-SUB)
            ADD XFR-TRAN-AMT TO WS-A-CYC-CREDIT(WS-TGT-SUB)
            ADD XFR-TRAN-AMT WS-FEE-AMT TO WS-A-CYC-DEBIT(WS-SRC-SUB)
-           MOVE XFR-TRAN-ID TO XFE-TRAN-ID
-           MOVE XFR-TRAN-DT TO XFE-TRAN-DT
-           MOVE XFR-SRC-ACCT-ID TO XFE-SRC-ACCT-ID
-           MOVE XFR-TGT-ACCT-ID TO XFE-TGT-ACCT-ID
-           MOVE XFR-BOOK-ID TO XFE-BOOK-ID
-           MOVE XFR-TRAN-AMT TO XFE-TRAN-AMT
+           MOVE XFR-TRAN-ID TO XFE-TRAN-ID WS-XFE-TRAN-ID
+           MOVE XFR-TRAN-DT TO XFE-TRAN-DT WS-XFE-TRAN-DT
+           MOVE XFR-SRC-ACCT-ID TO XFE-SRC-ACCT-ID WS-XFE-SRC-ACCT-ID
+           MOVE XFR-TGT-ACCT-ID TO XFE-TGT-ACCT-ID WS-XFE-TGT-ACCT-ID
+           MOVE XFR-BOOK-ID TO XFE-BOOK-ID WS-XFE-BOOK-ID
+           MOVE XFR-TRAN-AMT TO XFE-TRAN-AMT WS-XFE-TRAN-AMT
            MOVE WS-FEE-PCT TO XFE-FEE-PCT
-           MOVE WS-FEE-AMT TO XFE-FEE-AMT
+           MOVE WS-FEE-AMT TO XFE-FEE-AMT WS-XFE-FEE-AMT
+           MOVE XFE-CAP-APPLIED TO WS-XFE-CAP-APPLIED
            MOVE WS-RULE-EFF-DT TO XFE-RULE-EFF-DT
            WRITE XFER-FEE-RECORD
            IF WS-FEE-STATUS NOT = "00"
@@ -204,10 +228,10 @@
                    (TRAN_ID, TRAN_DT, SRC_ACCT_ID, TGT_ACCT_ID,
                     BOOK_ID, TRAN_AMT, FEE_AMT, CAP_APPLIED)
                VALUES
-                   (:XFE-TRAN-ID, CAST(:XFE-TRAN-DT AS DATE),
-                    :XFE-SRC-ACCT-ID, :XFE-TGT-ACCT-ID,
-                    :XFE-BOOK-ID, :XFE-TRAN-AMT, :XFE-FEE-AMT,
-                    :XFE-CAP-APPLIED)
+                   (:WS-XFE-TRAN-ID, CAST(:WS-XFE-TRAN-DT AS DATE),
+                    :WS-XFE-SRC-ACCT-ID, :WS-XFE-TGT-ACCT-ID,
+                    :WS-XFE-BOOK-ID, :WS-XFE-TRAN-AMT, :WS-XFE-FEE-AMT,
+                    :WS-XFE-CAP-APPLIED)
            END-EXEC
            IF SQLCODE NOT = 0
                DISPLAY "XFERFEE: LEDGER INSERT FAILED " SQLCODE
@@ -233,25 +257,31 @@
        3000-WRITE-MASTER.
            PERFORM VARYING WS-ACCT-SUB FROM 1 BY 1
                UNTIL WS-ACCT-SUB > WS-ACCT-COUNT
-               MOVE WS-A-ID(WS-ACCT-SUB) TO ACCT-ID
-               MOVE WS-A-ACTIVE(WS-ACCT-SUB) TO ACCT-ACTIVE-STATUS
-               MOVE WS-A-BAL(WS-ACCT-SUB) TO ACCT-CURR-BAL
+               MOVE WS-A-ID(WS-ACCT-SUB)
+                 TO ACCT-ID OF NEW-ACCT
+               MOVE WS-A-ACTIVE(WS-ACCT-SUB)
+                 TO ACCT-ACTIVE-STATUS OF NEW-ACCT
+               MOVE WS-A-BAL(WS-ACCT-SUB)
+                 TO ACCT-CURR-BAL OF NEW-ACCT
                MOVE WS-A-CREDIT-LIMIT(WS-ACCT-SUB)
-                 TO ACCT-CREDIT-LIMIT
+                 TO ACCT-CREDIT-LIMIT OF NEW-ACCT
                MOVE WS-A-CASH-LIMIT(WS-ACCT-SUB)
-                 TO ACCT-CASH-CREDIT-LIMIT
-               MOVE WS-A-OPEN-DATE(WS-ACCT-SUB) TO ACCT-OPEN-DATE
+                 TO ACCT-CASH-CREDIT-LIMIT OF NEW-ACCT
+               MOVE WS-A-OPEN-DATE(WS-ACCT-SUB)
+                 TO ACCT-OPEN-DATE OF NEW-ACCT
                MOVE WS-A-EXP-DATE(WS-ACCT-SUB)
-                 TO ACCT-EXPIRAION-DATE
+                 TO ACCT-EXPIRAION-DATE OF NEW-ACCT
                MOVE WS-A-REISSUE-DATE(WS-ACCT-SUB)
-                 TO ACCT-REISSUE-DATE
+                 TO ACCT-REISSUE-DATE OF NEW-ACCT
                MOVE WS-A-CYC-CREDIT(WS-ACCT-SUB)
-                 TO ACCT-CURR-CYC-CREDIT
+                 TO ACCT-CURR-CYC-CREDIT OF NEW-ACCT
                MOVE WS-A-CYC-DEBIT(WS-ACCT-SUB)
-                 TO ACCT-CURR-CYC-DEBIT
-               MOVE WS-A-ZIP(WS-ACCT-SUB) TO ACCT-ADDR-ZIP
-               MOVE WS-A-BOOK(WS-ACCT-SUB) TO ACCT-GROUP-ID
-               WRITE ACCOUNT-RECORD
+                 TO ACCT-CURR-CYC-DEBIT OF NEW-ACCT
+               MOVE WS-A-ZIP(WS-ACCT-SUB)
+                 TO ACCT-ADDR-ZIP OF NEW-ACCT
+               MOVE WS-A-BOOK(WS-ACCT-SUB)
+                 TO ACCT-GROUP-ID OF NEW-ACCT
+               WRITE NEW-ACCT
                IF WS-OUT-STATUS NOT = "00"
                    PERFORM 9999-ABEND-PROGRAM
                END-IF

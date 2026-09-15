@@ -107,12 +107,22 @@ def parse_steps(lines: list[str], symbols: dict[str, str]) -> list[Step]:
 
 def load_steps(path: Path, symbols: dict[str, str]) -> list[Step]:
     lines = path.read_text().splitlines(True)
-    proc = next((re.search(r"EXEC\s+PROC=([\w$#@.-]+)", line)
-                 for line in lines), None)
+    proc = None
+    proc_line = ""
+    for line in lines:
+        proc = re.search(r"EXEC\s+PROC=([\w$#@.-]+)", line)
+        if proc:
+            proc_line = line
+            break
     if proc:
+        proc_symbols = symbols.copy()
+        for name, value in re.findall(
+            r",\s*([A-Z][\w$#@]*)=([^,\s]+)", proc_line, re.IGNORECASE
+        ):
+            proc_symbols[name.upper()] = value
         proc_path = path.parent / "proc" / f"{proc.group(1)}.prc"
-        steps = parse_steps(proc_path.read_text().splitlines(True), symbols)
-        overrides = parse_overrides(lines, symbols)
+        steps = parse_steps(proc_path.read_text().splitlines(True), proc_symbols)
+        overrides = parse_overrides(lines, proc_symbols)
         for step in steps:
             for name, dd in overrides.get(step.name.upper(), {}).items():
                 step.dd[name] = dd
@@ -135,10 +145,10 @@ def compare_condition(code: int, operator: str, actual: int) -> bool:
     return {
         "EQ": actual == code,
         "NE": actual != code,
-        "GT": actual > code,
-        "GE": actual >= code,
-        "LT": actual < code,
-        "LE": actual <= code,
+        "GT": code > actual,
+        "GE": code >= actual,
+        "LT": code < actual,
+        "LE": code <= actual,
     }.get(operator, False)
 
 

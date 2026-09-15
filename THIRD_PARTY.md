@@ -19,6 +19,12 @@ The container builds and installs Open COBOL ESQL from
 https://github.com/opensourcecobol/Open-COBOL-ESQL, pinned to release tag
 `v1.4`. It is licensed under Apache-2.0.
 
+The Docker build runs `autoreconf -fiv` before configuring the pinned source;
+this is required when building the release checkout in the Ubuntu 22.04 /
+GnuCOBOL 3.1.2 environment. ESQL batch modules are linked with
+`--no-as-needed` so GnuCOBOL's dynamic CALL resolution can load
+`libocesql.so` at runtime.
+
 ## Local modifications
 
 * Upstream members are reorganized into the root estate layout.

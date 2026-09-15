@@ -14,10 +14,13 @@ for source in cobol/*; do
             ;;
     esac
     input="$source"
+    link_args=""
     if grep -q 'EXEC SQL' "$source"; then
         input="work/$stem.cob"
+        link_args="-Q -Wl,--no-as-needed -L/usr/local/lib -locesql"
         echo "$stem: precompiling with ocesql"
-        if ! ocesql "$source" "$input"; then
+        if ! ocesql --inc=/usr/local/share/open-cobol-esql/copy \
+            "$source" "$input"; then
             echo "$stem: excluded (Open COBOL ESQL failed)"
             case "$stem" in
                 CBXFR01C|XFERFEE|CBXFR03C) required_status=1 ;;
@@ -26,13 +29,15 @@ for source in cobol/*; do
         fi
     fi
     echo "$stem: building"
-    if cobc -m -std=ibm -I copybook -o "loadlib/$stem.so" "$input" \
-        $(grep -q 'EXEC SQL' "$source" && printf '%s' '-locesql' || true); then
+    if cobc -m -std=ibm -I copybook \
+        -I /usr/local/share/open-cobol-esql/copy \
+        -o "loadlib/$stem.so" "$input" $link_args; then
         continue
     fi
     echo "$stem: retrying with -std=default"
-    if cobc -m -std=default -I copybook -o "loadlib/$stem.so" "$input" \
-        $(grep -q 'EXEC SQL' "$source" && printf '%s' '-locesql' || true); then
+    if cobc -m -std=default -I copybook \
+        -I /usr/local/share/open-cobol-esql/copy \
+        -o "loadlib/$stem.so" "$input" $link_args; then
         continue
     fi
     echo "$stem: excluded (does not compile with GnuCOBOL)"

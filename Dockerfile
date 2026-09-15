@@ -1,4 +1,5 @@
-FROM ubuntu:22.04
+ARG BASE_IMAGE=ubuntu:22.04
+FROM ${BASE_IMAGE}
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -9,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN git clone --depth 1 --branch v1.4 \
       https://github.com/opensourcecobol/Open-COBOL-ESQL.git /tmp/ocesql \
     && cd /tmp/ocesql \
-    && autoreconf -fi \
+    && autoreconf -fiv \
     && ./configure --prefix=/usr/local \
     && make -j"$(nproc)" \
     && make install \
