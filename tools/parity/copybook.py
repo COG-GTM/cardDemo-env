@@ -10,7 +10,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-POSITIVE = "{}ABCDEFGHI"
+POSITIVE = "{ABCDEFGHI"
 NEGATIVE = "}JKLMNOPQR"
 OVERPUNCH_DIGITS = {
     char: str(index % 10)

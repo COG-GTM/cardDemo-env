@@ -87,8 +87,6 @@
            05  WS-XFE-CAP-APPLIED          PIC X.
        01  WS-FEE-PCT                     PIC S9(1)V9(6) COMP-3.
        01  WS-FEE-CAP                     PIC S9(09)V99 COMP-3.
-       01  WS-FEE-RAW                     PIC S9(09)V9(06) COMP-3.
-       01  WS-FEE-REMAINDER               PIC S9(09)V9(06) COMP-3.
        01  WS-FEE-AMT                     PIC S9(09)V99 COMP-3.
        01  WS-RULE-EFF-DT                 PIC X(10).
            COPY CVXFR09Y.
@@ -196,9 +194,8 @@
                END-IF
            END-IF
            IF XFR-TRAN-AMT NOT = 0
-               COMPUTE WS-FEE-RAW =
+               COMPUTE WS-FEE-AMT ROUNDED =
                    XFR-TRAN-AMT * WS-FEE-PCT
-               PERFORM 2150-ROUND-FEE
                IF WS-FEE-AMT > WS-FEE-CAP
                    MOVE WS-FEE-CAP TO WS-FEE-AMT
                    MOVE "Y" TO XFE-CAP-APPLIED
@@ -245,23 +242,6 @@
            END-IF
            ADD 1 TO WS-TRANSFER-COUNT
            ADD WS-FEE-AMT TO WS-FEE-TOTAL.
-       2150-ROUND-FEE.
-      * GnuCOBOL 3.1.2 ROUNDED defect, see docs/RUNTIME-NOTES.md
-           IF WS-FEE-RAW >= 0
-               ADD 0.005 TO WS-FEE-RAW
-           ELSE
-               SUBTRACT 0.005 FROM WS-FEE-RAW
-           END-IF
-           MOVE WS-FEE-RAW TO WS-FEE-AMT
-           COMPUTE WS-FEE-REMAINDER =
-               WS-FEE-RAW - WS-FEE-AMT
-           IF WS-FEE-REMAINDER = 0.0075
-               ADD 0.01 TO WS-FEE-AMT
-           ELSE
-               IF WS-FEE-REMAINDER = -0.0075
-                   SUBTRACT 0.01 FROM WS-FEE-AMT
-               END-IF
-           END-IF.
        2200-FIND-ACCOUNTS.
            MOVE "N" TO WS-FOUND
            MOVE 0 TO WS-SRC-SUB WS-TGT-SUB

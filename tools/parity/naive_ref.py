@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Naive floating-point reference implementation for parity demonstrations."""
+"""Naive reference mimicking Java BigDecimal.setScale(2, RoundingMode.HALF_EVEN)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 import shutil
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_EVEN
 from pathlib import Path
 
 from copybook import decode_record, encode_record
@@ -23,6 +23,12 @@ RULES = {
     "RETAIL": (0.0125, 25.0),
     "INSTL": (0.005, 500.0),
 }
+
+
+def fee_rule(book: str, date: str) -> tuple[float, float]:
+    if book == "RETAIL" and date >= "2024-06-15":
+        return 0.015, 25.0
+    return RULES[book]
 
 
 def load_accounts(case: str) -> dict[int, dict[str, object]]:
@@ -69,7 +75,7 @@ def record(case: str, out: Path) -> None:
     fees = []
     for transfer in load_transfers(case):
         book = str(accounts[transfer["source"]]["ACCT-GROUP-ID"]).strip()
-        pct, cap = RULES[book]
+        pct, cap = fee_rule(book, transfer["date"])
         amount = transfer["amount"]
         extracts.append({
             "XFR-TRAN-ID": transfer["id"],
@@ -80,13 +86,17 @@ def record(case: str, out: Path) -> None:
             "XFR-TRAN-AMT": Decimal(str(amount)),
             "XFR-CARD-NUM": transfer["card"],
         })
-        fee = round(amount * pct, 2)
-        capped = "Y" if fee > cap else "N"
-        fee = min(fee, cap)
-        accounts[transfer["source"]]["ACCT-CURR-BAL"] -= Decimal(str(amount + fee))
-        accounts[transfer["source"]]["ACCT-CURR-CYC-DEBIT"] += Decimal(str(amount + fee))
-        accounts[transfer["target"]]["ACCT-CURR-BAL"] += Decimal(str(amount))
-        accounts[transfer["target"]]["ACCT-CURR-CYC-CREDIT"] += Decimal(str(amount))
+        amount_decimal = Decimal(str(amount))
+        fee = (
+            Decimal(str(amount)) * Decimal(str(pct))
+        ).quantize(Decimal("0.01"), rounding=ROUND_HALF_EVEN)
+        cap_decimal = Decimal(str(cap))
+        capped = "Y" if fee > cap_decimal else "N"
+        fee = min(fee, cap_decimal)
+        accounts[transfer["source"]]["ACCT-CURR-BAL"] -= amount_decimal + fee
+        accounts[transfer["source"]]["ACCT-CURR-CYC-DEBIT"] += amount_decimal + fee
+        accounts[transfer["target"]]["ACCT-CURR-BAL"] += amount_decimal
+        accounts[transfer["target"]]["ACCT-CURR-CYC-CREDIT"] += amount_decimal
         fees.append({
             "XFE-TRAN-ID": transfer["id"],
             "XFE-TRAN-DT": transfer["date"],
@@ -137,7 +147,10 @@ def record(case: str, out: Path) -> None:
         writer.writerow(["RETAIL    ", "0.012500", "25.00", "2020-01-01", "2024-06-15"])
         writer.writerow(["RETAIL    ", "0.015000", "25.00", "2024-06-15", "9999-12-31"])
     write_recon(out, fees)
-    total = sum(float(row["XFE-FEE-AMT"]) for row in fees)
+    total = sum(
+        (row["XFE-FEE-AMT"] for row in fees),
+        Decimal("0"),
+    )
     sysout = out / "sysout"
     sysout.mkdir(parents=True, exist_ok=True)
     (sysout / "STEP010.txt").write_text(

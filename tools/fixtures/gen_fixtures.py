@@ -5,10 +5,11 @@ from __future__ import annotations
 
 import argparse
 import json
+from decimal import Decimal, ROUND_FLOOR
 from pathlib import Path
 
 
-POSITIVE = "{}ABCDEFGHI"
+POSITIVE = "{ABCDEFGHI"
 NEGATIVE = "}JKLMNOPQR"
 
 
@@ -144,23 +145,41 @@ def case_transactions(case: str, cards: list[str]) -> list[bytes]:
         ]
     if case == "half_cent":
         rows = [
-            (4.20, 1, 2),
-            (0.20, 2, 3),
-            (12.20, 3, 4),
-            (20.20, 4, 5),
-            (28.20, 5, 1),
+            (Decimal("2.00"), 1, 2, "2024-06-05", Decimal("0.0125")),
+            (Decimal("5.20"), 2, 3, "2024-06-05", Decimal("0.0125")),
+            (Decimal("3.00"), 3, 4, "2024-06-15", Decimal("0.0150")),
+            (Decimal("7.00"), 4, 5, "2024-06-16", Decimal("0.0150")),
+            (Decimal("11.00"), 5, 1, "2024-06-20", Decimal("0.0150")),
         ]
-        transfers = [
-            transfer(f"TRN000000000000{index}", amount, source, target,
-                     cards[source - 1], "2024-06-05")
-            for index, (amount, source, target) in enumerate(rows, 1)
-        ]
+        transfers = []
+        for index, (amount, source, target, date, pct) in enumerate(rows, 1):
+            assert_half_cent(amount, pct)
+            transfers.append(
+                transfer(
+                    f"TRN000000000000{index}", amount, source, target,
+                    cards[source - 1], date,
+                )
+            )
         transfers.append(
-            transfer("TRN0000000000006", 5.00, 6, 7, cards[5],
-                     "2024-06-05")
+            transfer(
+                "TRN0000000000006", Decimal("5.00"), 6, 7, cards[5],
+                "2024-06-05",
+            )
         )
+        assert_half_cent(Decimal("5.00"), Decimal("0.0050"))
         return transfers
     raise ValueError(f"unsupported fixture case: {case}")
+
+
+def assert_half_cent(amount: Decimal, pct: Decimal) -> None:
+    exact_cents = amount * pct * Decimal("100")
+    lower_cents = exact_cents.to_integral_value(rounding=ROUND_FLOOR)
+    assert exact_cents - lower_cents == Decimal("0.5"), (
+        f"{amount} * {pct} is not a half-cent tie"
+    )
+    assert int(lower_cents) % 2 == 0, (
+        f"{amount} * {pct} has an odd cent before rounding"
+    )
 
 
 CASES = {
