@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: carddemo
+      POSTGRES_USER: carddemo
+      POSTGRES_PASSWORD: carddemo
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carddemo -d carddemo"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - carddemo-db:/var/lib/postgresql/data
+      - ./db2/ddl/CTL_XFER_PARM.sql:/docker-entrypoint-initdb.d/01-ctl.sql:ro
+      - ./db2/ddl/XFER_FEE_LEDGER.sql:/docker-entrypoint-initdb.d/02-ledger.sql:ro
+      - ./db2/data/CTL_XFER_PARM.sql:/docker-entrypoint-initdb.d/03-seed.sql:ro
+
+  estate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/estate
+    environment:
+      OCDB_NAME: carddemo
+      OCDB_USER: carddemo
+      OCDB_PASS: carddemo
+      PGHOST: db
+      PGPORT: "5432"
+      PGDATABASE: carddemo
+      PGUSER: carddemo
+      PGPASSWORD: carddemo
+    command: ["sleep", "infinity"]
+
+volumes:
+  carddemo-db:
