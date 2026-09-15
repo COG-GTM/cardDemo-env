@@ -1,4 +1,5 @@
-.PHONY: up down build run reset shell record record-all parity parity-naive
+.PHONY: up down build run reset shell record record-all parity parity-naive \
+	deadcode chain-graph chain-graph-check
 
 up:
 	docker compose up -d --build --wait
@@ -45,3 +46,13 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+deadcode:
+	python3 tools/deadcode/gen_smf.py
+	python3 tools/deadcode/retire_split.py
+
+chain-graph:
+	python3 tools/chaingraph/gen_chain_graph.py
+
+chain-graph-check:
+	python3 tools/chaingraph/gen_chain_graph.py --check
