@@ -1,0 +1,49 @@
+{
+  "description": "Half-cent fee rounding cases for both books",
+  "run_date": "2024-06-30",
+  "outputs": [
+    {
+      "dsn": "AWS.M2.CARDDEMO.XFER.EXTRACT",
+      "copybook": "CVXFR01Y",
+      "key": [
+        "XFR-TRAN-ID"
+      ]
+    },
+    {
+      "dsn": "AWS.M2.CARDDEMO.ACCTDATA.XFER",
+      "copybook": "CVACT01Y",
+      "key": [
+        "ACCT-ID"
+      ]
+    },
+    {
+      "dsn": "AWS.M2.CARDDEMO.XFER.FEES",
+      "copybook": "CVXFR02Y",
+      "key": [
+        "XFE-TRAN-ID"
+      ]
+    },
+    {
+      "dsn": "AWS.M2.CARDDEMO.XFER.RECON.RPT",
+      "text": true,
+      "key": [
+        "line"
+      ]
+    }
+  ],
+  "db2": [
+    {
+      "table": "CTL_XFER_PARM",
+      "key": [
+        "BOOK_ID",
+        "EFF_DT"
+      ]
+    },
+    {
+      "table": "XFER_FEE_LEDGER",
+      "key": [
+        "TRAN_ID"
+      ]
+    }
+  ]
+}

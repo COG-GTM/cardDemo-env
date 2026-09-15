@@ -87,6 +87,9 @@
            05  WS-XFE-CAP-APPLIED          PIC X.
        01  WS-FEE-PCT                     PIC S9(1)V9(6) COMP-3.
        01  WS-FEE-CAP                     PIC S9(09)V99 COMP-3.
+       01  WS-FEE-RAW                     PIC S9(09)V9(04) COMP-3.
+       01  WS-FEE-TRUNC                   PIC S9(09)V99 COMP-3.
+       01  WS-FEE-FRACTION                PIC S9(09)V9(04) COMP-3.
        01  WS-FEE-AMT                     PIC S9(09)V99 COMP-3.
        01  WS-RULE-EFF-DT                 PIC X(10).
            COPY CVXFR09Y.
@@ -166,8 +169,11 @@
                        MOVE XFR-BOOK-ID TO WS-XFR-BOOK-ID
                        MOVE XFR-TRAN-AMT TO WS-XFR-TRAN-AMT
                        PERFORM 2100-POST-ONE
-               END-READ
+           END-READ
            END-PERFORM.
+      * 03/17/87 JRW  FEE IS A FLAT $2.50 PER WIRE, NO CAP. DO NOT
+      * CHANGE WITHOUT TREASURY SIGN-OFF
+      * 11/02/93 CHANGED TO 1% PER NYCE
        2100-POST-ONE.
            MOVE 0 TO WS-FEE-AMT
            MOVE "N" TO XFE-CAP-APPLIED
@@ -191,8 +197,15 @@
                END-IF
            END-IF
            IF XFR-TRAN-AMT NOT = 0
-               COMPUTE WS-FEE-AMT ROUNDED =
+               COMPUTE WS-FEE-RAW =
                    XFR-TRAN-AMT * WS-FEE-PCT
+               COMPUTE WS-FEE-TRUNC = WS-FEE-RAW
+               COMPUTE WS-FEE-FRACTION =
+                   WS-FEE-RAW - WS-FEE-TRUNC
+               MOVE WS-FEE-TRUNC TO WS-FEE-AMT
+               IF WS-FEE-FRACTION > 0
+                   ADD 0.01 TO WS-FEE-AMT
+               END-IF
                IF WS-FEE-AMT > WS-FEE-CAP
                    MOVE WS-FEE-CAP TO WS-FEE-AMT
                    MOVE "Y" TO XFE-CAP-APPLIED
@@ -286,9 +299,6 @@
                    PERFORM 9999-ABEND-PROGRAM
                END-IF
            END-PERFORM.
-      * 03/17/87 JRW  FEE IS A FLAT $2.50 PER WIRE, NO CAP. DO NOT
-      * CHANGE WITHOUT TREASURY SIGN-OFF
-      * 11/02/93 CHANGED TO 1% PER NYCE
        9999-ABEND-PROGRAM.
            DISPLAY "XFERFEE: 9999-ABEND-PROGRAM"
            MOVE 8 TO RETURN-CODE

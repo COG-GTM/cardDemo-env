@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 
@@ -72,9 +73,141 @@ def transaction(
     return record.encode("ascii")
 
 
+def transfer(
+    transaction_id: str,
+    amount: float,
+    source: int,
+    target: int,
+    card: str,
+    date: str,
+) -> bytes:
+    return transaction(
+        transaction_id,
+        "08",
+        amount,
+        card,
+        date,
+        f"XFER TO ACCT {target:011d}",
+    )
+
+
+def case_transactions(case: str, cards: list[str]) -> list[bytes]:
+    if case == "default":
+        return [
+            transaction("TRN0000000000001", "01", 42.00, cards[2],
+                        "2024-06-05", "POS purchase"),
+            transfer("TRN0000000000002", 100.00, 1, 2, cards[0],
+                     "2024-06-20"),
+            transfer("TRN0000000000003", 1000.00, 6, 7, cards[5],
+                     "2024-06-21"),
+            transaction("TRN0000000000004", "01", 18.50, cards[4],
+                        "2024-06-29", "POS purchase"),
+        ]
+    if case == "under_cap":
+        return [
+            transfer("TRN0000000000001", 100.00, 1, 2, cards[0],
+                     "2024-06-05"),
+            transfer("TRN0000000000002", 1000.00, 6, 7, cards[5],
+                     "2024-06-05"),
+        ]
+    if case == "at_cap":
+        return [
+            transfer("TRN0000000000001", 5000.00, 1, 2, cards[0],
+                     "2024-06-05"),
+            transfer("TRN0000000000002", 200000.00, 6, 7, cards[5],
+                     "2024-06-05"),
+        ]
+    if case == "rate_change":
+        return [
+            transfer("TRN0000000000001", 100.00, 1, 2, cards[0],
+                     "2024-06-14"),
+            transfer("TRN0000000000002", 100.00, 1, 2, cards[0],
+                     "2024-06-15"),
+            transfer("TRN0000000000003", 100.00, 1, 2, cards[0],
+                     "2024-06-16"),
+        ]
+    if case == "zero_amount":
+        return [
+            transfer("TRN0000000000001", 0.00, 1, 2, cards[0],
+                     "2024-06-05"),
+        ]
+    if case == "non_transfer":
+        return [
+            transaction("TRN0000000000001", "01", 42.00, cards[2],
+                        "2024-06-05", "POS purchase"),
+            transaction("TRN0000000000002", "02", 10.00, cards[3],
+                        "2024-06-05", "PAYMENT"),
+            transaction("TRN0000000000003", "05", 15.00, cards[4],
+                        "2024-06-05", "CASH ADVANCE"),
+            transfer("TRN0000000000004", 100.00, 1, 2, cards[0],
+                     "2024-06-05"),
+        ]
+    if case == "half_cent":
+        rows = [
+            (4.20, 1, 2),
+            (0.20, 2, 3),
+            (12.20, 3, 4),
+            (20.20, 4, 5),
+            (28.20, 5, 1),
+        ]
+        transfers = [
+            transfer(f"TRN000000000000{index}", amount, source, target,
+                     cards[source - 1], "2024-06-05")
+            for index, (amount, source, target) in enumerate(rows, 1)
+        ]
+        transfers.append(
+            transfer("TRN0000000000006", 5.00, 6, 7, cards[5],
+                     "2024-06-05")
+        )
+        return transfers
+    raise ValueError(f"unsupported fixture case: {case}")
+
+
+CASES = {
+    "default": "Default transfer-fee chain fixture",
+    "under_cap": "Retail and installment transfers below their fee caps",
+    "at_cap": "Retail and installment transfers at their fee caps",
+    "rate_change": "Retail transfers spanning the June 15 rate change",
+    "zero_amount": "Zero-amount transfer preserves fee and ledger records",
+    "non_transfer": "Non-transfer transactions are ignored by the extract",
+    "half_cent": "Half-cent fee rounding cases for both books",
+}
+
+
+def case_metadata(case: str) -> dict:
+    return {
+        "description": CASES[case],
+        "run_date": "2024-06-30",
+        "outputs": [
+            {
+                "dsn": "AWS.M2.CARDDEMO.XFER.EXTRACT",
+                "copybook": "CVXFR01Y",
+                "key": ["XFR-TRAN-ID"],
+            },
+            {
+                "dsn": "AWS.M2.CARDDEMO.ACCTDATA.XFER",
+                "copybook": "CVACT01Y",
+                "key": ["ACCT-ID"],
+            },
+            {
+                "dsn": "AWS.M2.CARDDEMO.XFER.FEES",
+                "copybook": "CVXFR02Y",
+                "key": ["XFE-TRAN-ID"],
+            },
+            {
+                "dsn": "AWS.M2.CARDDEMO.XFER.RECON.RPT",
+                "text": True,
+                "key": ["line"],
+            },
+        ],
+        "db2": [
+            {"table": "CTL_XFER_PARM", "key": ["BOOK_ID", "EFF_DT"]},
+            {"table": "XFER_FEE_LEDGER", "key": ["TRAN_ID"]},
+        ],
+    }
+
+
 def generate(case: str, root: Path) -> None:
-    if case != "default":
-        raise ValueError(f"unsupported fixture case: {case}")
     output = root / "fixtures" / "xferfee" / case / "input"
     output.mkdir(parents=True, exist_ok=True)
 
@@ -90,27 +223,27 @@ def generate(case: str, root: Path) -> None:
         account(8, 900, "INSTL"),
     ]
     xref_rows = [xref(card, idx, 900000000 + idx) for idx, card in enumerate(cards, 1)]
-    transactions = [
-        transaction("TRN0000000000001", "01", 42.00, cards[2], "2024-06-05",
-                    "POS purchase"),
-        transaction("TRN0000000000002", "08", 100.00, cards[0], "2024-06-20",
-                    "XFER TO ACCT 00000000002"),
-        transaction("TRN0000000000003", "08", 1000.00, cards[5], "2024-06-21",
-                    "XFER TO ACCT 00000000007"),
-        transaction("TRN0000000000004", "01", 18.50, cards[4], "2024-06-29",
-                    "POS purchase"),
-    ]
+    transactions = case_transactions(case, cards)
     (output / "ACCTDATA.PS").write_bytes(b"".join(account_rows))
     (output / "CARDXREF.PS").write_bytes(b"".join(xref_rows))
     (output / "DALYTRAN.PS").write_bytes(b"".join(transactions))
+    (output.parent / "case.json").write_text(
+        json.dumps(case_metadata(case), indent=2) + "\n"
+    )
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", default="default")
+    parser.add_argument("--all", action="store_true")
     parser.add_argument("--root", default=None, type=Path)
     args = parser.parse_args()
-    generate(args.case, args.root or Path(__file__).resolve().parents[2])
+    root = args.root or Path(__file__).resolve().parents[2]
+    if args.all:
+        for case in CASES:
+            generate(case, root)
+    else:
+        generate(args.case, root)
 
 
 if __name__ == "__main__":

@@ -3,8 +3,12 @@
 //******************************************************************
 //* TRANSFER FEE GENERATION DATA GROUPS
 //******************************************************************
+//* *****************************************************************
+//* * DEFGDGX - DEFINE GENERATION DATA GROUPS FOR TRANSFER FILES   *
+//* *****************************************************************
 //STEP01   EXEC PGM=IDCAMS
 //SYSPRINT DD SYSOUT=*
+//SYSOUT   DD SYSOUT=*
 //SYSIN    DD *
   DEFINE GENERATIONDATAGROUP -
     (NAME(AWS.M2.CARDDEMO.XFER.EXTRACT) LIMIT(5) SCRATCH)

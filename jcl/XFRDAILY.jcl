@@ -3,6 +3,9 @@
 //******************************************************************
 //* DAILY TRANSFER FEE POSTING CHAIN
 //******************************************************************
+//* *****************************************************************
+//* * XFRDAILY - RUN THE DAILY TRANSFER FEE POSTING PROCEDURE      *
+//* *****************************************************************
 //STEP01   EXEC PROC=XFERFEEP,HLQ=AWS.M2.CARDDEMO
 //STEP010.DALYTRAN DD DSN=AWS.M2.CARDDEMO.DALYTRAN.PS,DISP=SHR
 //STEP010.XREFFILE DD DSN=AWS.M2.CARDDEMO.CARDXREF.PS,DISP=SHR

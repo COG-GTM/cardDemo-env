@@ -160,12 +160,19 @@ def dsn_parts(dsn: str) -> tuple[str, int | None]:
 
 
 class Runner:
-    def __init__(self, datasets: Path):
+    def __init__(
+        self,
+        datasets: Path,
+        joblog_root: Path | None = None,
+        manifest_path: Path | None = None,
+    ):
         self.datasets = datasets
         self.datasets.mkdir(parents=True, exist_ok=True)
         self.pending_gdg: dict[Path, int] = {}
-        self.joblog_root = ROOT / "work" / "joblog"
+        self.joblog_root = joblog_root or ROOT / "work" / "joblog"
         self.joblog_root.mkdir(parents=True, exist_ok=True)
+        self.manifest_path = manifest_path
+        self.manifest: list[dict[str, object]] = []
 
     def gdg_file(self, base: Path) -> Path:
         return base.with_name(base.name + ".gdg")
@@ -218,6 +225,17 @@ class Runner:
         if "NEW" in text.upper() and path.exists():
             print(f"IEF2xxI WARNING: DISP=NEW truncates existing {dsn_match.group(1)}")
             path.write_bytes(b"")
+        if "NEW" in text.upper():
+            dsn = path.relative_to(self.datasets).as_posix()
+            lrecl_match = re.search(r"LRECL\s*=\s*(\d+)", text, re.IGNORECASE)
+            self.manifest.append({
+                "job": job,
+                "step": step,
+                "ddname": dd.name,
+                "dsn": dsn,
+                "path": str(path),
+                "lrecl": int(lrecl_match.group(1)) if lrecl_match else None,
+            })
         return {env_name: str(path)}, base
 
     def utility(self, step: Step, allocations: dict[str, str]) -> int:
@@ -330,6 +348,13 @@ class Runner:
         (self.joblog_root / f"{job}.log").write_text("\n".join(log_lines) + "\n")
         return maxcc
 
+    def write_manifest(self) -> None:
+        if self.manifest_path:
+            self.manifest_path.parent.mkdir(parents=True, exist_ok=True)
+            self.manifest_path.write_text(
+                json.dumps({"outputs": self.manifest}, indent=2) + "\n"
+            )
+
 
 def load_fixtures(case: str, datasets: Path) -> None:
     generator = ROOT / "tools" / "fixtures" / "gen_fixtures.py"
@@ -359,6 +384,8 @@ def main() -> int:
     parser.add_argument("--chain")
     parser.add_argument("--job")
     parser.add_argument("--datasets", type=Path, default=ROOT / "datasets")
+    parser.add_argument("--joblog-dir", type=Path)
+    parser.add_argument("--manifest", type=Path)
     parser.add_argument("--load-fixtures")
     parser.add_argument("--db-reset", action="store_true")
     args = parser.parse_args()
@@ -367,7 +394,13 @@ def main() -> int:
         load_fixtures(args.load_fixtures, datasets)
     if args.db_reset:
         reset_db()
-    runner = Runner(datasets)
+    joblog_dir = args.joblog_dir
+    if joblog_dir and not joblog_dir.is_absolute():
+        joblog_dir = ROOT / joblog_dir
+    manifest = args.manifest
+    if manifest and not manifest.is_absolute():
+        manifest = ROOT / manifest
+    runner = Runner(datasets, joblog_dir, manifest)
     jobs: list[Path] = []
     if args.chain:
         config = json.loads((ROOT / "tools" / "runjcl" / "chains.json").read_text())
@@ -388,6 +421,7 @@ def main() -> int:
         rc = runner.run_job(job)
         if rc:
             break
+    runner.write_manifest()
     return rc
 
 
