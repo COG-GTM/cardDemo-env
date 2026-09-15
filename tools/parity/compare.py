@@ -279,10 +279,25 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     else:
         verdict = "PARITY: PASS"
         rc = 0
-    lines[0] = f"# Parity: xferfee / {case} — {'FAIL' if rc else 'PASS'}"
-    lines.extend(["", "## Missing/extra records", "(See record difference entries above.)",
-                  "", "## RC differences", "(See RC difference entries above.)",
-                  "", verdict])
+    details = lines[4:]
+    field_lines = [line for line in details if line.startswith("| ")]
+    record_lines = [
+        line for line in details
+        if line.startswith("- ") and not line.startswith("- RC:")
+    ]
+    rc_lines = [line for line in details if line.startswith("- RC:")]
+    lines = [
+        f"# Parity: xferfee / {case} — {'FAIL' if rc else 'PASS'}",
+        "",
+        "| Dataset/Table | Record key | Field | Expected | Actual |",
+        "|---|---|---|---|---|",
+    ]
+    lines.extend(field_lines)
+    lines.extend(["", "## Missing/extra records"])
+    lines.extend(record_lines or ["(none)"])
+    lines.extend(["", "## RC differences"])
+    lines.extend(rc_lines or ["(none)"])
+    lines.extend(["", verdict])
     report = "\n".join(lines) + "\n"
     report_path = candidate.parent / "report.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
