@@ -34,6 +34,13 @@ def scalar(value: Any) -> str:
     return str(value)
 
 
+def display_text(value: bytes | str) -> str:
+    if isinstance(value, bytes):
+        value = value.decode("ascii", errors="replace")
+        value = "".join(char if char.isprintable() else "?" for char in value)
+    return value.strip().replace("|", "\\|")[:60]
+
+
 def normalized(value: str) -> str | Decimal:
     value = value.strip()
     try:
@@ -79,7 +86,7 @@ def append_dataset_diffs(
             if left != right:
                 lines.append(
                     f"| {label} | line {index} | text | "
-                    "<different> | <different> |"
+                    f"{display_text(left)} | {display_text(right)} |"
                 )
                 field_diffs += 1
         if len(expected_lines) != len(actual_lines):
@@ -188,7 +195,8 @@ def append_sysout_diffs(
             if expected_line != actual_line:
                 lines.append(
                     f"| SYSOUT/{name} | line {index} | text | "
-                    f"{expected_line} | {actual_line} |"
+                    f"{display_text(expected_line)} | "
+                    f"{display_text(actual_line)} |"
                 )
                 field_diffs += 1
         if len(left) != len(right):
