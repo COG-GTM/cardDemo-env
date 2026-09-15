@@ -1,0 +1,4 @@
+tran_id,tran_dt,src_acct_id,tgt_acct_id,book_id,tran_amt,fee_amt,cap_applied
+TRN0000000000001,2024-06-14,1,2,RETAIL    ,100.00,1.25,N
+TRN0000000000002,2024-06-15,1,2,RETAIL    ,100.00,1.50,N
+TRN0000000000003,2024-06-16,1,2,RETAIL    ,100.00,1.50,N

@@ -1,0 +1,6 @@
+{
+  "xferfee": {
+    "jobs": ["jcl/XFRDAILY.jcl"],
+    "setup": ["jcl/DEFGDGX.jcl"]
+  }
+}

@@ -1,0 +1,46 @@
+name: estate-ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure compose user
+        run: |
+          echo "UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "GID=$(id -g)" >> "$GITHUB_ENV"
+      - name: Start estate
+        run: docker compose up -d --build --wait
+      - name: Build COBOL estate
+        run: make build
+      - name: Run transfer-fee chain
+        run: |
+          set -o pipefail
+          make run CHAIN=xferfee 2>&1 | tee work/ci-chain.log
+          grep -q 'MAXCC=0000' work/ci-chain.log
+      - name: Run self parity
+        run: make parity
+      - name: Verify naive parity is intentionally different
+        run: |
+          if make parity-naive CASE=half_cent; then
+            echo "half_cent naive parity unexpectedly passed"
+            exit 1
+          fi
+      - name: Run dead-code split
+        run: make deadcode
+      - name: Check chain graph
+        run: make chain-graph-check
+      - name: Check generated fixtures
+        run: python3 tools/fixtures/gen_fixtures.py --check
+      - name: Upload estate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: estate-work-and-logs
+          path: |
+            work/
+            ops/smf/job_activity.csv

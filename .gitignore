@@ -6,3 +6,9 @@ batch-app/markers/*
 /.idea/
 .DS_Store
 **/.DS_Store
+loadlib/
+datasets/
+work/
+*.so
+*.cob.c
+__pycache__/
