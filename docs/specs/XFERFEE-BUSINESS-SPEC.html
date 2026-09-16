@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XFERFEE — Transfer Fee Posting: Business Rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b14;--bg2:#0b1220;--card:rgba(255,255,255,.04);--card-b:rgba(255,255,255,.09);
+  --txt:#e6ebf5;--muted:#8b96ad;--acc:#5eead4;--acc2:#818cf8;--warn:#fbbf24;--bad:#fb7185;--ok:#34d399;
+  --mono:'JetBrains Mono',ui-monospace,monospace;--sans:'Inter',system-ui,sans-serif;--disp:'Space Grotesk',var(--sans);
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,rgba(129,140,248,.18),transparent 60%),
+  radial-gradient(900px 500px at -10% 20%,rgba(94,234,212,.12),transparent 60%),var(--bg);
+  color:var(--txt);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+code,pre{font-family:var(--mono);font-size:.86em}
+code{background:rgba(255,255,255,.07);padding:.1em .4em;border-radius:6px}
+pre{background:#050810;border:1px solid var(--card-b);border-radius:10px;padding:14px 16px;overflow:auto;line-height:1.5}
+pre code{background:none;padding:0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.layout{display:grid;grid-template-columns:240px 1fr;gap:40px}
+nav.toc{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;padding-right:8px}
+nav.toc a{display:block;color:var(--muted);font-size:13px;padding:5px 10px;border-left:1px solid var(--card-b);transition:.2s}
+nav.toc a:hover{color:var(--txt);border-color:var(--acc);text-decoration:none}
+nav.toc .grp{font-family:var(--disp);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc2);margin:18px 0 6px 10px}
+header.hero{padding:72px 0 40px}
+.eyebrow{font-family:var(--disp);letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--acc)}
+h1{font-family:var(--disp);font-size:clamp(32px,5vw,54px);line-height:1.05;margin:12px 0 16px;
+  background:linear-gradient(90deg,#fff,#c7d2fe 60%,var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--muted);font-size:17px;max-width:760px}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.pill{border:1px solid var(--card-b);background:var(--card);backdrop-filter:blur(8px);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--muted)}
+.pill b{color:var(--txt);font-weight:600}
+h2{font-family:var(--disp);font-size:26px;margin:64px 0 18px;padding-top:8px;position:relative}
+h2::before{content:"";position:absolute;left:0;top:0;width:44px;height:2px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+h3{font-family:var(--disp);font-size:18px;margin:28px 0 10px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.step{background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:18px;backdrop-filter:blur(10px);position:relative;transition:.25s}
+.step:hover{transform:translateY(-2px);border-color:rgba(94,234,212,.4);box-shadow:0 10px 40px -20px rgba(94,234,212,.5)}
+.step .n{font-family:var(--mono);color:var(--acc2);font-size:12px}
+.step h4{margin:4px 0 6px;font-family:var(--disp);font-size:17px}
+.step p{margin:0;color:var(--muted);font-size:13.5px}
+.step .io{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--txt)}
+.step .io span{display:block;color:var(--muted)}
+.br{background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);padding:22px 24px;margin:16px 0;backdrop-filter:blur(10px);transition:.25s}
+.br:hover{border-color:rgba(129,140,248,.45)}
+.br .head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.br .id{font-family:var(--mono);font-weight:500;color:var(--acc);background:rgba(94,234,212,.1);border:1px solid rgba(94,234,212,.3);border-radius:8px;padding:2px 10px;font-size:13px}
+.br .title{font-family:var(--disp);font-size:18px;font-weight:700}
+.br .src{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.br p{margin:12px 0 0}
+.br .rule{font-size:16px}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 14px;margin-top:12px;font-size:14px}
+.kv dt{color:var(--muted);font-weight:500}.kv dd{margin:0}
+.note{border-left:3px solid var(--warn);background:rgba(251,191,36,.07);padding:10px 14px;border-radius:0 10px 10px 0;margin-top:12px;font-size:14px}
+.note.ok{border-color:var(--ok);background:rgba(52,211,153,.07)}
+.note.bad{border-color:var(--bad);background:rgba(251,113,133,.07)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--card-b);vertical-align:top}
+th{font-family:var(--disp);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+tr:hover td{background:rgba(255,255,255,.025)}
+td.num,th.num{text-align:right;font-family:var(--mono)}
+.tbl{overflow:auto;border:1px solid var(--card-b);border-radius:12px;background:rgba(0,0,0,.25)}
+.tbl table{margin:0}
+.tag{display:inline-block;font-family:var(--mono);font-size:11.5px;padding:1px 8px;border-radius:6px;border:1px solid var(--card-b);color:var(--muted);margin:1px}
+.tag.y{color:var(--ok);border-color:rgba(52,211,153,.4)}.tag.n{color:var(--muted)}
+.tag.rc0{color:var(--ok)}.tag.rc4{color:var(--warn)}.tag.rc8{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.q{background:var(--card);border:1px solid var(--card-b);border-radius:12px;padding:14px 18px}
+.q .qid{font-family:var(--mono);color:var(--acc2);font-size:12px}
+.q h4{margin:2px 0 6px;font-family:var(--disp);font-size:15px}
+.q p{margin:0;color:var(--muted);font-size:13.5px}
+.formula{font-family:var(--mono);background:#050810;border:1px solid var(--card-b);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:14px;color:#c7d2fe}
+footer{margin:80px 0 40px;color:var(--muted);font-size:13px;border-top:1px solid var(--card-b);padding-top:20px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}nav.toc{display:none}.flow,.grid2{grid-template-columns:1fr}header.hero{padding:48px 0 24px}.br .src{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">CardDemo · batch chain <code>xferfee</code> · job XFRDAILY</div>
+  <h1>Transfer Fee Posting<br>Business Rules</h1>
+  <p class="lede">What the daily transfer-fee chain actually does, recovered from the COBOL/JCL estate and proven against the seven recorded fixtures. Eighteen rules, the worked examples that pin them down, and the questions the code leaves open.</p>
+  <div class="pills">
+    <span class="pill">Schedule <b>Control-M DAILY-TransferFeePosting</b></span>
+    <span class="pill">Steps <b>CBXFR01C → XFERFEE → CBXFR03C</b></span>
+    <span class="pill">Rules <b>BR-1 … BR-18</b></span>
+    <span class="pill">Fixtures <b>7 / 7 confirm</b></span>
+    <span class="pill">Companion <b>XFERFEE-BUSINESS-SPEC.md</b></span>
+  </div>
+</header>
+
+<div class="layout">
+<nav class="toc">
+  <div class="grp">Overview</div>
+  <a href="#chain">The chain in one picture</a>
+  <a href="#money">How money is represented</a>
+  <div class="grp">Rules</div>
+  <a href="#extract">Extract — BR-1…5</a>
+  <a href="#rule">Fee rule selection — BR-6…7</a>
+  <a href="#calc">Fee calculation — BR-8…10</a>
+  <a href="#post">Posting — BR-11…14</a>
+  <a href="#recon">Reconciliation — BR-15…17</a>
+  <a href="#control">Job control — BR-18</a>
+  <div class="grp">Evidence</div>
+  <a href="#examples">Worked examples</a>
+  <a href="#questions">Open questions</a>
+</nav>
+
+<main>
+
+<h2 id="chain">The chain in one picture</h2>
+<p>Every business day the scheduler submits <code>XFRDAILY</code>, which runs PROC <code>XFERFEEP</code>: three programs, three hand-offs through fixed-length generation datasets, one database commit.</p>
+<div class="flow">
+  <div class="step"><div class="n">STEP010 · CBXFR01C</div><h4>Extract</h4><p>Pick today's <em>transfer</em> transactions, resolve card → source account → book, and write a slim 120-byte extract.</p>
+    <div class="io">DALYTRAN, CARDXREF, ACCTDATA<span>→ XFER.EXTRACT(+1)</span></div></div>
+  <div class="step"><div class="n">STEP020 · XFERFEE</div><h4>Price &amp; post</h4><p>Look up the fee rule for the book on the transfer date, compute and cap the fee, move balances, write the fee file and the Db2 ledger.</p>
+    <div class="io">XFER.EXTRACT(0), ACCTDATA, CTL_XFER_PARM<span>→ ACCTDATA.XFER(+1), XFER.FEES(+1), XFER_FEE_LEDGER</span></div></div>
+  <div class="step"><div class="n">STEP030 · CBXFR03C</div><h4>Reconcile</h4><p>Print every fee with subtotals per book and a grand total; flag an empty day with RC 4.</p>
+    <div class="io">XFER.FEES(0)<span>→ XFER.RECON.RPT(+1)</span></div></div>
+</div>
+<p style="color:var(--muted)">Return codes: <span class="tag rc0">0</span> clean · <span class="tag rc4">4</span> warning (unmatched card, empty fee file) · <span class="tag rc8">8</span> abend (no/ambiguous fee rule, unknown account, SQL error). STEP030 runs only if STEP020 returned ≤ 4.</p>
+
+<h2 id="money">How money is represented</h2>
+<p>All amounts are exact decimals — never floats. Transaction and balance amounts are <code>S9(n)V99</code> (two implied decimals). The fee percentage is <code>S9V9(6)</code> — e.g. 1.25 % is stored as <code>0.012500</code>. On the fee file the amounts are COMP-3 packed decimals; in the master file they are zoned display digits. The rules below are about the values; the layouts are in the companion Markdown spec §2.</p>
+
+<h2 id="extract">Extract <span style="color:var(--muted);font-weight:400">— which transfers count</span></h2>
+
+<div class="br"><div class="head"><span class="id">BR-1</span><span class="title">Only transaction type 08 is a transfer</span><span class="src">CBXFR01C.cbl</span></div>
+<p class="rule">A daily transaction is a transfer fee candidate <strong>if and only if</strong> <code>TRAN-TYPE-CD = "08"</code>. Nothing else — amount sign, category, source, merchant — matters for selection.</p>
+<dl class="kv"><dt>Edge cases</dt><dd>Exact two-byte match; <code>"8 "</code> or <code>"08"</code> in another field is not selected. The <em>non_transfer</em> fixture mixes types 01/02/08 and only the 08 record is extracted.</dd></dl></div>
+
+<div class="br"><div class="head"><span class="id">BR-2</span><span class="title">Card → source account via the cross-reference</span><span class="src">CBXFR01C.cbl</span></div>
+<p class="rule">The transaction's card number is looked up in CARDXREF; the <strong>first</strong> matching row supplies the source account id. Up to 500 xref rows are held in memory.</p>
+<dl class="kv"><dt>If missing</dt><dd>Logs <code>CBXFR01C: CARD NOT FOUND &lt;card&gt;</code>, counts it as unmatched, skips the record (see BR-5).</dd></dl></div>
+
+<div class="br"><div class="head"><span class="id">BR-3</span><span class="title">Book comes from the <em>source</em> account</span><span class="src">CBXFR01C.cbl</span></div>
+<p class="rule">The source account is looked up in the account master and its <code>ACCT-GROUP-ID</code> becomes the transfer's <strong>book</strong>. The target account's book is never consulted — a cross-book transfer is priced by the payer's book.</p>
+<dl class="kv"><dt>If missing</dt><dd>Also counted as "unmatched" (the SYSOUT label says <em>CARDS</em> but the count includes accounts — Q12).</dd></dl></div>
+
+<div class="br"><div class="head"><span class="id">BR-4</span><span class="title">Target account is parsed out of the description</span><span class="src">CBXFR01C.cbl</span></div>
+<p class="rule">The target account id is the 11 characters at positions 14–24 of <code>TRAN-DESC</code> (i.e. after the literal <code>XFER TO ACCT </code>). The extract record carries: tran id, date (first 10 chars of the origin timestamp), source acct, target acct, book, amount.</p>
+<div class="note">The layout of the description is a convention, not a validated contract. A description in any other shape yields garbage in the target id and an abend downstream (BR-11) — Q4.</div></div>
+
+<div class="br"><div class="head"><span class="id">BR-5</span><span class="title">Unmatched records are a warning, not a failure</span><span class="src">CBXFR01C.cbl</span></div>
+<p class="rule">The step prints <code>RECORDS READ</code>, <code>TRANSFERS SELECTED</code>, <code>UNMATCHED CARDS</code>. If any record was unmatched the step ends with <strong>RC 4</strong>; the transfers that did match are still written.</p>
+<div class="note">In real JES the chain would continue past RC 4; the estate's runner stops after any non-zero step. Which behaviour to port is a business decision — Q9.</div></div>
+
+<h2 id="rule">Fee rule selection</h2>
+
+<div class="br"><div class="head"><span class="id">BR-6</span><span class="title">Whole account master in memory</span><span class="src">XFERFEE.cbl</span></div>
+<p class="rule">The posting step loads the account master into a table of at most <strong>500</strong> rows before processing. Every loaded row is rewritten at the end (BR-14), whether or not it changed.</p></div>
+
+<div class="br"><div class="head"><span class="id">BR-7</span><span class="title">Rule = book + date window, start inclusive, end exclusive</span><span class="src">XFERFEE.cbl · CTL_XFER_PARM</span></div>
+<p class="rule">For each transfer the fee rule is the single <code>CTL_XFER_PARM</code> row where</p>
+<div class="formula">BOOK_ID = book &nbsp;AND&nbsp; EFF_DT &lt;= transfer_date &nbsp;AND&nbsp; transfer_date &lt; EXP_DT</div>
+<dl class="kv"><dt>Boundary</dt><dd>On the day a new rule takes effect (<code>EFF_DT</code>) the <strong>new</strong> rule wins; the old rule's <code>EXP_DT</code> is the first day it no longer applies.</dd>
+<dt>None found</dt><dd>SQLCODE +100 → <code>NO FEE RULE</code>, <strong>RC 8</strong>, ROLLBACK.</dd>
+<dt>Overlap</dt><dd>More than one row (SQLCODE −811) → <strong>RC 8</strong>. Rules must not overlap within a book.</dd>
+<dt>Rule date</dt><dd>The matched row's <code>EFF_DT</code> is carried onto the fee record for audit.</dd></dl>
+<div class="note ok">Proven by <em>rate_change</em>: RETAIL has 1.25 % with <code>EXP_DT</code> 2024-06-15 and 1.50 % with <code>EFF_DT</code> 2024-06-15. Three 100.00 transfers on 06-14 / 06-15 / 06-16 are charged 1.25 / 1.50 / 1.50.</div></div>
+
+<h2 id="calc">Fee calculation</h2>
+
+<div class="br"><div class="head"><span class="id">BR-8</span><span class="title">Fee = amount × rate, rounded half away from zero to the cent</span><span class="src">XFERFEE.cbl <code>COMPUTE … ROUNDED</code></span></div>
+<div class="formula">fee = round_half_up( amount × FEE_PCT , 2 decimals )</div>
+<p>COBOL <code>ROUNDED</code> into an <code>S9(9)V99</code> target keeps exactly two decimals and rounds a half-cent <em>away from zero</em> — not banker's rounding, not truncation. The full-precision product is never stored.</p>
+<div class="note ok">Proven by <em>half_cent</em>: 2.00 × 1.25 % = 0.0250 → <strong>0.03</strong>; 3.00 × 1.50 % = 0.0450 → <strong>0.05</strong>; 11.00 × 1.50 % = 0.1650 → <strong>0.17</strong>; INSTL 5.00 × 0.50 % = 0.0250 → <strong>0.03</strong>. Banker's rounding would give 0.02 / 0.04 / 0.16 / 0.02; truncation likewise. The recorded grand total is 0.46.</div></div>
+
+<div class="br"><div class="head"><span class="id">BR-9</span><span class="title">Cap applies only when the fee is strictly above it</span><span class="src">XFERFEE.cbl</span></div>
+<div class="formula">if fee &gt; FEE_CAP: fee = FEE_CAP; CAP_APPLIED = "Y" &nbsp;else&nbsp; CAP_APPLIED = "N"</div>
+<p>The comparison is against the <em>rounded</em> fee. A fee exactly equal to the cap is charged at the cap but flagged <code>N</code>.</p>
+<div class="note">Whether "fee equals cap" should be reported as capped is a business question — Q2. The port preserves the current strict behaviour.</div>
+<div class="note ok">Proven by <em>at_cap</em>: RETAIL 5,000.00 × 1.25 % = 62.50 → capped to <strong>25.00</strong>; INSTL 200,000.00 × 0.50 % = 1,000.00 → capped to <strong>500.00</strong>. Both flagged Y.</div></div>
+
+<div class="br"><div class="head"><span class="id">BR-10</span><span class="title">Zero-amount transfers are still posted</span><span class="src">XFERFEE.cbl</span></div>
+<p class="rule">A transfer of 0.00 is not filtered out: fee is 0.00, cap flag <code>N</code>, balances are updated by zero, a fee record is written and a ledger row inserted. It appears on the report as a 0.00 line.</p>
+<div class="note">Negative amounts are not special-cased either; the fee would be negative and the cap test would never fire — Q3.</div></div>
+
+<h2 id="post">Posting</h2>
+
+<div class="br"><div class="head"><span class="id">BR-11</span><span class="title">Both accounts must exist in the master</span><span class="src">XFERFEE.cbl</span></div>
+<p class="rule">Source and target account ids are searched in the in-memory master. If either is missing the step abends with <strong>RC 8</strong> and rolls back all database work.</p>
+<dl class="kv"><dt>Duplicates</dt><dd>The lookup keeps scanning after a hit, so the <strong>last</strong> matching row wins — the opposite of the extract step (first match). Only matters if the master has duplicate ids — Q7.</dd>
+<dt>Self-transfer</dt><dd>Source = target is allowed; the same row receives both sides of the movement.</dd></dl></div>
+
+<div class="br"><div class="head"><span class="id">BR-12</span><span class="title">Balance and cycle movements</span><span class="src">XFERFEE.cbl</span></div>
+<div class="formula">source.CURR_BAL        −= amount + fee<br>source.CURR_CYC_DEBIT  += amount + fee<br>target.CURR_BAL        += amount<br>target.CURR_CYC_CREDIT += amount</div>
+<p>The payer bears the fee; the payee receives the full amount. Credit limits, account status and expiry are <strong>not</strong> checked — Q8.</p>
+<div class="note ok">Proven by <em>default</em>: account 1 starts at 1,000.00 and sends 100.00 with fee 1.50 → balance <strong>898.50</strong>, cycle debit <strong>101.50</strong>; account 2 starts at 500.00 and receives 100.00 → balance <strong>600.00</strong>, cycle credit <strong>100.00</strong>. Accounts 3, 4, 5 and 8 are untouched but still rewritten (BR-14).</div></div>
+
+<div class="br"><div class="head"><span class="id">BR-13</span><span class="title">One fee record + one ledger row per transfer</span><span class="src">XFERFEE.cbl · XFER_FEE_LEDGER</span></div>
+<p class="rule">Each posted transfer writes a 100-byte fee record (tran id, date, source, target, book, amount, rate, fee, cap flag, rule effective date) and inserts the matching row into <code>XFER_FEE_LEDGER</code>:</p>
+<pre><code>INSERT INTO XFER_FEE_LEDGER
+   (TRAN_ID, TRAN_DT, SRC_ACCT_ID, TGT_ACCT_ID, BOOK_ID, TRAN_AMT, FEE_AMT, CAP_APPLIED)
+VALUES (…)</code></pre>
+<div class="note"><code>TRAN_ID</code> is the primary key: re-running a day that has already been posted fails on the insert (RC 8) — Q14.</div></div>
+
+<div class="br"><div class="head"><span class="id">BR-14</span><span class="title">Totals, full master rewrite, single commit</span><span class="src">XFERFEE.cbl</span></div>
+<p class="rule">After the last transfer the step prints <code>TRANSFERS POSTED</code> and <code>TOTAL FEES</code> (signed, in cents), writes <em>every</em> loaded account row to <code>ACCTDATA.XFER(+1)</code>, and issues one <code>COMMIT</code>. Any failure before that point rolls back all inserts — the ledger is all-or-nothing per run.</p>
+<div class="note">The updated master is written to a new generation; nothing copies it back over <code>ACCTDATA.PS</code>, so a second run starts from the original balances — Q10.</div></div>
+
+<h2 id="recon">Reconciliation report</h2>
+
+<div class="br"><div class="head"><span class="id">BR-15</span><span class="title">Detail lines in input order, subtotal on every book change</span><span class="src">CBXFR03C.cbl</span></div>
+<p class="rule">The report lists each fee record as read (no sorting). Whenever the book differs from the previous record's book a <code>SUBTOTAL &lt;book&gt;</code> line is printed for the run just ended.</p>
+<div class="note">Because the fee file is in extract order, interleaved books (RETAIL, INSTL, RETAIL) produce three subtotals, not two — Q13.</div></div>
+
+<div class="br"><div class="head"><span class="id">BR-16</span><span class="title">Final subtotal, grand total, fixed picture</span><span class="src">CBXFR03C.cbl</span></div>
+<p class="rule">After the last record a final subtotal and a <code>GRAND TOTAL</code> line (with the record count) are printed, and <code>CBXFR03C: GRAND TOTAL FEE</code> goes to SYSOUT. Amounts use the edited picture <code>Z(8)9.99-</code>: leading zeros suppressed, trailing <code>-</code> for negatives, blank otherwise.</p>
+<p style="color:var(--muted);font-size:13px;margin:8px 0 0">Recorded report, <em>default</em> case:</p>
+<pre><code> TRANSFER FEE RECONCILIATION
+ TRANSACTION       DATE       BOOK       AMOUNT          FEE
+ TRN0000000000002 2024-06-20 RETAIL           100.00          1.50
+ BOOK RETAIL     SUBTOTAL AMOUNT       100.00  FEE         1.50
+ TRN0000000000003 2024-06-21 INSTL           1000.00          5.00
+ BOOK INSTL      SUBTOTAL AMOUNT      1000.00  FEE         5.00
+ GRAND TOTAL COUNT         2 AMOUNT      1100.00  FEE         6.50</code></pre></div>
+
+<div class="br"><div class="head"><span class="id">BR-17</span><span class="title">An empty day is a warning</span><span class="src">CBXFR03C.cbl</span></div>
+<p class="rule">If the fee file has no records the report contains only the headings, SYSOUT shows <code>CBXFR03C: NO FEE RECORDS</code>, and the step ends with <strong>RC 4</strong> so operations can see that nothing was posted.</p></div>
+
+<h2 id="control">Job control</h2>
+<div class="br"><div class="head"><span class="id">BR-18</span><span class="title">Step order, condition codes, generations</span><span class="src">XFRDAILY.jcl · XFERFEEP.prc · DEFGDGX.jcl</span></div>
+<p class="rule">Steps run strictly in order. <code>STEP030</code> carries <code>COND=(4,LT,STEP020)</code> — it is bypassed if posting returned more than 4. Each step writes a new generation (<code>+1</code>) and reads the current one (<code>0</code>) of the four GDG bases (<code>XFER.EXTRACT</code>, <code>ACCTDATA.XFER</code>, <code>XFER.FEES</code>, <code>XFER.RECON.RPT</code>), each keeping the last five generations. The job's MAXCC is the highest step RC.</p></div>
+
+<h2 id="examples">Worked examples <span style="color:var(--muted);font-weight:400">— the seven recorded fixtures</span></h2>
+<p>Each row is taken from the recorded COBOL outputs (<code>fixtures/xferfee/&lt;case&gt;/expected/</code>). Seeded rules (<code>db2/data/CTL_XFER_PARM</code>): <b>RETAIL</b> 1.25 % cap 25.00 until 2024-06-15, then 1.50 % cap 25.00; <b>INSTL</b> 0.50 % cap 500.00. Accounts 1–5 are RETAIL, 6–8 INSTL.</p>
+<div class="tbl"><table>
+<thead><tr><th>Case</th><th>Transfers (book · amount)</th><th class="num">Fee</th><th>Cap</th><th class="num">Total</th><th>Exercises</th></tr></thead>
+<tbody>
+<tr><td><b>default</b></td><td>4 records read, 2 selected: RETAIL 1→2 100.00 (06-20) · INSTL 6→7 1,000.00 (06-21)</td><td class="num">1.50<br>5.00</td><td><span class="tag n">N</span> <span class="tag n">N</span></td><td class="num">6.50</td><td>BR-1…4, 7 (post-06-15 rate), 8, 12…16</td></tr>
+<tr><td><b>under_cap</b></td><td>RETAIL 1→2 100.00 · INSTL 6→7 1,000.00 (06-05)</td><td class="num">1.25<br>5.00</td><td><span class="tag n">N</span> <span class="tag n">N</span></td><td class="num">6.25</td><td>BR-7 (pre-06-15 rate), BR-9 below cap</td></tr>
+<tr><td><b>at_cap</b></td><td>RETAIL 1→2 5,000.00 · INSTL 6→7 200,000.00</td><td class="num">25.00<br>500.00</td><td><span class="tag y">Y</span> <span class="tag y">Y</span></td><td class="num">525.00</td><td>BR-9 cap &amp; flag; acct 1 ends at −4,025.00 (no limit check, Q8)</td></tr>
+<tr><td><b>rate_change</b></td><td>RETAIL 1→2 100.00 on 06-14 · 06-15 · 06-16</td><td class="num">1.25<br>1.50<br>1.50</td><td><span class="tag n">N</span></td><td class="num">4.25</td><td>BR-7 boundary (new rule wins on EFF_DT)</td></tr>
+<tr><td><b>zero_amount</b></td><td>RETAIL 1→2 0.00</td><td class="num">0.00</td><td><span class="tag n">N</span></td><td class="num">0.00</td><td>BR-10 still posted &amp; ledgered</td></tr>
+<tr><td><b>non_transfer</b></td><td>4 records read, 3 non-08 ignored · RETAIL 1→2 100.00 selected</td><td class="num">1.25</td><td><span class="tag n">N</span></td><td class="num">1.25</td><td>BR-1 selection</td></tr>
+<tr><td><b>half_cent</b></td><td>RETAIL 2.00 · 5.20 · 3.00 · 7.00 · 11.00 (accounts rotate 1→2→3→4→5→1) · INSTL 5.00</td><td class="num">0.03 0.07 0.05<br>0.11 0.17 0.03</td><td><span class="tag n">N</span></td><td class="num">0.46</td><td>BR-8 half-up across both rates; BR-15 two subtotals</td></tr>
+</tbody></table></div>
+<p style="color:var(--muted);font-size:13.5px">All seven cases end with RC 0 on every step. RC 4 paths (unmatched card, empty fee file) and RC 8 paths (no rule, unknown target) were confirmed by probe runs against the legacy chain rather than by recorded fixtures.</p>
+
+<h2 id="questions">Open questions for the business owner</h2>
+<p>Behaviour the code exhibits but does not obviously intend. The Python port preserves the current behaviour in every case; decisions here would be follow-up changes.</p>
+<div class="grid2">
+<div class="q"><div class="qid">Q1</div><h4>Comments vs table</h4><p>Source comments still describe a "$2.50 flat / 1 %" fee; the table drives 1.25 % / 1.50 % with caps. Comments are obsolete.</p></div>
+<div class="q"><div class="qid">Q2</div><h4>Fee equal to cap</h4><p>Flagged <code>N</code> today (strict &gt;). Should it be <code>Y</code>?</p></div>
+<div class="q"><div class="qid">Q3</div><h4>Negative amounts</h4><p>Not rejected; produce a negative fee and credit the payer. Runtime reads a <code>}</code> over-punch as positive.</p></div>
+<div class="q"><div class="qid">Q4</div><h4>Target from description</h4><p>Positions 14–24 of free text are trusted as an account id.</p></div>
+<div class="q"><div class="qid">Q5</div><h4>Asymmetric failures</h4><p>Unknown source card → RC 4 skip; unknown target account → RC 8 abend of the whole run.</p></div>
+<div class="q"><div class="qid">Q6</div><h4>500-row tables</h4><p>Masters above 500 rows are silently truncated.</p></div>
+<div class="q"><div class="qid">Q7</div><h4>Duplicate account ids</h4><p>Extract uses first match, posting uses last match.</p></div>
+<div class="q"><div class="qid">Q8</div><h4>No eligibility checks</h4><p>Status, credit limit, expiry are never consulted.</p></div>
+<div class="q"><div class="qid">Q9</div><h4>RC 4 continuation</h4><p>JES would continue past STEP010 RC 4; the runner stops. Which is intended?</p></div>
+<div class="q"><div class="qid">Q10</div><h4>Master never copied back</h4><p>Balances are written to a new generation only.</p></div>
+<div class="q"><div class="qid">Q11</div><h4>Dead fields</h4><p>Unused copybook fields and DB2PARM entries.</p></div>
+<div class="q"><div class="qid">Q12</div><h4>"UNMATCHED CARDS"</h4><p>Also counts unmatched accounts.</p></div>
+<div class="q"><div class="qid">Q13</div><h4>Unsorted subtotals</h4><p>Interleaved books yield repeated subtotals per book.</p></div>
+<div class="q"><div class="qid">Q14</div><h4>Re-run</h4><p>Duplicate <code>TRAN_ID</code> makes a re-run abend RC 8.</p></div>
+<div class="q"><div class="qid">Q15</div><h4>Report format</h4><p>DCB says RECFM=FBA (133); program writes LINE SEQUENTIAL text.</p></div>
+</div>
+
+<footer>Recovered from <code>cobol/CBXFR01C.cbl</code>, <code>cobol/XFERFEE.cbl</code>, <code>cobol/CBXFR03C.cbl</code>, <code>jcl/</code>, <code>db2/</code>, <code>fixtures/xferfee/</code>. Full data contracts, SQL and source line references: <code>docs/specs/XFERFEE-BUSINESS-SPEC.md</code>. Python port: <code>python/xferfee/</code>.</footer>
+</main>
+</div>
+</div>
+</body>
+</html>

@@ -3,7 +3,8 @@ FROM ${BASE_IMAGE}
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnucobol3 libpq-dev postgresql-client make python3 git build-essential \
+    gnucobol3 libpq-dev postgresql-client make python3 python3-psycopg2 \
+    git build-essential \
     autoconf automake libtool bison flex ca-certificates pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
