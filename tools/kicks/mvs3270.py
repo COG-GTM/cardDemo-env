@@ -4,7 +4,8 @@
 Wraps s3270 so the MVS boot, KICKS install and screen captures are repeatable:
 
     mvs3270.py wait-ipl                 block until MVS finished IPL (TSO up)
-    mvs3270.py install-kicks            one-time KICKS install (idempotent)
+    mvs3270.py install-kicks            one-time KICKS install (re-runnable,
+                                        scratch-and-recreate)
     mvs3270.py kicks [--tran KDEM]      logon, start KICKS, optionally run a
                                         transaction, dump the screens
     mvs3270.py minimal [nobuild]        build + run the HELO BMS probe
@@ -49,28 +50,35 @@ class Screen:
             ["s3270", "-model", "3279-2", "-scriptport", str(self.port), target],
             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
-        for _ in range(50):
-            try:
-                self.sock = socket.create_connection(("127.0.0.1", self.port), timeout=60)
-                break
-            except OSError:
-                time.sleep(0.2)
-        else:
-            raise RuntimeError("s3270 scriptport never opened")
-        for _ in range(60):
-            if "connected-3270" in " ".join(self.cmd("Query(ConnectionState)")):
-                break
-            time.sleep(0.5)
-        else:
-            raise RuntimeError("no 3270 session")
-        time.sleep(1)
-        if "no available 3270 device" in self.ascii():
-            raise RuntimeError("all VTAM terminals busy; kill stale s3270 clients")
-        # Hercules paints its logo and locks the keyboard; a first Enter makes
-        # VTAM answer (INPUT NOT RECOGNIZED) and unlock the USS screen.
-        self.cmd("Enter()")
-        time.sleep(1)
-        self.cmd("Wait(10,Unlock)")
+        try:
+            for _ in range(50):
+                try:
+                    self.sock = socket.create_connection(("127.0.0.1", self.port), timeout=60)
+                    break
+                except OSError:
+                    time.sleep(0.2)
+            else:
+                raise RuntimeError("s3270 scriptport never opened")
+            for _ in range(60):
+                if "connected-3270" in " ".join(self.cmd("Query(ConnectionState)")):
+                    break
+                time.sleep(0.5)
+            else:
+                raise RuntimeError("no 3270 session")
+            time.sleep(1)
+            if "no available 3270 device" in self.ascii():
+                raise RuntimeError("all VTAM terminals busy; kill stale s3270 clients")
+            # Hercules paints its logo and locks the keyboard; a first Enter makes
+            # VTAM answer (INPUT NOT RECOGNIZED) and unlock the USS screen.
+            self.cmd("Enter()")
+            time.sleep(1)
+            self.cmd("Wait(10,Unlock)")
+        except Exception:
+            if getattr(self, "sock", None):
+                self.sock.close()
+            self.proc.kill()
+            self.proc.wait()
+            raise
 
     def cmd(self, action):
         self.sock.sendall((action + "\n").encode())
@@ -142,6 +150,8 @@ class Screen:
 
 
 def save(name, text):
+    if PASSWORD:
+        text = text.replace(PASSWORD, "********")
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, name + ".txt")
     with open(path, "w") as fh:
@@ -231,7 +241,7 @@ def run_job(jcl, timeout=600, ok_codes=("0000",), name=None):
     deadline = time.time() + timeout
     while time.time() < deadline:
         out = prt_read()[before:]
-        if re.search(rf"\$HASP395 {name}\s+ENDED|IEF45[23]I ", out):
+        if re.search(rf"\$HASP395 {name}\s+ENDED|IEF45[23]I {name}\b", out):
             time.sleep(2)
             out = prt_read()[before:]
             break
@@ -240,9 +250,12 @@ def run_job(jcl, timeout=600, ok_codes=("0000",), name=None):
         raise TimeoutError(f"job {name} did not end within {timeout}s")
     codes = re.findall(r"COND CODE (\d{4})", out)
     bad = [c for c in codes if c not in ok_codes]
-    if bad or "JCL ERROR" in out or re.search(r"IEF45[023]I|IEF472I|COMPLETION CODE - SYSTEM", out):
+    if bad or "JCL ERROR" in out or re.search(rf"IEF45[023]I {name}\b|IEF472I {name}\b|COMPLETION CODE - SYSTEM", out):
         save(f"failed-{name}", out)
-        raise RuntimeError(f"job {name} failed (cond codes {codes}):\n{out[-4000:]}")
+        tail = out[-4000:]
+        if PASSWORD:
+            tail = tail.replace(PASSWORD, "********")
+        raise RuntimeError(f"job {name} failed (cond codes {codes}):\n{tail}")
     print(f"job {name} ended, cond codes {codes}", flush=True)
     return out
 

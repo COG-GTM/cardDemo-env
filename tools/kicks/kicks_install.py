@@ -6,7 +6,8 @@ Follows the "Turnkey MVS" section of the KICKS User's Guide (Installation):
   3. run BIGPDS(V1R5M0), the batch job that RECEIVEs every KICKS data set
   4. KFIX customisation clist, then the LOADMUR/LOADTAC/LOADSDB/LODINTRA/LODTEMP
      VSAM define+load jobs (volume PUB002 -> TSO002, the TK5 user volume)
-Every step is a batch job or TSO command so the whole thing is re-runnable.
+Every step is a batch job or TSO command so the whole thing is re-runnable
+(scratch-and-recreate).
 """
 import re
 import time

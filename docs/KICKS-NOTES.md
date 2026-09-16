@@ -295,8 +295,10 @@ changes and one to three compile iterations. Extrapolating honestly:
 - **Terminal colours**: the maps carry `COLOR=` and `HILIGHT=`; s3270
   `Ascii()` dumps do not show them. Connect with `make mvs-3270` (c3270,
   model 3279-2) to see colour.
-- **Security**: TK5 ships with well-known TSO passwords and the container
-  exposes TN3270 unauthenticated; this is a demo box only.
+- **Security**: the compose service binds ports 3270/8038/3505 to loopback
+  only by default; TK5 ships with well-known TSO passwords (override with
+  the `MVS_PASSWORD` environment variable) and TN3270 is unauthenticated;
+  this is a demo box only.
 - **Image size and build time**: ~1.1 GB image, 3-6 minutes to build
   (download-bound); the KICKS install is another ~4 minutes of JCL.
 - **Fragility**: the driver waits on screen text. A stuck TSO session
