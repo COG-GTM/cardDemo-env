@@ -1,0 +1,1000 @@
+                  CCCCCCCCCC   OOOOOOOOOOOO  BBBBBBBBBBB   HH        HH  EEEEEEEEEEEE  LL            OOOOOOOOOOOO  PPPPPPPPPPP
+                CCCCCCCCCCCC  OOOOOOOOOOOO  BBBBBBBBBBBB  HH        HH  EEEEEEEEEEEE  LL            OOOOOOOOOOOO  PPPPPPPPPPPP
+               CC        CC  OO        OO  BB        BB  HH        HH  EE            LL            OO        OO  PP        PP
+              CC            OO        OO  BB        BB  HH        HH  EE            LL            OO        OO  PP        PP
+             CC            OO        OO  BB       BB   HH        HH  EE            LL            OO        OO  PP        PP
+            CC            OO        OO  BBBBBBBBBB    HHHHHHHHHHHH  EEEEEEEE      LL            OO        OO  PPPPPPPPPPPP
+           CC            OO        OO  BBBBBBBBBB    HHHHHHHHHHHH  EEEEEEEE      LL            OO        OO  PPPPPPPPPPP
+          CC            OO        OO  BB       BB   HH        HH  EE            LL            OO        OO  PP
+         CC            OO        OO  BB        BB  HH        HH  EE            LL            OO        OO  PP
+        CC        CC  OO        OO  BB        BB  HH        HH  EE            LL            OO        OO  PP
+       CCCCCCCCCCCC  OOOOOOOOOOOO  BBBBBBBBBBBB  HH        HH  EEEEEEEEEEEE  LLLLLLLLLLLL  OOOOOOOOOOOO  PP
+       CCCCCCCCCC   OOOOOOOOOOOO  BBBBBBBBBBB   HH        HH  EEEEEEEEEEEE  LLLLLLLLLLLL  OOOOOOOOOOOO  PP
+
+
+
+                    JJJJJJJJJJ  555555555555    00000000                                               AAAAAAAAAA
+                    JJJJJJJJJJ  555555555555   0000000000                                             AAAAAAAAAAAA
+                        JJ      55            00      0000                                            AA        AA
+                        JJ      55            00     00 00                                            AA        AA
+                        JJ      55            00    00  00                                            AA        AA
+                        JJ      555555555     00   00   00                                            AAAAAAAAAAAA
+                        JJ      5555555555    00  00    00                                            AAAAAAAAAAAA
+                        JJ               55   00 00     00                                            AA        AA
+                  JJ    JJ                55  0000      00                                            AA        AA
+                  JJ    JJ                55  000       00                                            AA        AA
+                  JJJJJJJJ      555555555555   0000000000                                             AA        AA
+                   JJJJJJ       55555555555     00000000                                              AA        AA
+
+
+****A  START  JOB   50  COBHELOP  COBOL HELOPGM         ROOM        7.57.25 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   50  START  A****
+****A  START  JOB   50  COBHELOP  COBOL HELOPGM         ROOM        7.57.25 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   50  START  A****
+****A  START  JOB   50  COBHELOP  COBOL HELOPGM         ROOM        7.57.25 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   50  START  A****
+****A  START  JOB   50  COBHELOP  COBOL HELOPGM         ROOM        7.57.25 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   50  START  A****
+                                                J E S 2   J O B   L O G
+
+
+19.57.24 JOB   50  IEF196I IEF237I 192  ALLOCATED TO IEF0PDS0
+19.57.24 JOB   50  IEF196I IEF285I   HERC01.KICKSSYS.V1R5M0.PROCLIB               KEPT
+19.57.24 JOB   50  IEF196I IEF285I   VOL SER NOS= TSO003.
+19.57.24 JOB   50  $HASP373 COBHELOP STARTED - INIT  1 - CLASS A - SYS TK5R
+19.57.24 JOB   50  IEF403I COBHELOP - STARTED - TIME=19.57.24
+19.57.24 JOB   50  IEFACTRT - Stepname  Procstep  Program   Retcode
+19.57.24 JOB   50  COBHELOP   HELOPGM   COPY      IEBGENER  RC= 0000
+19.57.24 JOB   50  COBHELOP   HELOPGM   PP2       KIKPPCOB  RC= 0000
+19.57.25 JOB   50  COBHELOP   HELOPGM   COB2      IKFCBL00  RC= 0004
+19.57.25 JOB   50  COBHELOP   HELOPGM   LKED      IEWL      RC= 0000
+19.57.25 JOB   50  IEF404I COBHELOP - ENDED - TIME=19.57.25
+19.57.25 JOB   50  $HASP395 COBHELOP ENDED
+
+
+------ JES2 JOB STATISTICS ------
+
+
+ 16 SEP 26 JOB EXECUTION DATE
+
+
+       131 CARDS READ
+
+
+       894 SYSOUT PRINT RECORDS
+
+
+         0 SYSOUT PUNCH RECORDS
+
+
+      0.01 MINUTES EXECUTION TIME
+    1     //COBHELOP JOB (KICKS),'COBOL HELOPGM',CLASS=A,MSGCLASS=A,              JOB   50
+          // MSGLEVEL=(1,1),REGION=4096K,USER=HERC01,PASSWORD=
+    2     //JOBPROC DD DSN=HERC01.KICKSSYS.V1R5M0.PROCLIB,DISP=SHR
+    3     //HELOPGM EXEC KIKCOBCL
+    4     XXKIKCOBCL PROC SOUT='*',
+          XX            UNT=SYSDA,
+          XX            KICKSYS='HERC01.KICKSSYS',
+          XX            KIKSUSR='HERC01.KICKS',
+          XX            VER=V1R5M0,
+          XX            CBLPARM='SUPMAP,DMAP,CLIST'
+          ***
+          ***   PROC FOR MVT ANSI COBOL
+          ***        AS INSTALLED ON MVS38J TURNKEY
+          ***   NON-LE COMPILER
+          ***   WORKS WITH KICKS
+          ***
+    5     XXCOPY   EXEC PGM=IEBGENER
+    6     XXSYSPRINT DD DUMMY
+    7     XXSYSIN    DD DUMMY
+    8     XXSYSUT2   DD DSN=&&PPIN,DISP=(,PASS),UNIT=SYSDA,
+          XX         SPACE=(TRK,(90,15),RLSE)
+    9     //COPY.SYSUT1 DD *
+          X/SYSUT1   DD DSN=&KIKSUSR..&VER..COBCOPY(&VER),DISP=SHR
+          ***
+   10     XXPP2    EXEC PGM=KIKPPCOB,COND=(5,LT),
+          XX            PARM='-v -t'
+   11     XXSTEPLIB  DD DSN=&KICKSYS..&VER..SKIKLOAD,DISP=SHR
+   12     XXSYSPRINT DD DISP=(,PASS),UNIT=&UNT,SPACE=(800,(500,100)),
+          XX            DCB=(RECFM=FB,LRECL=80,BLKSIZE=800)
+   13     XXSYSTERM  DD SYSOUT=&SOUT,DCB=(BLKSIZE=120,RECFM=F)
+   14     XXSYSUDUMP DD SYSOUT=&SOUT
+   15     XXSYSLIB   DD DISP=SHR,DSN=&KIKSUSR..&VER..COBCOPY
+   16     XX         DD DISP=SHR,DSN=&KICKSYS..&VER..COBCOPY
+   17     XXSYSIN    DD DSN=&&PPIN,DISP=(OLD,DELETE)
+          ***
+   18     XXCOB2   EXEC PGM=IKFCBL00,
+          XX            REGION=4096K,
+          XX            COND=(5,LT),
+          XX            PARM='NODECK,LOAD,SIZE=2048K,BUF=1024K,&CBLPARM,LIB'
+   19     XXSYSPRINT DD SYSOUT=&SOUT                                              50000005
+   20     XXSYSPUNCH DD DUMMY                                                     50000005
+   21     XXSYSLIB   DD DISP=SHR,DSN=&KIKSUSR..&VER..COBCOPY
+   22     XX         DD DISP=SHR,DSN=&KICKSYS..&VER..COBCOPY
+   23     XXSYSLIN   DD UNIT=&UNT,SPACE=(80,(250,100)),DISP=(MOD,PASS)            53000000
+   24     XXSYSUT1   DD UNIT=&UNT,SPACE=(460,(350,100))                           54000000
+   25     XXSYSUT2   DD UNIT=&UNT,SPACE=(460,(350,100))                           55000000
+   26     XXSYSUT3   DD UNIT=&UNT,SPACE=(460,(350,100))                           56000000
+   27     XXSYSUT4   DD UNIT=&UNT,SPACE=(460,(350,100))                           57000000
+   28     XXSYSIN    DD DISP=(OLD,DELETE),DSN=*.PP2.SYSPRINT
+          ***                                                                     60000000
+   29     XXLKED   EXEC PGM=IEWL,
+          XX            COND=(5,LT),
+          XX            PARM='XREF,LIST,LET,MAP'
+   30     XXSYSPRINT DD SYSOUT=&SOUT
+   31     XXSYSLIB   DD DISP=SHR,DSN=SYS1.COBLIB
+   32     XXSYSLMOD  DD DISP=SHR,DSN=&KIKSUSR..&VER..KIKRPL
+   33     XXSYSLIN   DD DISP=(OLD,DELETE),DSN=*.COB2.SYSLIN
+   34     XX         DD DDNAME=SYSIN
+   35     XXSYSUT1   DD UNIT=(SYSDA,SEP=(SYSLMOD,SYSLIN)),
+          XX         SPACE=(1024,(200,20))
+   36     XXSKIKLOAD DD DISP=SHR,DSN=&KICKSYS..&VER..SKIKLOAD
+   37     XXKIKRPL   DD DISP=SHR,DSN=&KICKSYS..&VER..KIKRPL
+   38     //LKED.SYSIN DD *
+          X/SYSIN    DD DUMMY
+ STMT NO. MESSAGE
+-
+    9     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.COBCOPY(V1R5M0),DISP=SHR
+   11     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD,DISP=SHR
+   12     IEF653I SUBSTITUTION JCL - DISP=(,PASS),UNIT=SYSDA,SPACE=(800,(500,100)),
+   13     IEF653I SUBSTITUTION JCL - SYSOUT=*,DCB=(BLKSIZE=120,RECFM=F)
+   14     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   15     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKS.V1R5M0.COBCOPY
+   16     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKSSYS.V1R5M0.COBCOPY
+   18     IEF653I SUBSTITUTION JCL - PARM='NODECK,LOAD,SIZE=2048K,BUF=1024K,SUPMAP,DMAP,CLIST,LIB'
+   19     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   21     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKS.V1R5M0.COBCOPY
+   22     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKSSYS.V1R5M0.COBCOPY
+   23     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(80,(250,100)),DISP=(MOD,PASS)
+   24     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(460,(350,100))
+   25     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(460,(350,100))
+   26     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(460,(350,100))
+   27     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(460,(350,100))
+   30     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   32     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKS.V1R5M0.KIKRPL
+   36     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD
+   37     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKSSYS.V1R5M0.KIKRPL
+IEF236I ALLOC. FOR COBHELOP COPY HELOPGM
+IEF237I DMY  ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSIN
+IEF237I 291  ALLOCATED TO SYSUT2
+IEF237I JES2 ALLOCATED TO SYSUT1
+IEF142I COBHELOP COPY HELOPGM - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   SYS26259.T195724.RA000.COBHELOP.PPIN         PASSED        *------120
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   JES2.JOB00050.SI0101                         SYSIN
+IEF373I STEP /COPY    / START 26259.1957
+IEF374I STEP /COPY    / STOP  26259.1957 CPU    0MIN 00.01SEC SRB    0MIN 00.00SEC VIRT    36K SYS   264K
+************************************************************************************************************************************
+*     1. Jobstep of job: COBHELOP    Stepname: COPY        Program name: IEBGENER   Executed on 16.09.26 from 19.57.24 to 19.57.24 *
+*         elapsed time  00:00:00,07                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,01               Virtual Storage used:     36K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,01   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:    120                                                                           *
+*     DMY.......0 DMY.......0 291.....120 DMY.......0                                                                              *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,01                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR COBHELOP PP2 HELOPGM
+IEF237I 192  ALLOCATED TO STEPLIB
+IEF237I 190  ALLOCATED TO SYS00170
+IEF237I 292  ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO SYSTERM
+IEF237I JES2 ALLOCATED TO SYSUDUMP
+IEF237I 192  ALLOCATED TO SYSLIB
+IEF237I 192  ALLOCATED TO
+IEF237I 291  ALLOCATED TO SYSIN
+IEF142I COBHELOP PP2 HELOPGM - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000001     PASSED        *-------41
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   JES2.JOB00050.SO0103                         SYSOUT
+IEF285I   JES2.JOB00050.SO0104                         SYSOUT
+IEF285I   HERC01.KICKS.V1R5M0.COBCOPY                  KEPT          *-------14
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   HERC01.KICKSSYS.V1R5M0.COBCOPY               KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.PPIN         DELETED       *------121
+IEF285I   VOL SER NOS= WORK02.
+IEF373I STEP /PP2     / START 26259.1957
+IEF374I STEP /PP2     / STOP  26259.1957 CPU    0MIN 00.15SEC SRB    0MIN 00.01SEC VIRT   720K SYS   268K
+************************************************************************************************************************************
+*     2. Jobstep of job: COBHELOP    Stepname: PP2         Program name: KIKPPCOB   Executed on 16.09.26 from 19.57.24 to 19.57.24 *
+*         elapsed time  00:00:00,40                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,16               Virtual Storage used:    720K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,16   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     192.......0 190.......0 292......41 DMY.......0 DMY.......0 192......14 192.......0 291.....121                              *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,26                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR COBHELOP COB2 HELOPGM
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSPUNCH
+IEF237I 192  ALLOCATED TO SYSLIB
+IEF237I 192  ALLOCATED TO
+IEF237I 190  ALLOCATED TO SYS00172
+IEF237I 291  ALLOCATED TO SYSLIN
+IEF237I 293  ALLOCATED TO SYSUT1
+IEF237I 290  ALLOCATED TO SYSUT2
+IEF237I 293  ALLOCATED TO SYSUT3
+IEF237I 292  ALLOCATED TO SYSUT4
+IEF237I 292  ALLOCATED TO SYSIN
+IEF142I COBHELOP COB2 HELOPGM - STEP WAS EXECUTED - COND CODE 0004
+IEF285I   JES2.JOB00050.SO0105                         SYSOUT
+IEF285I   HERC01.KICKS.V1R5M0.COBCOPY                  KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   HERC01.KICKSSYS.V1R5M0.COBCOPY               KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000002     PASSED        *-------67
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000003     DELETED       *--------6
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000004     DELETED       *--------6
+IEF285I   VOL SER NOS= WORK01.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000005     DELETED       *--------9
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000006     DELETED       *--------8
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000001     DELETED       *-------42
+IEF285I   VOL SER NOS= WORK03.
+IEF373I STEP /COB2    / START 26259.1957
+IEF374I STEP /COB2    / STOP  26259.1957 CPU    0MIN 00.06SEC SRB    0MIN 00.02SEC VIRT  2076K SYS   288K
+************************************************************************************************************************************
+*     3. Jobstep of job: COBHELOP    Stepname: COB2        Program name: IKFCBL00   Executed on 16.09.26 from 19.57.24 to 19.57.25 *
+*         elapsed time  00:00:00,29                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,08               Virtual Storage used:   2076K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,08   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     DMY.......0 DMY.......0 192.......0 192.......0 190.......0 291......67 293.......6 290.......6 293.......9 292.......8      *
+*     292......42                                                                                                                  *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,13                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR COBHELOP LKED HELOPGM
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I 390  ALLOCATED TO SYSLIB
+IEF237I 192  ALLOCATED TO SYSLMOD
+IEF237I 190  ALLOCATED TO SYS00174
+IEF237I 291  ALLOCATED TO SYSLIN
+IEF237I JES2 ALLOCATED TO
+IEF237I 292  ALLOCATED TO SYSUT1
+IEF237I 192  ALLOCATED TO SKIKLOAD
+IEF237I 192  ALLOCATED TO KIKRPL
+IEF142I COBHELOP LKED HELOPGM - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   JES2.JOB00050.SO0106                         SYSOUT
+IEF285I   SYS1.COBLIB                                  KEPT          *--------7
+IEF285I   VOL SER NOS= TK5RES.
+IEF285I   HERC01.KICKS.V1R5M0.KIKRPL                   KEPT          *-------19
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000002     DELETED       *-------68
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   JES2.JOB00050.SI0102                         SYSIN
+IEF285I   SYS26259.T195724.RA000.COBHELOP.R0000007     DELETED       *--------0
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *-------16
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   HERC01.KICKSSYS.V1R5M0.KIKRPL                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF373I STEP /LKED    / START 26259.1957
+IEF374I STEP /LKED    / STOP  26259.1957 CPU    0MIN 00.02SEC SRB    0MIN 00.00SEC VIRT   264K SYS   280K
+************************************************************************************************************************************
+*     4. Jobstep of job: COBHELOP    Stepname: LKED        Program name: IEWL       Executed on 16.09.26 from 19.57.25 to 19.57.25 *
+*         elapsed time  00:00:00,08                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,02               Virtual Storage used:    264K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,02   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      3                                                                           *
+*     DMY.......0 390.......7 192......19 190.......0 291......68 DMY.......0 292.......0 192......16 192.......0                  *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,03                                             *
+************************************************************************************************************************************
+IEF375I  JOB /COBHELOP/ START 26259.1957
+IEF376I  JOB /COBHELOP/ STOP  26259.1957 CPU    0MIN 00.24SEC SRB    0MIN 00.03SEC
+KIKCOBPP version V1R5M0(0)
+  CB545 V2 LVL78 01MAY72                 IBM OS AMERICAN NATIONAL STANDARD COBOL                       DATE SEP 16,2026
+
+
+   1
+
+
+00001          IDENTIFICATION DIVISION.
+00002          PROGRAM-ID.  HELOPGM.
+00003         *****************************************************************
+00004         * CardDemo-env KICKS probe transaction HELO.                    *
+00005         * Pseudo-conversational: first entry paints HELOMAP, ENTER      *
+00006         * reads the NAME field and echoes a greeting, PF3 ends.         *
+00007         * Written for the OS/VS (MVT ANSI) COBOL compiler shipped with  *
+00008         * MVS 3.8j: no scope terminators, no EVALUATE, no inline        *
+00009         * PERFORM, no STRING with pointers.                              *
+00010         *****************************************************************
+00011          ENVIRONMENT DIVISION.
+00012          DATA DIVISION.
+00013          WORKING-STORAGE SECTION.
+00014          01  WS-COMMAREA                 PIC X.
+00015          01  WS-FLAGS.
+00016              05  WS-SEND-FLAG            PIC X.
+00017                  88  SEND-ERASE                   VALUE '1'.
+00018                  88  SEND-DATAONLY                VALUE '2'.
+00019          01  WS-NAME-LEN                 PIC S9(4) COMP VALUE 0.
+00020          01  WS-BYE-MSG                  PIC X(40)
+00021                  VALUE 'HELO ENDED - TYPE KSSF TO STOP KICKS'.
+00022          01  WS-BYE-LEN                  PIC S9(4) COMP VALUE 40.
+00023          01  WS-TIME-TEXT.
+00024              05  FILLER                  PIC X(11) VALUE 'KICKS TIME '.
+00025              05  WS-HH                   PIC 99.
+00026              05  FILLER                  PIC X VALUE ':'.
+00027              05  WS-MM                   PIC 99.
+00028              05  FILLER                  PIC X VALUE ':'.
+00029              05  WS-SS                   PIC 99.
+00030              05  FILLER                  PIC X(11) VALUE '  ON MVS38J'.
+00031          01  WS-EIBTIME-X.
+00032              05  WS-EIBTIME-N            PIC 9(7).
+00033          01  WS-EIBTIME-R REDEFINES WS-EIBTIME-X.
+00034              05  FILLER                  PIC 9.
+00035              05  WS-T-HH                 PIC 99.
+00036              05  WS-T-MM                 PIC 99.
+00037              05  WS-T-SS                 PIC 99.
+00038          01  WS-GREETING.
+00039              05  FILLER                  PIC X(7) VALUE 'HELLO, '.
+00040              05  WS-GREET-NAME           PIC X(20).
+00041              05  FILLER                  PIC X(34)
+00042                  VALUE ' - SENT BY A REAL BMS MAP ON KICKS'.
+00043         *COPY HELOSET.
+00044         *///////////////////////////////////////////////////////////////
+00045         * 'BMS' map for use with 'KICKS for TSO'
+00046         *   generated 09/16/26 at 19:57:20 with mapgen version V1R5M0(0)
+00047         *
+00048         * 'KICKS for TSO'
+00049         *  Copyright 2008-2014, Michael Noel, All Rights Reserved.
+00050         *
+00051         * Assuming the input belongs to you this generated map is also
+00052         * your property and you may do whatever you like with it.
+00053         *   HOWEVER
+00054         *   2
+
+
+00055         * Usage of 'KICKS for TSO' is subject to license.
+00056         * See http://www.kicksfortso.com
+00057         * for most current information regarding licensing options,
+00058         *//1/////////2/////////3/////////4/////////5/////////6/////////7
+00059
+00060          01  HELOMAPI.
+00061              02  FILLER PIC X(12).
+00062              02  TRANIDL COMP PIC S9(4).
+00063              02  TRANIDF PIC X.
+00064              02  TRANIDI PIC X(4).
+00065              02  CURTIMEL COMP PIC S9(4).
+00066              02  CURTIMEF PIC X.
+00067              02  CURTIMEI PIC X(40).
+00068              02  NAMEL COMP PIC S9(4).
+00069              02  NAMEF PIC X.
+00070              02  NAMEI PIC X(20).
+00071              02  GREETINGL COMP PIC S9(4).
+00072              02  GREETINGF PIC X.
+00073              02  GREETINGI PIC X(62).
+00074              02  MESSAGEL COMP PIC S9(4).
+00075              02  MESSAGEF PIC X.
+00076              02  MESSAGEI PIC X(79).
+00077              02  DUMMYL COMP PIC S9(4).
+00078              02  DUMMYF PIC X.
+00079              02  DUMMYI PIC X(1).
+00080
+00081          01  HELOMAPO REDEFINES HELOMAPI.
+00082              02  FILLER PIC X(12).
+00083              02  FILLER PIC X(2).
+00084              02  TRANIDA PICTURE X.
+00085              02  TRANIDO PIC X(4).
+00086              02  FILLER PIC X(2).
+00087              02  CURTIMEA PICTURE X.
+00088              02  CURTIMEO PIC X(40).
+00089              02  FILLER PIC X(2).
+00090              02  NAMEA PICTURE X.
+00091              02  NAMEO PIC X(20).
+00092              02  FILLER PIC X(2).
+00093              02  GREETINGA PICTURE X.
+00094              02  GREETINGO PIC X(62).
+00095              02  FILLER PIC X(2).
+00096              02  MESSAGEA PICTURE X.
+00097              02  MESSAGEO PIC X(79).
+00098              02  FILLER PIC X(2).
+00099              02  DUMMYA PICTURE X.
+00100              02  DUMMYO PIC X(1).
+00101
+00102         *COPY KIKAID.
+00103         *///////////////////////////////////////////////////////////////
+00104         * KICKS is an enhancement for TSO that lets you run your CICS
+00105         * applications directly in TSO instead of having to 'install'
+00106         * those apps in CICS.
+00107         * You don't even need CICS itself installed on your machine!
+00108         *
+00109         * KICKS for TSO
+00110         *  Copyright 2008-2014, Michael Noel, All Rights Reserved.
+00111         *   3
+
+
+00112         * Usage of 'KICKS for TSO' is in all cases subject to license.
+00113         * See http://www.kicksfortso.com
+00114         * for most current information regarding licensing options.
+00115         *//1/////////2/////////3/////////4/////////5/////////6/////////7
+00116
+00117         *   3270 aid byte values, usually used in examining eibaid
+00118         *                         to determine what user pressed...
+00119
+00120          01  KIKAID.
+00121         *    05  KIKENTER PIC X VALUE X'7D'.
+00122              05  KIKENTER PIC X VALUE QUOTE.
+00123         *    05  KIKCLEAR PIC X VALUE X'6D'.
+00124              05  KIKCLEAR PIC X VALUE '_'.
+00125
+00126         *    05  KIKNULL  PIC X VALUE X'00'.
+00127              05  KIKNULL  PIC X VALUE LOW-VALUES.
+00128
+00129         *    05  KIKPA1   PIC X VALUE X'6C'.
+00130              05  KIKPA1   PIC X VALUE '%'.
+00131         *    05  KIKPA2   PIC X VALUE X'6E'.
+00132              05  KIKPA2   PIC X VALUE '>'.
+00133         *    05  KIKPA3   PIC X VALUE X'6B'.
+00134              05  KIKPA3   PIC X VALUE ','.
+00135
+00136         *    05  KIKPF1   PIC X VALUE X'F1'.
+00137              05  KIKPF1   PIC X VALUE '1'.
+00138         *    05  KIKPF2   PIC X VALUE X'F2'.
+00139              05  KIKPF2   PIC X VALUE '2'.
+00140         *    05  KIKPF3   PIC X VALUE X'F3'.
+00141              05  KIKPF3   PIC X VALUE '3'.
+00142         *    05  KIKPF4   PIC X VALUE X'F4'.
+00143              05  KIKPF4   PIC X VALUE '4'.
+00144         *    05  KIKPF5   PIC X VALUE X'F5'.
+00145              05  KIKPF5   PIC X VALUE '5'.
+00146         *    05  KIKPF6   PIC X VALUE X'F6'.
+00147              05  KIKPF6   PIC X VALUE '6'.
+00148         *    05  KIKPF7   PIC X VALUE X'F7'.
+00149              05  KIKPF7   PIC X VALUE '7'.
+00150         *    05  KIKPF8   PIC X VALUE X'F8'.
+00151              05  KIKPF8   PIC X VALUE '8'.
+00152         *    05  KIKPF9   PIC X VALUE X'F9'.
+00153              05  KIKPF9   PIC X VALUE '9'.
+00154         *    05  KIKPF10  PIC X VALUE X'7A'.
+00155              05  KIKPF10  PIC X VALUE ':'.
+00156         *    05  KIKPF11  PIC X VALUE X'7B'.
+00157              05  KIKPF11  PIC X VALUE '#'.
+00158         *    05  KIKPF12  PIC X VALUE X'7C'.
+00159              05  KIKPF12  PIC X VALUE '@'.
+00160         *    05  KIKPF13  PIC X VALUE X'C1'.
+00161              05  KIKPF13  PIC X VALUE 'A'.
+00162         *    05  KIKPF14  PIC X VALUE X'C2'.
+00163              05  KIKPF14  PIC X VALUE 'B'.
+00164         *    05  KIKPF15  PIC X VALUE X'C3'.
+00165              05  KIKPF15  PIC X VALUE 'C'.
+00166         *    05  KIKPF16  PIC X VALUE X'C4'.
+00167              05  KIKPF16  PIC X VALUE 'D'.
+00168         *    05  KIKPF17  PIC X VALUE X'C5'.   4
+
+
+00169              05  KIKPF17  PIC X VALUE 'E'.
+00170         *    05  KIKPF18  PIC X VALUE X'C6'.
+00171              05  KIKPF18  PIC X VALUE 'F'.
+00172         *    05  KIKPF19  PIC X VALUE X'C7'.
+00173              05  KIKPF19  PIC X VALUE 'G'.
+00174         *    05  KIKPF20  PIC X VALUE X'C8'.
+00175              05  KIKPF20  PIC X VALUE 'H'.
+00176         *    05  KIKPF21  PIC X VALUE X'C9'.
+00177              05  KIKPF21  PIC X VALUE 'I'.
+00178         *    05  KIKPF22  PIC X VALUE X'4A'.
+00179              05  KIKPF22  PIC X VALUE 'Ö'.
+00180         *    05  KIKPF23  PIC X VALUE X'4B'.
+00181              05  KIKPF23  PIC X VALUE '.'.
+00182         *    05  KIKPF24  PIC X VALUE X'4C'.
+00183              05  KIKPF24  PIC X VALUE '<'.
+00184
+00185         * VALUES USED IN EXEC-KICKS CALLS
+00186
+00187          01  KIK-MSG                         PIC X(80).
+00188          01  KIK-MAPSETNAME                  PIC X(8).
+00189          01  KIK-MAPNAME                     PIC X(8).
+00190          01  KIK-QUEUENAME.
+00191              05  KIK-FILENAME                PIC X(8).
+00192              05  KIK-PROGRAM                 PIC X(8).
+00193          01  KIK-TRAN                        PIC X(4).
+00194          01  KIK-ABND                        PIC X(4).
+00195          01  KIK-LEN                         PIC S9(4) COMP.
+00196          01  KIK-ITEM                        PIC S9(4) COMP.
+00197          01  KIK-ITEMSIZE                    PIC S9(4) COMP.
+00198          01  KIK-NUMITEMS                    PIC S9(4) COMP.
+00199          01  KIK-FLEN                        PIC S9(8) COMP.
+00200          01  KIK-KEYLEN                      PIC S9(4) COMP.
+00201          01  KIK-NUMREC                      PIC S9(4) COMP.
+00202          01  KIK-REQID                       PIC S9(4) COMP.
+00203          01  KIK-FLAGS                       PIC S9(8) COMP.
+00204          01  KIK-GOTOVAR                     PIC S9(4) COMP.
+00205          01  KIK-NUM-GOTO                    PIC S9(8) COMP.
+00206          01  KIK-AIDS1                       PIC S9(8) COMP.
+00207          01  KIK-AIDS2                       PIC S9(8) COMP.
+00208          01  KIK-AIDS3                       PIC S9(8) COMP.
+00209          01  KIK-AIDS4                       PIC S9(8) COMP.
+00210
+00211         * due to compiler bug (in ANSI MVT COBOL compiler)
+00212         * we can't have versions in value clause because
+00213         * the compiler doesn't like really big (but valid) numbers
+00214         * in value clauses. they seem ok in moves, computes, ...
+00215          01  KIK-V1                          PIC S9(8) COMP VALUE +0.
+00216          01  KIK-V2                          PIC S9(8) COMP VALUE +0.
+00217
+00218          01  KIK-NULL                        PIC S9(8) COMP VALUE +0.
+00219
+00220          LINKAGE SECTION.
+00221         *COPY KIKEIB.
+00222         *///////////////////////////////////////////////////////////////
+00223         * KICKS is an enhancement for TSO that lets you run your CICS
+00224         * applications directly in TSO instead of having to 'install'
+00225         * those apps in CICS.   5
+
+
+00226         * You don't even need CICS itself installed on your machine!
+00227         *
+00228         * KICKS for TSO
+00229         *  Copyright 2008-2014, Michael Noel, All Rights Reserved.
+00230         *
+00231         * Usage of 'KICKS for TSO' is in all cases subject to license.
+00232         * See http://www.kicksfortso.com
+00233         * for most current information regarding licensing options.
+00234         *//1/////////2/////////3/////////4/////////5/////////6/////////7
+00235
+00236          01  KIKEIB.
+00237              05  EIBTASKN PIC S9(8) COMP SYNC.
+00238              05  EIBCALEN PIC S9(4) COMP SYNC.
+00239              05  EIBCPOSN PIC S9(4) COMP SYNC.
+00240              05  EIBDATE PIC S9(7) COMP-3.
+00241              05  EIBTIME PIC S9(7) COMP-3.
+00242              05  EIBRESP PIC S9(8) COMP SYNC.
+00243              05  EIBRESP2 PIC S9(8) COMP SYNC.
+00244              05  EIBRSRCE PIC X(8).
+00245              05  EIBDS PIC X(8).
+00246              05  EIBFN PIC X(2).
+00247              05  EIBFN-2 REDEFINES EIBFN PIC S9(4) COMP.
+00248              05  EIBRCODE PIC X(6).
+00249              05  EIBTRMID PIC X(4).
+00250              05  EIBTRNID PIC X(4).
+00251              05  EIBAID PIC X.
+00252              05  EIBOPID PIC X(3).
+00253              05  EIBUSRID PIC X(8).
+00254              05  EIBSYSID PIC X(8).
+00255              05  EIBNETID PIC X(8).
+00256              05  EIBPGMID PIC X(8).
+00257         * following three added to PRO for source trace
+00258              05  EIBLINE  PIC S9(8) COMP SYNC.
+00259              05  EIBPROG  PIC X(8).
+00260              05  EIBWC    PIC X(20).
+00261         *
+00262
+00263
+00264          01  KIKCOMMAREA                 PIC X.
+00265          PROCEDURE DIVISION USING
+00266                  KIKEIB,
+00267                  KIKCOMMAREA.
+00268
+00269         * Set up KIK-V1/V2 as x'01050000' - V1R5M0(0)
+00270              MOVE 17104896 TO KIK-V1.
+00271              MULTIPLY KIK-V1 BY -1 GIVING KIK-V2.
+00272
+00273         * Fill in EIB source trace fields even if not source tracing
+00274              MOVE 'HELOPGM ' TO EIBPROG.
+00275              MOVE '19:57:25SEP 16, 2026' TO EIBWC.
+00276              MOVE 0 TO EIBLINE.
+00277
+00278         * Set up initial entry, final return
+00279              MOVE 0 TO EIBFN-2. MOVE -1 TO KIK-LEN.
+00280              CALL 'KIKCOBGL' USING KIKEIB, KIK-V1,
+00281                    KIK-LEN.
+00282              IF KIK-LEN > 0   6
+
+
+00283                  GOBACK.
+00284          0000-MAIN.
+00285              IF EIBCALEN = ZERO
+00286                  PERFORM 1000-FIRST-TIME
+00287              ELSE
+00288              IF EIBAID = KIKPF3
+00289                  PERFORM 3000-GOODBYE
+00290              ELSE
+00291              IF EIBAID = KIKCLEAR
+00292                  PERFORM 1000-FIRST-TIME
+00293              ELSE
+00294                  PERFORM 2000-GREET.
+00295         *    EXEC KICKS
+00296         *        RETURN TRANSID('HELO')
+00297         *               COMMAREA(WS-COMMAREA)
+00298         *               LENGTH(1)
+00299         *    END-EXEC.
+00300              MOVE 83886139 TO EIBLINE
+00301              MOVE 3592 TO EIBFN-2
+00302              MOVE 'HELO' TO KIK-TRAN
+00303              MOVE 1 TO KIK-FLEN
+00304              CALL 'KIKCOBGL' USING KIKEIB,
+00305                    KIK-V1,
+00306                    KIK-TRAN, WS-COMMAREA, KIK-FLEN.
+00307          1000-FIRST-TIME.
+00308              MOVE LOW-VALUES TO HELOMAPO.
+00309              PERFORM 1500-FORMAT-TIME.
+00310              MOVE WS-TIME-TEXT TO CURTIMEO.
+00311              MOVE 'Type your name and press ENTER.' TO MESSAGEO.
+00312              MOVE '1' TO WS-SEND-FLAG.
+00313              PERFORM 4000-SEND-MAP.
+00314          1500-FORMAT-TIME.
+00315              MOVE EIBTIME TO WS-EIBTIME-N.
+00316              MOVE WS-T-HH TO WS-HH.
+00317              MOVE WS-T-MM TO WS-MM.
+00318              MOVE WS-T-SS TO WS-SS.
+00319          2000-GREET.
+00320         *    EXEC KICKS
+00321         *        RECEIVE MAP('HELOMAP')
+00322         *                MAPSET('HELOSET')
+00323         *                INTO(HELOMAPI)
+00324         *    END-EXEC.
+00325              MOVE 83886157 TO EIBLINE
+00326              MOVE 6146 TO EIBFN-2
+00327              MOVE 'HELOMAP' TO KIK-MAPNAME
+00328              MOVE 'HELOSET' TO KIK-MAPSETNAME
+00329              MOVE 0 TO KIK-FLAGS
+00330              CALL 'KIKCOBGL' USING KIKEIB,
+00331                    KIK-V1,
+00332                    KIK-MAPSETNAME, KIK-MAPNAME, HELOMAPI,
+00333                    KIK-FLAGS, KIK-FLAGS.
+00334         *    HELOMAPO redefines HELOMAPI - copy input before clearing it
+00335              MOVE NAMEL TO WS-NAME-LEN.
+00336              MOVE NAMEI TO WS-GREET-NAME.
+00337              MOVE LOW-VALUES TO HELOMAPO.
+00338              PERFORM 1500-FORMAT-TIME.
+00339              MOVE WS-TIME-TEXT TO CURTIMEO.   7
+
+
+00340              IF WS-NAME-LEN = ZERO OR WS-GREET-NAME = SPACES
+00341                  MOVE 'Please type a name first.' TO MESSAGEO
+00342              ELSE
+00343                  MOVE WS-GREETING TO GREETINGO
+00344                  MOVE 'Greeting sent. ENTER again or F3 to exit.'
+00345                      TO MESSAGEO.
+00346              MOVE '2' TO WS-SEND-FLAG.
+00347              PERFORM 4000-SEND-MAP.
+00348          3000-GOODBYE.
+00349         *    EXEC KICKS
+00350         *        SEND TEXT FROM(WS-BYE-MSG)
+00351         *                  LENGTH(WS-BYE-LEN)
+00352         *                  ERASE
+00353         *                  FREEKB
+00354         *    END-EXEC.
+00355              MOVE 100663393 TO EIBLINE
+00356              MOVE 6150 TO EIBFN-2
+00357              MOVE WS-BYE-LEN TO KIK-FLEN
+00358              MOVE 193792 TO KIK-FLAGS
+00359              CALL 'KIKCOBGL' USING KIKEIB,
+00360                    KIK-V1,
+00361                    WS-BYE-MSG, KIK-FLEN, KIK-NULL,
+00362                    KIK-NULL, KIK-FLAGS.
+00363         *    EXEC KICKS
+00364         *        RETURN
+00365         *    END-EXEC.
+00366              MOVE 50331751 TO EIBLINE
+00367              MOVE 3592 TO EIBFN-2
+00368              MOVE LOW-VALUES TO KIK-TRAN
+00369              MOVE 0 TO KIK-FLEN
+00370              CALL 'KIKCOBGL' USING KIKEIB,
+00371                    KIK-V1,
+00372                    KIK-TRAN, KIK-NULL, KIK-FLEN.
+00373          4000-SEND-MAP.
+00374              IF SEND-ERASE
+00375         *        EXEC KICKS
+00376         *            SEND MAP('HELOMAP')
+00377         *                 MAPSET('HELOSET')
+00378         *                 FROM(HELOMAPO)
+00379         *                 ERASE
+00380         *        END-EXEC
+00381              MOVE 100663404 TO EIBLINE
+00382              MOVE 6148 TO EIBFN-2
+00383              MOVE 'HELOMAP' TO KIK-MAPNAME
+00384              MOVE 'HELOSET' TO KIK-MAPSETNAME
+00385              MOVE 62720 TO KIK-FLAGS
+00386              CALL 'KIKCOBGL' USING KIKEIB,
+00387                    KIK-V1,
+00388                    KIK-MAPSETNAME, KIK-MAPNAME, HELOMAPO
+00389                    KIK-NULL, KIK-FLAGS
+00390              ELSE
+00391         *        EXEC KICKS
+00392         *            SEND MAP('HELOMAP')
+00393         *                 MAPSET('HELOSET')
+00394         *                 FROM(HELOMAPO)
+00395         *                 DATAONLY
+00396         *        END-EXEC.   8
+
+
+00397              MOVE 100663411 TO EIBLINE
+00398              MOVE 6148 TO EIBFN-2
+00399              MOVE 'HELOMAP' TO KIK-MAPNAME
+00400              MOVE 'HELOSET' TO KIK-MAPSETNAME
+00401              MOVE 8 TO KIK-FLAGS
+00402              CALL 'KIKCOBGL' USING KIKEIB,
+00403                    KIK-V1,
+00404                    KIK-MAPSETNAME, KIK-MAPNAME, HELOMAPO
+00405                    KIK-NULL, KIK-FLAGS.   9
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=1-149     01  WS-COMMAREA                     BL=1     000   DNM=1-149     DS 1C        DISP
+       DNM=1-170     01  WS-FLAGS                        BL=1     008   DNM=1-170     DS 0CL1      GROUP
+       DNM=1-191     02  WS-SEND-FLAG                    BL=1     008   DNM=1-191     DS 1C        DISP
+       DNM=1-216     88  SEND-ERASE                                     DNM=1-216
+       DNM=1-237     88  SEND-DATAONLY                                  DNM=1-237
+       DNM=1-261     01  WS-NAME-LEN                     BL=1     010   DNM=1-261     DS 2C        COMP
+       DNM=1-282     01  WS-BYE-MSG                      BL=1     018   DNM=1-282     DS 40C       DISP
+       DNM=1-302     01  WS-BYE-LEN                      BL=1     040   DNM=1-302     DS 2C        COMP
+       DNM=1-322     01  WS-TIME-TEXT                    BL=1     048   DNM=1-322     DS 0CL30     GROUP
+       DNM=1-347     02  FILLER                          BL=1     048   DNM=1-347     DS 11C       DISP
+       DNM=1-363     02  WS-HH                           BL=1     053   DNM=1-363     DS 2C        DISP-NM
+       DNM=1-378     02  FILLER                          BL=1     055   DNM=1-378     DS 1C        DISP
+       DNM=1-397     02  WS-MM                           BL=1     056   DNM=1-397     DS 2C        DISP-NM
+       DNM=1-412     02  FILLER                          BL=1     058   DNM=1-412     DS 1C        DISP
+       DNM=1-431     02  WS-SS                           BL=1     059   DNM=1-431     DS 2C        DISP-NM
+       DNM=1-449     02  FILLER                          BL=1     05B   DNM=1-449     DS 11C       DISP
+       DNM=1-468     01  WS-EIBTIME-X                    BL=1     068   DNM=1-468     DS 0CL7      GROUP
+       DNM=2-000     02  WS-EIBTIME-N                    BL=1     068   DNM=2-000     DS 7C        DISP-NM
+       DNM=2-022     01  WS-EIBTIME-R                    BL=1     068   DNM=2-022     DS 0CL7      GROUP      R
+       DNM=2-047     02  FILLER                          BL=1     068   DNM=2-047     DS 1C        DISP-NM
+       DNM=2-066     02  WS-T-HH                         BL=1     069   DNM=2-066     DS 2C        DISP-NM
+       DNM=2-083     02  WS-T-MM                         BL=1     06B   DNM=2-083     DS 2C        DISP-NM
+       DNM=2-100     02  WS-T-SS                         BL=1     06D   DNM=2-100     DS 2C        DISP-NM
+       DNM=2-117     01  WS-GREETING                     BL=1     070   DNM=2-117     DS 0CL61     GROUP
+       DNM=2-141     02  FILLER                          BL=1     070   DNM=2-141     DS 7C        DISP
+       DNM=2-160     02  WS-GREET-NAME                   BL=1     077   DNM=2-160     DS 20C       DISP
+       DNM=2-183     02  FILLER                          BL=1     08B   DNM=2-183     DS 34C       DISP
+       DNM=2-202     01  HELOMAPI                        BL=1     0B0   DNM=2-202     DS 0CL236    GROUP
+       DNM=2-223     02  FILLER                          BL=1     0B0   DNM=2-223     DS 12C       DISP
+       DNM=2-242     02  TRANIDL                         BL=1     0BC   DNM=2-242     DS 2C        COMP
+       DNM=2-259     02  TRANIDF                         BL=1     0BE   DNM=2-259     DS 1C        DISP
+       DNM=2-276     02  TRANIDI                         BL=1     0BF   DNM=2-276     DS 4C        DISP
+       DNM=2-293     02  CURTIMEL                        BL=1     0C3   DNM=2-293     DS 2C        COMP
+       DNM=2-311     02  CURTIMEF                        BL=1     0C5   DNM=2-311     DS 1C        DISP
+       DNM=2-329     02  CURTIMEI                        BL=1     0C6   DNM=2-329     DS 40C       DISP
+       DNM=2-347     02  NAMEL                           BL=1     0EE   DNM=2-347     DS 2C        COMP
+       DNM=2-362     02  NAMEF                           BL=1     0F0   DNM=2-362     DS 1C        DISP
+       DNM=2-380     02  NAMEI                           BL=1     0F1   DNM=2-380     DS 20C       DISP
+       DNM=2-395     02  GREETINGL                       BL=1     105   DNM=2-395     DS 2C        COMP
+       DNM=2-414     02  GREETINGF                       BL=1     107   DNM=2-414     DS 1C        DISP
+       DNM=2-433     02  GREETINGI                       BL=1     108   DNM=2-433     DS 62C       DISP
+       DNM=2-452     02  MESSAGEL                        BL=1     146   DNM=2-452     DS 2C        COMP
+       DNM=2-470     02  MESSAGEF                        BL=1     148   DNM=2-470     DS 1C        DISP
+       DNM=2-488     02  MESSAGEI                        BL=1     149   DNM=2-488     DS 79C       DISP
+       DNM=3-000     02  DUMMYL                          BL=1     198   DNM=3-000     DS 2C        COMP
+       DNM=3-016     02  DUMMYF                          BL=1     19A   DNM=3-016     DS 1C        DISP
+       DNM=3-032     02  DUMMYI                          BL=1     19B   DNM=3-032     DS 1C        DISP
+       DNM=3-048     01  HELOMAPO                        BL=1     0B0   DNM=3-048     DS 0CL236    GROUP      R
+       DNM=3-069     02  FILLER                          BL=1     0B0   DNM=3-069     DS 12C       DISP
+       DNM=3-088     02  FILLER                          BL=1     0BC   DNM=3-088     DS 2C        DISP
+       DNM=3-107     02  TRANIDA                         BL=1     0BE   DNM=3-107     DS 1C        DISP
+       DNM=3-124     02  TRANIDO                         BL=1     0BF   DNM=3-124     DS 4C        DISP
+       DNM=3-141     02  FILLER                          BL=1     0C3   DNM=3-141     DS 2C        DISP
+       DNM=3-160     02  CURTIMEA                        BL=1     0C5   DNM=3-160     DS 1C        DISP
+       DNM=3-178     02  CURTIMEO                        BL=1     0C6   DNM=3-178     DS 40C       DISP  10
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=3-196     02  FILLER                          BL=1     0EE   DNM=3-196     DS 2C        DISP
+       DNM=3-215     02  NAMEA                           BL=1     0F0   DNM=3-215     DS 1C        DISP
+       DNM=3-230     02  NAMEO                           BL=1     0F1   DNM=3-230     DS 20C       DISP
+       DNM=3-245     02  FILLER                          BL=1     105   DNM=3-245     DS 2C        DISP
+       DNM=3-264     02  GREETINGA                       BL=1     107   DNM=3-264     DS 1C        DISP
+       DNM=3-283     02  GREETINGO                       BL=1     108   DNM=3-283     DS 62C       DISP
+       DNM=3-302     02  FILLER                          BL=1     146   DNM=3-302     DS 2C        DISP
+       DNM=3-321     02  MESSAGEA                        BL=1     148   DNM=3-321     DS 1C        DISP
+       DNM=3-339     02  MESSAGEO                        BL=1     149   DNM=3-339     DS 79C       DISP
+       DNM=3-360     02  FILLER                          BL=1     198   DNM=3-360     DS 2C        DISP
+       DNM=3-379     02  DUMMYA                          BL=1     19A   DNM=3-379     DS 1C        DISP
+       DNM=3-395     02  DUMMYO                          BL=1     19B   DNM=3-395     DS 1C        DISP
+       DNM=3-414     01  KIKAID                          BL=1     1A0   DNM=3-414     DS 0CL30     GROUP
+       DNM=3-433     02  KIKENTER                        BL=1     1A0   DNM=3-433     DS 1C        DISP
+       DNM=3-451     02  KIKCLEAR                        BL=1     1A1   DNM=3-451     DS 1C        DISP
+       DNM=3-472     02  KIKNULL                         BL=1     1A2   DNM=3-472     DS 1C        DISP
+       DNM=3-489     02  KIKPA1                          BL=1     1A3   DNM=3-489     DS 1C        DISP
+       DNM=4-000     02  KIKPA2                          BL=1     1A4   DNM=4-000     DS 1C        DISP
+       DNM=4-016     02  KIKPA3                          BL=1     1A5   DNM=4-016     DS 1C        DISP
+       DNM=4-032     02  KIKPF1                          BL=1     1A6   DNM=4-032     DS 1C        DISP
+       DNM=4-048     02  KIKPF2                          BL=1     1A7   DNM=4-048     DS 1C        DISP
+       DNM=4-064     02  KIKPF3                          BL=1     1A8   DNM=4-064     DS 1C        DISP
+       DNM=4-080     02  KIKPF4                          BL=1     1A9   DNM=4-080     DS 1C        DISP
+       DNM=4-096     02  KIKPF5                          BL=1     1AA   DNM=4-096     DS 1C        DISP
+       DNM=4-112     02  KIKPF6                          BL=1     1AB   DNM=4-112     DS 1C        DISP
+       DNM=4-131     02  KIKPF7                          BL=1     1AC   DNM=4-131     DS 1C        DISP
+       DNM=4-147     02  KIKPF8                          BL=1     1AD   DNM=4-147     DS 1C        DISP
+       DNM=4-163     02  KIKPF9                          BL=1     1AE   DNM=4-163     DS 1C        DISP
+       DNM=4-182     02  KIKPF10                         BL=1     1AF   DNM=4-182     DS 1C        DISP
+       DNM=4-199     02  KIKPF11                         BL=1     1B0   DNM=4-199     DS 1C        DISP
+       DNM=4-216     02  KIKPF12                         BL=1     1B1   DNM=4-216     DS 1C        DISP
+       DNM=4-233     02  KIKPF13                         BL=1     1B2   DNM=4-233     DS 1C        DISP
+       DNM=4-250     02  KIKPF14                         BL=1     1B3   DNM=4-250     DS 1C        DISP
+       DNM=4-267     02  KIKPF15                         BL=1     1B4   DNM=4-267     DS 1C        DISP
+       DNM=4-284     02  KIKPF16                         BL=1     1B5   DNM=4-284     DS 1C        DISP
+       DNM=4-301     02  KIKPF17                         BL=1     1B6   DNM=4-301     DS 1C        DISP
+       DNM=4-318     02  KIKPF18                         BL=1     1B7   DNM=4-318     DS 1C        DISP
+       DNM=4-335     02  KIKPF19                         BL=1     1B8   DNM=4-335     DS 1C        DISP
+       DNM=4-352     02  KIKPF20                         BL=1     1B9   DNM=4-352     DS 1C        DISP
+       DNM=4-369     02  KIKPF21                         BL=1     1BA   DNM=4-369     DS 1C        DISP
+       DNM=4-386     02  KIKPF22                         BL=1     1BB   DNM=4-386     DS 1C        DISP
+       DNM=4-403     02  KIKPF23                         BL=1     1BC   DNM=4-403     DS 1C        DISP
+       DNM=4-420     02  KIKPF24                         BL=1     1BD   DNM=4-420     DS 1C        DISP
+       DNM=4-437     01  KIK-MSG                         BL=1     1C0   DNM=4-437     DS 80C       DISP
+       DNM=4-454     01  KIK-MAPSETNAME                  BL=1     210   DNM=4-454     DS 8C        DISP
+       DNM=4-478     01  KIK-MAPNAME                     BL=1     218   DNM=4-478     DS 8C        DISP
+       DNM=5-000     01  KIK-QUEUENAME                   BL=1     220   DNM=5-000     DS 0CL16     GROUP
+       DNM=5-026     02  KIK-FILENAME                    BL=1     220   DNM=5-026     DS 8C        DISP
+       DNM=5-048     02  KIK-PROGRAM                     BL=1     228   DNM=5-048     DS 8C        DISP
+       DNM=5-069     01  KIK-TRAN                        BL=1     230   DNM=5-069     DS 4C        DISP
+       DNM=5-090     01  KIK-ABND                        BL=1     238   DNM=5-090     DS 4C        DISP
+       DNM=5-108     01  KIK-LEN                         BL=1     240   DNM=5-108     DS 2C        COMP
+       DNM=5-125     01  KIK-ITEM                        BL=1     248   DNM=5-125     DS 2C        COMP
+       DNM=5-143     01  KIK-ITEMSIZE                    BL=1     250   DNM=5-143     DS 2C        COMP
+       DNM=5-168     01  KIK-NUMITEMS                    BL=1     258   DNM=5-168     DS 2C        COMP  11
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=5-190     01  KIK-FLEN                        BL=1     260   DNM=5-190     DS 4C        COMP
+       DNM=5-208     01  KIK-KEYLEN                      BL=1     268   DNM=5-208     DS 2C        COMP
+       DNM=5-228     01  KIK-NUMREC                      BL=1     270   DNM=5-228     DS 2C        COMP
+       DNM=5-248     01  KIK-REQID                       BL=1     278   DNM=5-248     DS 2C        COMP
+       DNM=5-270     01  KIK-FLAGS                       BL=1     280   DNM=5-270     DS 4C        COMP
+       DNM=5-292     01  KIK-GOTOVAR                     BL=1     288   DNM=5-292     DS 2C        COMP
+       DNM=5-313     01  KIK-NUM-GOTO                    BL=1     290   DNM=5-313     DS 4C        COMP
+       DNM=5-335     01  KIK-AIDS1                       BL=1     298   DNM=5-335     DS 4C        COMP
+       DNM=5-354     01  KIK-AIDS2                       BL=1     2A0   DNM=5-354     DS 4C        COMP
+       DNM=5-376     01  KIK-AIDS3                       BL=1     2A8   DNM=5-376     DS 4C        COMP
+       DNM=5-395     01  KIK-AIDS4                       BL=1     2B0   DNM=5-395     DS 4C        COMP
+       DNM=5-417     01  KIK-V1                          BL=1     2B8   DNM=5-417     DS 4C        COMP
+       DNM=5-433     01  KIK-V2                          BL=1     2C0   DNM=5-433     DS 4C        COMP
+       DNM=5-449     01  KIK-NULL                        BL=1     2C8   DNM=5-449     DS 4C        COMP
+       DNM=5-470     01  KIKEIB                         BLL=3     000   DNM=5-470     DS 0CL124    GROUP
+       DNM=5-489     02  EIBTASKN                       BLL=3     000   DNM=5-489     DS 1F        COMP
+       DNM=6-000     02  EIBCALEN                       BLL=3     004   DNM=6-000     DS 1H        COMP
+       DNM=6-018     02  EIBCPOSN                       BLL=3     006   DNM=6-018     DS 1H        COMP
+       DNM=6-039     02  EIBDATE                        BLL=3     008   DNM=6-039     DS 4P        COMP-3
+       DNM=6-056     02  EIBTIME                        BLL=3     00C   DNM=6-056     DS 4P        COMP-3
+       DNM=6-073     02  EIBRESP                        BLL=3     010   DNM=6-073     DS 1F        COMP
+       DNM=6-090     02  EIBRESP2                       BLL=3     014   DNM=6-090     DS 1F        COMP
+       DNM=6-108     02  EIBRSRCE                       BLL=3     018   DNM=6-108     DS 8C        DISP
+       DNM=6-126     02  EIBDS                          BLL=3     020   DNM=6-126     DS 8C        DISP
+       DNM=6-141     02  EIBFN                          BLL=3     028   DNM=6-141     DS 2C        DISP
+       DNM=6-159     02  EIBFN-2                        BLL=3     028   DNM=6-159     DS 2C        COMP       R
+       DNM=6-176     02  EIBRCODE                       BLL=3     02A   DNM=6-176     DS 6C        DISP
+       DNM=6-197     02  EIBTRMID                       BLL=3     030   DNM=6-197     DS 4C        DISP
+       DNM=6-215     02  EIBTRNID                       BLL=3     034   DNM=6-215     DS 4C        DISP
+       DNM=6-233     02  EIBAID                         BLL=3     038   DNM=6-233     DS 1C        DISP
+       DNM=6-249     02  EIBOPID                        BLL=3     039   DNM=6-249     DS 3C        DISP
+       DNM=6-266     02  EIBUSRID                       BLL=3     03C   DNM=6-266     DS 8C        DISP
+       DNM=6-284     02  EIBSYSID                       BLL=3     044   DNM=6-284     DS 8C        DISP
+       DNM=6-305     02  EIBNETID                       BLL=3     04C   DNM=6-305     DS 8C        DISP
+       DNM=6-326     02  EIBPGMID                       BLL=3     054   DNM=6-326     DS 8C        DISP
+       DNM=6-344     02  EIBLINE                        BLL=3     05C   DNM=6-344     DS 1F        COMP
+       DNM=6-364     02  EIBPROG                        BLL=3     060   DNM=6-364     DS 8C        DISP
+       DNM=6-381     02  EIBWC                          BLL=3     068   DNM=6-381     DS 20C       DISP
+       DNM=6-396     01  KIKCOMMAREA                    BLL=4     000   DNM=6-396     DS 1C        DISP  12
+
+
+
+                                                  CONDENSED LISTING
+
+ 265     ENTRY      0006CE                    270     MOVE       0006E8                    271     MULTIPLY   0006EE
+ 274     MOVE       000706                    275     MOVE       000710                    276     MOVE       000716
+ 279     MOVE       00071C                    279     MOVE       000722                    280     CALL       000728
+ 282     IF         000752                    283     GOBACK     000766                    285     IF         000794
+ 286     PERFORM    0007A6                    288     ELSE       0007C4                    288     IF         0007CA
+ 289     PERFORM    0007DA                    291     ELSE       0007F8                    291     IF         0007FE
+ 292     PERFORM    00080E                    294     ELSE       00082C                    294     PERFORM    000832
+ 300     MOVE       000850                    301     MOVE       00085A                    302     MOVE       000860
+ 303     MOVE       000866                    304     CALL       00086C                    308     MOVE       0008A6
+ 309     PERFORM    0008B0                    310     MOVE       0008CE                    311     MOVE       0008DE
+ 312     MOVE       0008EE                    313     PERFORM    0008F4                    315     MOVE       000918
+ 316     MOVE       000926                    317     MOVE       000930                    318     MOVE       00093A
+ 325     MOVE       00094A                    326     MOVE       000954                    327     MOVE       00095A
+ 328     MOVE       000964                    329     MOVE       00096E                    330     CALL       000974
+ 335     MOVE       0009BE                    336     MOVE       0009C4                    337     MOVE       0009CA
+ 338     PERFORM    0009D4                    339     MOVE       0009F2                    340     IF         000A02
+ 341     MOVE       000A28                    343     ELSE       000A38                    343     MOVE       000A3E
+ 344     MOVE       000A48                    346     MOVE       000A58                    347     PERFORM    000A5E
+ 355     MOVE       000A82                    356     MOVE       000A8C                    357     MOVE       000A92
+ 358     MOVE       000AA6                    359     CALL       000AAC                    366     MOVE       000AF6
+ 367     MOVE       000B00                    368     MOVE       000B06                    369     MOVE       000B10
+ 370     CALL       000B16                    374     IF         000B56                    381     MOVE       000B62
+ 382     MOVE       000B6C                    383     MOVE       000B72                    384     MOVE       000B7C
+ 385     MOVE       000B86                    386     CALL       000B8C                    397     ELSE       000BD6
+ 397     MOVE       000BDC                    398     MOVE       000BE6                    399     MOVE       000BEC
+ 400     MOVE       000BF6                    401     MOVE       000C00                    402     CALL       000C06
+
+
+
+*STATISTICS*     SOURCE RECORDS =   405     DATA DIVISION STATEMENTS =   149     PROCEDURE DIVISION STATEMENTS =    77
+*OPTIONS IN EFFECT*     SIZE = 2097152  BUF = 1048576  LINECNT = 57  SPACE1, FLAGW,   SEQ,   SOURCE
+*OPTIONS IN EFFECT*       DMAP, NOPMAP,   CLIST,   SUPMAP, NOXREF,   LOAD, NODECK, APOST, NOTRUNC,   LIB,   VERB
+*OPTIONS IN EFFECT*       ZWB  13
+
+
+ CARD   ERROR MESSAGE
+
+ 19     IKF2190I-W     PICTURE CLAUSE IS SIGNED, VALUE CLAUSE UNSIGNED. ASSUMED POSITIVE.
+ 22     IKF2190I-W     PICTURE CLAUSE IS SIGNED, VALUE CLAUSE UNSIGNED. ASSUMED POSITIVE.
+ 402    IKF4072I-W     EXIT FROM PERFORMED PROCEDURE ASSUMED BEFORE PROCEDURE-NAME .
+
+ F64-LEVEL LINKAGE EDITOR OPTIONS SPECIFIED XREF,LIST,LET,MAP
+          DEFAULT OPTION(S) USED -  SIZE=(231424,55296)
+IEW0000     INCLUDE SKIKLOAD(KIKCOBGL)
+IEW0000     ENTRY HELOPGM
+IEW0000     NAME HELOPGM(R)
+
+
+
+                                                CROSS REFERENCE TABLE
+
+
+  CONTROL SECTION                       ENTRY
+
+    NAME    ORIGIN  LENGTH                NAME   LOCATION     NAME   LOCATION     NAME   LOCATION     NAME   LOCATION
+  HELOPGM       00     D08
+  KIKBLLIN     D08      46
+ $PRIVATE      D50    5B20
+                                        KIKCOBGL    3708    KIKCOBGZ    65A8
+  ILBOSTP0*   6870      35
+                                        ILBOSTP1    6886
+
+
+
+  LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION             LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION
+      588            ILBOSTP0        ILBOSTP0                     58C            KIKCOBGL
+      590            ILBOSTP1        ILBOSTP0                    3AB4            KCEEHDLR       $UNRESOLVED(W)
+
+ ENTRY ADDRESS       00
+
+ TOTAL LENGTH      68A8
+****HELOPGM   NOW REPLACED IN DATA SET
+AUTHORIZATION CODE IS         0.
+
+                  CCCCCCCCCC   OOOOOOOOOOOO  BBBBBBBBBBB   HH        HH  EEEEEEEEEEEE  LL            OOOOOOOOOOOO  PPPPPPPPPPP
+                CCCCCCCCCCCC  OOOOOOOOOOOO  BBBBBBBBBBBB  HH        HH  EEEEEEEEEEEE  LL            OOOOOOOOOOOO  PPPPPPPPPPPP
+               CC        CC  OO        OO  BB        BB  HH        HH  EE            LL            OO        OO  PP        PP
+              CC            OO        OO  BB        BB  HH        HH  EE            LL            OO        OO  PP        PP
+             CC            OO        OO  BB       BB   HH        HH  EE            LL            OO        OO  PP        PP
+            CC            OO        OO  BBBBBBBBBB    HHHHHHHHHHHH  EEEEEEEE      LL            OO        OO  PPPPPPPPPPPP
+           CC            OO        OO  BBBBBBBBBB    HHHHHHHHHHHH  EEEEEEEE      LL            OO        OO  PPPPPPPPPPP
+          CC            OO        OO  BB       BB   HH        HH  EE            LL            OO        OO  PP
+         CC            OO        OO  BB        BB  HH        HH  EE            LL            OO        OO  PP
+        CC        CC  OO        OO  BB        BB  HH        HH  EE            LL            OO        OO  PP
+       CCCCCCCCCCCC  OOOOOOOOOOOO  BBBBBBBBBBBB  HH        HH  EEEEEEEEEEEE  LLLLLLLLLLLL  OOOOOOOOOOOO  PP
+       CCCCCCCCCC   OOOOOOOOOOOO  BBBBBBBBBBB   HH        HH  EEEEEEEEEEEE  LLLLLLLLLLLL  OOOOOOOOOOOO  PP
+
+
+
+                    JJJJJJJJJJ  555555555555    00000000                                               AAAAAAAAAA
+                    JJJJJJJJJJ  555555555555   0000000000                                             AAAAAAAAAAAA
+                        JJ      55            00      0000                                            AA        AA
+                        JJ      55            00     00 00                                            AA        AA
+                        JJ      55            00    00  00                                            AA        AA
+                        JJ      555555555     00   00   00                                            AAAAAAAAAAAA
+                        JJ      5555555555    00  00    00                                            AAAAAAAAAAAA
+                        JJ               55   00 00     00                                            AA        AA
+                  JJ    JJ                55  0000      00                                            AA        AA
+                  JJ    JJ                55  000       00                                            AA        AA
+                  JJJJJJJJ      555555555555   0000000000                                             AA        AA
+                   JJJJJJ       55555555555     00000000                                              AA        AA
+
+
+****A   END   JOB   50  COBHELOP  COBOL HELOPGM         ROOM        7.57.25 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   50   END   A****
+****A   END   JOB   50  COBHELOP  COBOL HELOPGM         ROOM        7.57.25 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   50   END   A****
+****A   END   JOB   50  COBHELOP  COBOL HELOPGM         ROOM        7.57.25 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   50   END   A****
+****A   END   JOB   50  COBHELOP  COBOL HELOPGM         ROOM        7.57.25 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   50   END   A****
+

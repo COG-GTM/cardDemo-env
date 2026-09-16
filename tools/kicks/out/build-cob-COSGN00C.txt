@@ -1,0 +1,1988 @@
+                  CCCCCCCCCC   OOOOOOOOOOOO  BBBBBBBBBBB    CCCCCCCCCC   OOOOOOOOOOOO   SSSSSSSSSS    GGGGGGGGGG   NN        NN
+                CCCCCCCCCCCC  OOOOOOOOOOOO  BBBBBBBBBBBB  CCCCCCCCCCCC  OOOOOOOOOOOO  SSSSSSSSSSSS  GGGGGGGGGGGG  NNN       NN
+               CC        CC  OO        OO  BB        BB  CC        CC  OO        OO  SS        SS  GG        GG  NNNN      NN
+              CC            OO        OO  BB        BB  CC            OO        OO  SS            GG            NN NN     NN
+             CC            OO        OO  BB       BB   CC            OO        OO  SSS           GG            NN  NN    NN
+            CC            OO        OO  BBBBBBBBBB    CC            OO        OO   SSSSSSSSS    GG            NN   NN   NN
+           CC            OO        OO  BBBBBBBBBB    CC            OO        OO    SSSSSSSSS   GG     GGGGG  NN    NN  NN
+          CC            OO        OO  BB       BB   CC            OO        OO           SSS  GG     GGGGG  NN     NN NN
+         CC            OO        OO  BB        BB  CC            OO        OO            SS  GG        GG  NN      NNNN
+        CC        CC  OO        OO  BB        BB  CC        CC  OO        OO  SS        SS  GG        GG  NN       NNN
+       CCCCCCCCCCCC  OOOOOOOOOOOO  BBBBBBBBBBBB  CCCCCCCCCCCC  OOOOOOOOOOOO  SSSSSSSSSSSS  GGGGGGGGGGGG  NN        NN
+       CCCCCCCCCC   OOOOOOOOOOOO  BBBBBBBBBBB    CCCCCCCCCC   OOOOOOOOOOOO   SSSSSSSSSS    GGGGGGGGGG   NN         N
+
+
+
+                    JJJJJJJJJJ   6666666666     00000000                                               AAAAAAAAAA
+                    JJJJJJJJJJ  666666666666   0000000000                                             AAAAAAAAAAAA
+                        JJ      66        66  00      0000                                            AA        AA
+                        JJ      66            00     00 00                                            AA        AA
+                        JJ      66            00    00  00                                            AA        AA
+                        JJ      66666666666   00   00   00                                            AAAAAAAAAAAA
+                        JJ      666666666666  00  00    00                                            AAAAAAAAAAAA
+                        JJ      66        66  00 00     00                                            AA        AA
+                  JJ    JJ      66        66  0000      00                                            AA        AA
+                  JJ    JJ      66        66  000       00                                            AA        AA
+                  JJJJJJJJ      666666666666   0000000000                                             AA        AA
+                   JJJJJJ        6666666666     00000000                                              AA        AA
+
+
+****A  START  JOB   60  COBCOSGN  COBOL COSGN00C        ROOM        8.07.00 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   60  START  A****
+****A  START  JOB   60  COBCOSGN  COBOL COSGN00C        ROOM        8.07.00 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   60  START  A****
+****A  START  JOB   60  COBCOSGN  COBOL COSGN00C        ROOM        8.07.00 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   60  START  A****
+****A  START  JOB   60  COBCOSGN  COBOL COSGN00C        ROOM        8.07.00 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   60  START  A****
+                                                J E S 2   J O B   L O G
+
+
+20.06.59 JOB   60  IEF196I IEF237I 192  ALLOCATED TO IEF0PDS0
+20.06.59 JOB   60  IEF196I IEF285I   HERC01.KICKSSYS.V1R5M0.PROCLIB               KEPT
+20.06.59 JOB   60  IEF196I IEF285I   VOL SER NOS= TSO003.
+20.06.59 JOB   60  $HASP373 COBCOSGN STARTED - INIT  1 - CLASS A - SYS TK5R
+20.06.59 JOB   60  IEF403I COBCOSGN - STARTED - TIME=20.06.59
+20.06.59 JOB   60  IEFACTRT - Stepname  Procstep  Program   Retcode
+20.06.59 JOB   60  COBCOSGN   COSGN00C  COPY      IEBGENER  RC= 0000
+20.06.59 JOB   60  COBCOSGN   COSGN00C  PP2       KIKPPCOB  RC= 0000
+20.07.00 JOB   60  COBCOSGN   COSGN00C  COB2      IKFCBL00  RC= 0004
+20.07.00 JOB   60  COBCOSGN   COSGN00C  LKED      IEWL      RC= 0000
+20.07.00 JOB   60  IEF404I COBCOSGN - ENDED - TIME=20.07.00
+20.07.00 JOB   60  $HASP395 COBCOSGN ENDED
+
+
+------ JES2 JOB STATISTICS ------
+
+
+ 16 SEP 26 JOB EXECUTION DATE
+
+
+       305 CARDS READ
+
+
+     1,865 SYSOUT PRINT RECORDS
+
+
+         0 SYSOUT PUNCH RECORDS
+
+
+      0.01 MINUTES EXECUTION TIME
+    1     //COBCOSGN JOB (KICKS),'COBOL COSGN00C',CLASS=A,MSGCLASS=A,             JOB   60
+          // MSGLEVEL=(1,1),REGION=4096K,USER=HERC01,PASSWORD=
+    2     //JOBPROC DD DSN=HERC01.KICKSSYS.V1R5M0.PROCLIB,DISP=SHR
+    3     //COSGN00C EXEC KIKCOBCL
+    4     XXKIKCOBCL PROC SOUT='*',
+          XX            UNT=SYSDA,
+          XX            KICKSYS='HERC01.KICKSSYS',
+          XX            KIKSUSR='HERC01.KICKS',
+          XX            VER=V1R5M0,
+          XX            CBLPARM='SUPMAP,DMAP,CLIST'
+          ***
+          ***   PROC FOR MVT ANSI COBOL
+          ***        AS INSTALLED ON MVS38J TURNKEY
+          ***   NON-LE COMPILER
+          ***   WORKS WITH KICKS
+          ***
+    5     XXCOPY   EXEC PGM=IEBGENER
+    6     XXSYSPRINT DD DUMMY
+    7     XXSYSIN    DD DUMMY
+    8     XXSYSUT2   DD DSN=&&PPIN,DISP=(,PASS),UNIT=SYSDA,
+          XX         SPACE=(TRK,(90,15),RLSE)
+    9     //COPY.SYSUT1 DD *
+          X/SYSUT1   DD DSN=&KIKSUSR..&VER..COBCOPY(&VER),DISP=SHR
+          ***
+   10     XXPP2    EXEC PGM=KIKPPCOB,COND=(5,LT),
+          XX            PARM='-v -t'
+   11     XXSTEPLIB  DD DSN=&KICKSYS..&VER..SKIKLOAD,DISP=SHR
+   12     XXSYSPRINT DD DISP=(,PASS),UNIT=&UNT,SPACE=(800,(500,100)),
+          XX            DCB=(RECFM=FB,LRECL=80,BLKSIZE=800)
+   13     XXSYSTERM  DD SYSOUT=&SOUT,DCB=(BLKSIZE=120,RECFM=F)
+   14     XXSYSUDUMP DD SYSOUT=&SOUT
+   15     XXSYSLIB   DD DISP=SHR,DSN=&KIKSUSR..&VER..COBCOPY
+   16     XX         DD DISP=SHR,DSN=&KICKSYS..&VER..COBCOPY
+   17     XXSYSIN    DD DSN=&&PPIN,DISP=(OLD,DELETE)
+          ***
+   18     XXCOB2   EXEC PGM=IKFCBL00,
+          XX            REGION=4096K,
+          XX            COND=(5,LT),
+          XX            PARM='NODECK,LOAD,SIZE=2048K,BUF=1024K,&CBLPARM,LIB'
+   19     XXSYSPRINT DD SYSOUT=&SOUT                                              50000005
+   20     XXSYSPUNCH DD DUMMY                                                     50000005
+   21     XXSYSLIB   DD DISP=SHR,DSN=&KIKSUSR..&VER..COBCOPY
+   22     XX         DD DISP=SHR,DSN=&KICKSYS..&VER..COBCOPY
+   23     XXSYSLIN   DD UNIT=&UNT,SPACE=(80,(250,100)),DISP=(MOD,PASS)            53000000
+   24     XXSYSUT1   DD UNIT=&UNT,SPACE=(460,(350,100))                           54000000
+   25     XXSYSUT2   DD UNIT=&UNT,SPACE=(460,(350,100))                           55000000
+   26     XXSYSUT3   DD UNIT=&UNT,SPACE=(460,(350,100))                           56000000
+   27     XXSYSUT4   DD UNIT=&UNT,SPACE=(460,(350,100))                           57000000
+   28     XXSYSIN    DD DISP=(OLD,DELETE),DSN=*.PP2.SYSPRINT
+          ***                                                                     60000000
+   29     XXLKED   EXEC PGM=IEWL,
+          XX            COND=(5,LT),
+          XX            PARM='XREF,LIST,LET,MAP'
+   30     XXSYSPRINT DD SYSOUT=&SOUT
+   31     XXSYSLIB   DD DISP=SHR,DSN=SYS1.COBLIB
+   32     XXSYSLMOD  DD DISP=SHR,DSN=&KIKSUSR..&VER..KIKRPL
+   33     XXSYSLIN   DD DISP=(OLD,DELETE),DSN=*.COB2.SYSLIN
+   34     XX         DD DDNAME=SYSIN
+   35     XXSYSUT1   DD UNIT=(SYSDA,SEP=(SYSLMOD,SYSLIN)),
+          XX         SPACE=(1024,(200,20))
+   36     XXSKIKLOAD DD DISP=SHR,DSN=&KICKSYS..&VER..SKIKLOAD
+   37     XXKIKRPL   DD DISP=SHR,DSN=&KICKSYS..&VER..KIKRPL
+   38     //LKED.SYSIN DD *
+          X/SYSIN    DD DUMMY
+ STMT NO. MESSAGE
+-
+    9     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.COBCOPY(V1R5M0),DISP=SHR
+   11     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD,DISP=SHR
+   12     IEF653I SUBSTITUTION JCL - DISP=(,PASS),UNIT=SYSDA,SPACE=(800,(500,100)),
+   13     IEF653I SUBSTITUTION JCL - SYSOUT=*,DCB=(BLKSIZE=120,RECFM=F)
+   14     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   15     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKS.V1R5M0.COBCOPY
+   16     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKSSYS.V1R5M0.COBCOPY
+   18     IEF653I SUBSTITUTION JCL - PARM='NODECK,LOAD,SIZE=2048K,BUF=1024K,SUPMAP,DMAP,CLIST,LIB'
+   19     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   21     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKS.V1R5M0.COBCOPY
+   22     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKSSYS.V1R5M0.COBCOPY
+   23     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(80,(250,100)),DISP=(MOD,PASS)
+   24     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(460,(350,100))
+   25     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(460,(350,100))
+   26     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(460,(350,100))
+   27     IEF653I SUBSTITUTION JCL - UNIT=SYSDA,SPACE=(460,(350,100))
+   30     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   32     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKS.V1R5M0.KIKRPL
+   36     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD
+   37     IEF653I SUBSTITUTION JCL - DISP=SHR,DSN=HERC01.KICKSSYS.V1R5M0.KIKRPL
+IEF236I ALLOC. FOR COBCOSGN COPY COSGN00C
+IEF237I DMY  ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSIN
+IEF237I 293  ALLOCATED TO SYSUT2
+IEF237I JES2 ALLOCATED TO SYSUT1
+IEF142I COBCOSGN COPY COSGN00C - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.PPIN         PASSED        *------294
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   JES2.JOB00060.SI0101                         SYSIN
+IEF373I STEP /COPY    / START 26259.2006
+IEF374I STEP /COPY    / STOP  26259.2006 CPU    0MIN 00.03SEC SRB    0MIN 00.01SEC VIRT    36K SYS   264K
+************************************************************************************************************************************
+*     1. Jobstep of job: COBCOSGN    Stepname: COPY        Program name: IEBGENER   Executed on 16.09.26 from 20.06.59 to 20.06.59 *
+*         elapsed time  00:00:00,11                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,04               Virtual Storage used:     36K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,04   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:    294                                                                           *
+*     DMY.......0 DMY.......0 293.....294 DMY.......0                                                                              *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,06                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR COBCOSGN PP2 COSGN00C
+IEF237I 192  ALLOCATED TO STEPLIB
+IEF237I 190  ALLOCATED TO SYS00198
+IEF237I 292  ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO SYSTERM
+IEF237I JES2 ALLOCATED TO SYSUDUMP
+IEF237I 192  ALLOCATED TO SYSLIB
+IEF237I 192  ALLOCATED TO
+IEF237I 293  ALLOCATED TO SYSIN
+IEF142I COBCOSGN PP2 COSGN00C - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000001     PASSED        *------113
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   JES2.JOB00060.SO0103                         SYSOUT
+IEF285I   JES2.JOB00060.SO0104                         SYSOUT
+IEF285I   HERC01.KICKS.V1R5M0.COBCOPY                  KEPT          *-------41
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   HERC01.KICKSSYS.V1R5M0.COBCOPY               KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.PPIN         DELETED       *------295
+IEF285I   VOL SER NOS= WORK04.
+IEF373I STEP /PP2     / START 26259.2006
+IEF374I STEP /PP2     / STOP  26259.2006 CPU    0MIN 00.27SEC SRB    0MIN 00.02SEC VIRT   720K SYS   268K
+************************************************************************************************************************************
+*     2. Jobstep of job: COBCOSGN    Stepname: PP2         Program name: KIKPPCOB   Executed on 16.09.26 from 20.06.59 to 20.06.59 *
+*         elapsed time  00:00:00,44                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,29               Virtual Storage used:    720K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,29   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     192.......0 190.......0 292.....113 DMY.......0 DMY.......0 192......41 192.......0 293.....295                              *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,48                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR COBCOSGN COB2 COSGN00C
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSPUNCH
+IEF237I 192  ALLOCATED TO SYSLIB
+IEF237I 192  ALLOCATED TO
+IEF237I 190  ALLOCATED TO SYS00200
+IEF237I 291  ALLOCATED TO SYSLIN
+IEF237I 293  ALLOCATED TO SYSUT1
+IEF237I 290  ALLOCATED TO SYSUT2
+IEF237I 292  ALLOCATED TO SYSUT3
+IEF237I 291  ALLOCATED TO SYSUT4
+IEF237I 292  ALLOCATED TO SYSIN
+IEF142I COBCOSGN COB2 COSGN00C - STEP WAS EXECUTED - COND CODE 0004
+IEF285I   JES2.JOB00060.SO0105                         SYSOUT
+IEF285I   HERC01.KICKS.V1R5M0.COBCOPY                  KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   HERC01.KICKSSYS.V1R5M0.COBCOPY               KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000002     PASSED        *------112
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000003     DELETED       *--------6
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000004     DELETED       *--------6
+IEF285I   VOL SER NOS= WORK01.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000005     DELETED       *-------12
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000006     DELETED       *-------10
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000001     DELETED       *------114
+IEF285I   VOL SER NOS= WORK03.
+IEF373I STEP /COB2    / START 26259.2006
+IEF374I STEP /COB2    / STOP  26259.2007 CPU    0MIN 00.08SEC SRB    0MIN 00.02SEC VIRT  2076K SYS   316K
+************************************************************************************************************************************
+*     3. Jobstep of job: COBCOSGN    Stepname: COB2        Program name: IKFCBL00   Executed on 16.09.26 from 20.06.59 to 20.07.00 *
+*         elapsed time  00:00:00,30                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,10               Virtual Storage used:   2076K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,10   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     DMY.......0 DMY.......0 192.......0 192.......0 190.......0 291.....112 293.......6 290.......6 292......12 291......10      *
+*     292.....114                                                                                                                  *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,16                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR COBCOSGN LKED COSGN00C
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I 390  ALLOCATED TO SYSLIB
+IEF237I 192  ALLOCATED TO SYSLMOD
+IEF237I 190  ALLOCATED TO SYS00202
+IEF237I 291  ALLOCATED TO SYSLIN
+IEF237I JES2 ALLOCATED TO
+IEF237I 293  ALLOCATED TO SYSUT1
+IEF237I 192  ALLOCATED TO SKIKLOAD
+IEF237I 192  ALLOCATED TO KIKRPL
+IEF142I COBCOSGN LKED COSGN00C - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   JES2.JOB00060.SO0106                         SYSOUT
+IEF285I   SYS1.COBLIB                                  KEPT          *-------19
+IEF285I   VOL SER NOS= TK5RES.
+IEF285I   HERC01.KICKS.V1R5M0.KIKRPL                   KEPT          *-------36
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000002     DELETED       *------113
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   JES2.JOB00060.SI0102                         SYSIN
+IEF285I   SYS26259.T200659.RA000.COBCOSGN.R0000007     DELETED       *--------0
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *-------16
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   HERC01.KICKSSYS.V1R5M0.KIKRPL                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF373I STEP /LKED    / START 26259.2007
+IEF374I STEP /LKED    / STOP  26259.2007 CPU    0MIN 00.02SEC SRB    0MIN 00.01SEC VIRT   264K SYS   244K
+************************************************************************************************************************************
+*     4. Jobstep of job: COBCOSGN    Stepname: LKED        Program name: IEWL       Executed on 16.09.26 from 20.07.00 to 20.07.00 *
+*         elapsed time  00:00:00,09                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,03               Virtual Storage used:    264K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,03   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      3                                                                           *
+*     DMY.......0 390......19 192......36 190.......0 291.....113 DMY.......0 293.......0 192......16 192.......0                  *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,05                                             *
+************************************************************************************************************************************
+IEF375I  JOB /COBCOSGN/ START 26259.2006
+IEF376I  JOB /COBCOSGN/ STOP  26259.2007 CPU    0MIN 00.40SEC SRB    0MIN 00.06SEC
+KIKCOBPP version V1R5M0(0)
+  CB545 V2 LVL78 01MAY72                 IBM OS AMERICAN NATIONAL STANDARD COBOL                       DATE SEP 16,2026
+
+
+   1
+
+
+00001         ******************************************************************
+00002         * Program     : COSGN00C.CBL  (KICKS / OS-VS COBOL PORT)
+00003         * Application : CardDemo
+00004         * Type        : KICKS COBOL Program (command level)
+00005         * Function    : Signon Screen for the CardDemo Application
+00006         ******************************************************************
+00007         * Copyright Amazon.com, Inc. or its affiliates.
+00008         * All Rights Reserved.
+00009         *
+00010         * Licensed under the Apache License, Version 2.0 (the "License").
+00011         * You may not use this file except in compliance with the License.
+00012         * You may obtain a copy of the License at
+00013         *
+00014         *    http://www.apache.org/licenses/LICENSE-2.0
+00015         *
+00016         * Unless required by applicable law or agreed to in writing,
+00017         * software distributed under the License is distributed on an
+00018         * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+00019         * either express or implied. See the License for the specific
+00020         * language governing permissions and limitations under the License
+00021         ******************************************************************
+00022         * This is a port of cobol/COSGN00C.cbl to the MVT ANS COBOL
+00023         * compiler shipped with MVS 3.8j TK5 and the KICKS for TSO 1.5.0
+00024         * command-level interface.  Every deviation from the original is
+00025         * listed in docs/KICKS-NOTES.md.  The original is unchanged.
+00026         ******************************************************************
+00027          IDENTIFICATION DIVISION.
+00028          PROGRAM-ID. COSGN00C.
+00029          AUTHOR.     AWS.
+00030          ENVIRONMENT DIVISION.
+00031          CONFIGURATION SECTION.
+00032          DATA DIVISION.
+00033          WORKING-STORAGE SECTION.
+00034          01  WS-VARIABLES.
+00035            05 WS-PGMNAME                 PIC X(08) VALUE 'COSGN00C'.
+00036            05 WS-TRANID                  PIC X(04) VALUE 'CC00'.
+00037            05 WS-MESSAGE                 PIC X(80) VALUE SPACES.
+00038            05 WS-USRSEC-FILE             PIC X(08) VALUE 'USRSEC  '.
+00039            05 WS-ERR-FLG                 PIC X(01) VALUE 'N'.
+00040              88 ERR-FLG-ON                         VALUE 'Y'.
+00041              88 ERR-FLG-OFF                        VALUE 'N'.
+00042            05 WS-RESP-CD                 PIC S9(04) COMP VALUE ZEROS.
+00043            05 WS-REAS-CD                 PIC S9(04) COMP VALUE ZEROS.
+00044            05 WS-USR-MODIFIED            PIC X(01) VALUE 'N'.
+00045              88 USR-MODIFIED-YES                   VALUE 'Y'.
+00046              88 USR-MODIFIED-NO                    VALUE 'N'.
+00047            05 WS-USER-ID                 PIC X(08).
+00048            05 WS-USER-PWD                PIC X(08).
+00049            05 WS-SEC-LEN                 PIC S9(04) COMP VALUE 80.
+00050            05 WS-KEY-LEN                 PIC S9(04) COMP VALUE 8.
+00051            05 WS-SYSID4                  PIC X(04) VALUE SPACES.
+00052            05 WS-ABSTIME                 PIC S9(15) COMP-3 VALUE ZERO.
+00053            05 WS-DATE-MMDDYY             PIC X(08) VALUE SPACES.
+00054            05 WS-TIME-HHMMSS             PIC X(08) VALUE SPACES.   2
+
+
+00055            05 WS-COMMAREA-LEN            PIC S9(04) COMP VALUE ZERO.
+00056            05 WS-CA-LEN                  PIC S9(04) COMP VALUE 160.
+00057            05 WS-MSG-LEN                 PIC S9(04) COMP VALUE 80.
+00058
+00059         *COPY COCOM01Y.
+00060         ******************************************************************
+00061         * Communication area for CardDemo application programs
+00062         ******************************************************************
+00063         * Copyright Amazon.com, Inc. or its affiliates.
+00064         * All Rights Reserved.
+00065         *
+00066         * Licensed under the Apache License, Version 2.0 (the "License").
+00067         * You may not use this file except in compliance with the License.
+00068         * You may obtain a copy of the License at
+00069         *
+00070         *    http://www.apache.org/licenses/LICENSE-2.0
+00071         *
+00072         * Unless required by applicable law or agreed to in writing,
+00073         * software distributed under the License is distributed on an
+00074         * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+00075         * either express or implied. See the License for the specific
+00076         * language governing permissions and limitations under the License
+00077         ******************************************************************
+00078          01 CARDDEMO-COMMAREA.
+00079             05 CDEMO-GENERAL-INFO.
+00080                10 CDEMO-FROM-TRANID             PIC X(04).
+00081                10 CDEMO-FROM-PROGRAM            PIC X(08).
+00082                10 CDEMO-TO-TRANID               PIC X(04).
+00083                10 CDEMO-TO-PROGRAM              PIC X(08).
+00084                10 CDEMO-USER-ID                 PIC X(08).
+00085                10 CDEMO-USER-TYPE               PIC X(01).
+00086                   88 CDEMO-USRTYP-ADMIN         VALUE 'A'.
+00087                   88 CDEMO-USRTYP-USER          VALUE 'U'.
+00088                10 CDEMO-PGM-CONTEXT             PIC 9(01).
+00089                   88 CDEMO-PGM-ENTER            VALUE 0.
+00090                   88 CDEMO-PGM-REENTER          VALUE 1.
+00091             05 CDEMO-CUSTOMER-INFO.
+00092                10 CDEMO-CUST-ID                 PIC 9(09).
+00093                10 CDEMO-CUST-FNAME              PIC X(25).
+00094                10 CDEMO-CUST-MNAME              PIC X(25).
+00095                10 CDEMO-CUST-LNAME              PIC X(25).
+00096             05 CDEMO-ACCOUNT-INFO.
+00097                10 CDEMO-ACCT-ID                 PIC 9(11).
+00098                10 CDEMO-ACCT-STATUS             PIC X(01).
+00099             05 CDEMO-CARD-INFO.
+00100                10 CDEMO-CARD-NUM                PIC 9(16).
+00101             05 CDEMO-MORE-INFO.
+00102                10  CDEMO-LAST-MAP               PIC X(7).
+00103                10  CDEMO-LAST-MAPSET            PIC X(7).
+00104         *
+00105         * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:15:57 CDT
+00106         *
+00107
+00108         *COPY COSGN00.
+00109         *///////////////////////////////////////////////////////////////
+00110         * 'BMS' map for use with 'KICKS for TSO'
+00111         *   generated 09/16/26 at 20:05:47 with mapgen version V1R5M0(0)   3
+
+
+00112         *
+00113         * 'KICKS for TSO'
+00114         *  Copyright 2008-2014, Michael Noel, All Rights Reserved.
+00115         *
+00116         * Assuming the input belongs to you this generated map is also
+00117         * your property and you may do whatever you like with it.
+00118         *   HOWEVER
+00119         *
+00120         * Usage of 'KICKS for TSO' is subject to license.
+00121         * See http://www.kicksfortso.com
+00122         * for most current information regarding licensing options,
+00123         *//1/////////2/////////3/////////4/////////5/////////6/////////7
+00124
+00125          01  COSGN0AI.
+00126              02  FILLER PIC X(12).
+00127              02  TRNNAMEL COMP PIC S9(4).
+00128              02  TRNNAMEF PIC X.
+00129              02  TRNNAMEC PIC X.
+00130              02  TRNNAMEP PIC X.
+00131              02  TRNNAMEH PIC X.
+00132              02  TRNNAMEV PIC X.
+00133              02  TRNNAMEI PIC X(4).
+00134              02  TITLE01L COMP PIC S9(4).
+00135              02  TITLE01F PIC X.
+00136              02  TITLE01C PIC X.
+00137              02  TITLE01P PIC X.
+00138              02  TITLE01H PIC X.
+00139              02  TITLE01V PIC X.
+00140              02  TITLE01I PIC X(40).
+00141              02  CURDATEL COMP PIC S9(4).
+00142              02  CURDATEF PIC X.
+00143              02  CURDATEC PIC X.
+00144              02  CURDATEP PIC X.
+00145              02  CURDATEH PIC X.
+00146              02  CURDATEV PIC X.
+00147              02  CURDATEI PIC X(8).
+00148              02  PGMNAMEL COMP PIC S9(4).
+00149              02  PGMNAMEF PIC X.
+00150              02  PGMNAMEC PIC X.
+00151              02  PGMNAMEP PIC X.
+00152              02  PGMNAMEH PIC X.
+00153              02  PGMNAMEV PIC X.
+00154              02  PGMNAMEI PIC X(8).
+00155              02  TITLE02L COMP PIC S9(4).
+00156              02  TITLE02F PIC X.
+00157              02  TITLE02C PIC X.
+00158              02  TITLE02P PIC X.
+00159              02  TITLE02H PIC X.
+00160              02  TITLE02V PIC X.
+00161              02  TITLE02I PIC X(40).
+00162              02  CURTIMEL COMP PIC S9(4).
+00163              02  CURTIMEF PIC X.
+00164              02  CURTIMEC PIC X.
+00165              02  CURTIMEP PIC X.
+00166              02  CURTIMEH PIC X.
+00167              02  CURTIMEV PIC X.
+00168              02  CURTIMEI PIC X(9).   4
+
+
+00169              02  APPLIDL COMP PIC S9(4).
+00170              02  APPLIDF PIC X.
+00171              02  APPLIDC PIC X.
+00172              02  APPLIDP PIC X.
+00173              02  APPLIDH PIC X.
+00174              02  APPLIDV PIC X.
+00175              02  APPLIDI PIC X(8).
+00176              02  SYSIDL COMP PIC S9(4).
+00177              02  SYSIDF PIC X.
+00178              02  SYSIDC PIC X.
+00179              02  SYSIDP PIC X.
+00180              02  SYSIDH PIC X.
+00181              02  SYSIDV PIC X.
+00182              02  SYSIDI PIC X(8).
+00183              02  USERIDL COMP PIC S9(4).
+00184              02  USERIDF PIC X.
+00185              02  USERIDC PIC X.
+00186              02  USERIDP PIC X.
+00187              02  USERIDH PIC X.
+00188              02  USERIDV PIC X.
+00189              02  USERIDI PIC X(8).
+00190              02  PASSWDL COMP PIC S9(4).
+00191              02  PASSWDF PIC X.
+00192              02  PASSWDC PIC X.
+00193              02  PASSWDP PIC X.
+00194              02  PASSWDH PIC X.
+00195              02  PASSWDV PIC X.
+00196              02  PASSWDI PIC X(8).
+00197              02  ERRMSGL COMP PIC S9(4).
+00198              02  ERRMSGF PIC X.
+00199              02  ERRMSGC PIC X.
+00200              02  ERRMSGP PIC X.
+00201              02  ERRMSGH PIC X.
+00202              02  ERRMSGV PIC X.
+00203              02  ERRMSGI PIC X(78).
+00204
+00205          01  COSGN0AO REDEFINES COSGN0AI.
+00206              02  FILLER PIC X(12).
+00207              02  FILLER PIC X(2).
+00208              02  TRNNAMEA PICTURE X.
+00209              02  FILLER PIC X(4).
+00210              02  TRNNAMEO PIC X(4).
+00211              02  FILLER PIC X(2).
+00212              02  TITLE01A PICTURE X.
+00213              02  FILLER PIC X(4).
+00214              02  TITLE01O PIC X(40).
+00215              02  FILLER PIC X(2).
+00216              02  CURDATEA PICTURE X.
+00217              02  FILLER PIC X(4).
+00218              02  CURDATEO PIC X(8).
+00219              02  FILLER PIC X(2).
+00220              02  PGMNAMEA PICTURE X.
+00221              02  FILLER PIC X(4).
+00222              02  PGMNAMEO PIC X(8).
+00223              02  FILLER PIC X(2).
+00224              02  TITLE02A PICTURE X.
+00225              02  FILLER PIC X(4).   5
+
+
+00226              02  TITLE02O PIC X(40).
+00227              02  FILLER PIC X(2).
+00228              02  CURTIMEA PICTURE X.
+00229              02  FILLER PIC X(4).
+00230              02  CURTIMEO PIC X(9).
+00231              02  FILLER PIC X(2).
+00232              02  APPLIDA PICTURE X.
+00233              02  FILLER PIC X(4).
+00234              02  APPLIDO PIC X(8).
+00235              02  FILLER PIC X(2).
+00236              02  SYSIDA PICTURE X.
+00237              02  FILLER PIC X(4).
+00238              02  SYSIDO PIC X(8).
+00239              02  FILLER PIC X(2).
+00240              02  USERIDA PICTURE X.
+00241              02  FILLER PIC X(4).
+00242              02  USERIDO PIC X(8).
+00243              02  FILLER PIC X(2).
+00244              02  PASSWDA PICTURE X.
+00245              02  FILLER PIC X(4).
+00246              02  PASSWDO PIC X(8).
+00247              02  FILLER PIC X(2).
+00248              02  ERRMSGA PICTURE X.
+00249              02  FILLER PIC X(4).
+00250              02  ERRMSGO PIC X(78).
+00251
+00252
+00253         *COPY COTTL01Y.
+00254         ******************************************************************
+00255         * Copyright Amazon.com, Inc. or its affiliates.
+00256         * All Rights Reserved.
+00257         *
+00258         * Licensed under the Apache License, Version 2.0 (the "License").
+00259         * You may not use this file except in compliance with the License.
+00260         * You may obtain a copy of the License at
+00261         *
+00262         *    http://www.apache.org/licenses/LICENSE-2.0
+00263         *
+00264         * Unless required by applicable law or agreed to in writing,
+00265         * software distributed under the License is distributed on an
+00266         * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+00267         * either express or implied. See the License for the specific
+00268         * language governing permissions and limitations under the License
+00269         ******************************************************************
+00270          01 CCDA-SCREEN-TITLE.
+00271            05 CCDA-TITLE01    PIC X(40) VALUE
+00272               '      AWS Mainframe Modernization       '.
+00273            05 CCDA-TITLE02    PIC X(40) VALUE
+00274         *     '  Credit Card Demo Application (CCDA)   '.
+00275               '              CardDemo                  '.
+00276            05 CCDA-THANK-YOU  PIC X(40) VALUE
+00277               'Thank you for using CCDA application... '.
+00278         *
+00279         * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:15:58 CDT
+00280         *
+00281         *COPY CSDAT01Y.
+00282         ******************************************************************   6
+
+
+00283         * Copyright Amazon.com, Inc. or its affiliates.
+00284         * All Rights Reserved.
+00285         *
+00286         * Licensed under the Apache License, Version 2.0 (the "License").
+00287         * You may not use this file except in compliance with the License.
+00288         * You may obtain a copy of the License at
+00289         *
+00290         *    http://www.apache.org/licenses/LICENSE-2.0
+00291         *
+00292         * Unless required by applicable law or agreed to in writing,
+00293         * software distributed under the License is distributed on an
+00294         * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+00295         * either express or implied. See the License for the specific
+00296         * language governing permissions and limitations under the License
+00297         ******************************************************************
+00298          01 WS-DATE-TIME.
+00299            05 WS-CURDATE-DATA.
+00300              10  WS-CURDATE.
+00301                15  WS-CURDATE-YEAR         PIC 9(04).
+00302                15  WS-CURDATE-MONTH        PIC 9(02).
+00303                15  WS-CURDATE-DAY          PIC 9(02).
+00304              10 WS-CURDATE-N REDEFINES WS-CURDATE PIC 9(08).
+00305              10  WS-CURTIME.
+00306                15  WS-CURTIME-HOURS        PIC 9(02).
+00307                15  WS-CURTIME-MINUTE       PIC 9(02).
+00308                15  WS-CURTIME-SECOND       PIC 9(02).
+00309                15  WS-CURTIME-MILSEC       PIC 9(02).
+00310              10 WS-CURTIME-N REDEFINES WS-CURTIME PIC 9(08).
+00311            05 WS-CURDATE-MM-DD-YY.
+00312              10  WS-CURDATE-MM             PIC 9(02).
+00313              10  FILLER                    PIC X(01) VALUE '/'.
+00314              10  WS-CURDATE-DD             PIC 9(02).
+00315              10  FILLER                    PIC X(01) VALUE '/'.
+00316              10  WS-CURDATE-YY             PIC 9(02).
+00317            05 WS-CURTIME-HH-MM-SS.
+00318              10  WS-CURTIME-HH             PIC 9(02).
+00319              10  FILLER                    PIC X(01) VALUE ':'.
+00320              10  WS-CURTIME-MM             PIC 9(02).
+00321              10  FILLER                    PIC X(01) VALUE ':'.
+00322              10  WS-CURTIME-SS             PIC 9(02).
+00323            05 WS-TIMESTAMP.
+00324              10  WS-TIMESTAMP-DT-YYYY      PIC 9(04).
+00325              10  FILLER                    PIC X(01) VALUE '-'.
+00326              10  WS-TIMESTAMP-DT-MM        PIC 9(02).
+00327              10  FILLER                    PIC X(01) VALUE '-'.
+00328              10  WS-TIMESTAMP-DT-DD        PIC 9(02).
+00329              10  FILLER                    PIC X(01) VALUE ' '.
+00330              10  WS-TIMESTAMP-TM-HH        PIC 9(02).
+00331              10  FILLER                    PIC X(01) VALUE ':'.
+00332              10  WS-TIMESTAMP-TM-MM        PIC 9(02).
+00333              10  FILLER                    PIC X(01) VALUE ':'.
+00334              10  WS-TIMESTAMP-TM-SS        PIC 9(02).
+00335              10  FILLER                    PIC X(01) VALUE '.'.
+00336              10  WS-TIMESTAMP-TM-MS6       PIC 9(06).
+00337         *
+00338         * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:15:58 CDT
+00339         *   7
+
+
+00340         *COPY CSMSG01Y.
+00341         ******************************************************************
+00342         * Copyright Amazon.com, Inc. or its affiliates.
+00343         * All Rights Reserved.
+00344         *
+00345         * Licensed under the Apache License, Version 2.0 (the "License").
+00346         * You may not use this file except in compliance with the License.
+00347         * You may obtain a copy of the License at
+00348         *
+00349         *    http://www.apache.org/licenses/LICENSE-2.0
+00350         *
+00351         * Unless required by applicable law or agreed to in writing,
+00352         * software distributed under the License is distributed on an
+00353         * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+00354         * either express or implied. See the License for the specific
+00355         * language governing permissions and limitations under the License
+00356         ******************************************************************
+00357          01 CCDA-COMMON-MESSAGES.
+00358            05 CCDA-MSG-THANK-YOU         PIC X(50) VALUE
+00359                 'Thank you for using CardDemo application...      '.
+00360            05 CCDA-MSG-INVALID-KEY       PIC X(50) VALUE
+00361                 'Invalid key pressed. Please see below...         '.
+00362         *
+00363         * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:15:58 CDT
+00364         *
+00365         *COPY CSUSR01Y.
+00366         ******************************************************************
+00367         * Copyright Amazon.com, Inc. or its affiliates.
+00368         * All Rights Reserved.
+00369         *
+00370         * Licensed under the Apache License, Version 2.0 (the "License").
+00371         * You may not use this file except in compliance with the License.
+00372         * You may obtain a copy of the License at
+00373         *
+00374         *    http://www.apache.org/licenses/LICENSE-2.0
+00375         *
+00376         * Unless required by applicable law or agreed to in writing,
+00377         * software distributed under the License is distributed on an
+00378         * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+00379         * either express or implied. See the License for the specific
+00380         * language governing permissions and limitations under the License
+00381         ******************************************************************
+00382          01 SEC-USER-DATA.
+00383            05 SEC-USR-ID                 PIC X(08).
+00384            05 SEC-USR-FNAME              PIC X(20).
+00385            05 SEC-USR-LNAME              PIC X(20).
+00386            05 SEC-USR-PWD                PIC X(08).
+00387            05 SEC-USR-TYPE               PIC X(01).
+00388            05 SEC-USR-FILLER             PIC X(23).
+00389         *
+00390         * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:15:59 CDT
+00391         *
+00392
+00393         *COPY KIKAID.
+00394         *///////////////////////////////////////////////////////////////
+00395         * KICKS is an enhancement for TSO that lets you run your CICS
+00396         * applications directly in TSO instead of having to 'install'   8
+
+
+00397         * those apps in CICS.
+00398         * You don't even need CICS itself installed on your machine!
+00399         *
+00400         * KICKS for TSO
+00401         *  Copyright 2008-2014, Michael Noel, All Rights Reserved.
+00402         *
+00403         * Usage of 'KICKS for TSO' is in all cases subject to license.
+00404         * See http://www.kicksfortso.com
+00405         * for most current information regarding licensing options.
+00406         *//1/////////2/////////3/////////4/////////5/////////6/////////7
+00407
+00408         *   3270 aid byte values, usually used in examining eibaid
+00409         *                         to determine what user pressed...
+00410
+00411          01  KIKAID.
+00412         *    05  KIKENTER PIC X VALUE X'7D'.
+00413              05  KIKENTER PIC X VALUE QUOTE.
+00414         *    05  KIKCLEAR PIC X VALUE X'6D'.
+00415              05  KIKCLEAR PIC X VALUE '_'.
+00416
+00417         *    05  KIKNULL  PIC X VALUE X'00'.
+00418              05  KIKNULL  PIC X VALUE LOW-VALUES.
+00419
+00420         *    05  KIKPA1   PIC X VALUE X'6C'.
+00421              05  KIKPA1   PIC X VALUE '%'.
+00422         *    05  KIKPA2   PIC X VALUE X'6E'.
+00423              05  KIKPA2   PIC X VALUE '>'.
+00424         *    05  KIKPA3   PIC X VALUE X'6B'.
+00425              05  KIKPA3   PIC X VALUE ','.
+00426
+00427         *    05  KIKPF1   PIC X VALUE X'F1'.
+00428              05  KIKPF1   PIC X VALUE '1'.
+00429         *    05  KIKPF2   PIC X VALUE X'F2'.
+00430              05  KIKPF2   PIC X VALUE '2'.
+00431         *    05  KIKPF3   PIC X VALUE X'F3'.
+00432              05  KIKPF3   PIC X VALUE '3'.
+00433         *    05  KIKPF4   PIC X VALUE X'F4'.
+00434              05  KIKPF4   PIC X VALUE '4'.
+00435         *    05  KIKPF5   PIC X VALUE X'F5'.
+00436              05  KIKPF5   PIC X VALUE '5'.
+00437         *    05  KIKPF6   PIC X VALUE X'F6'.
+00438              05  KIKPF6   PIC X VALUE '6'.
+00439         *    05  KIKPF7   PIC X VALUE X'F7'.
+00440              05  KIKPF7   PIC X VALUE '7'.
+00441         *    05  KIKPF8   PIC X VALUE X'F8'.
+00442              05  KIKPF8   PIC X VALUE '8'.
+00443         *    05  KIKPF9   PIC X VALUE X'F9'.
+00444              05  KIKPF9   PIC X VALUE '9'.
+00445         *    05  KIKPF10  PIC X VALUE X'7A'.
+00446              05  KIKPF10  PIC X VALUE ':'.
+00447         *    05  KIKPF11  PIC X VALUE X'7B'.
+00448              05  KIKPF11  PIC X VALUE '#'.
+00449         *    05  KIKPF12  PIC X VALUE X'7C'.
+00450              05  KIKPF12  PIC X VALUE '@'.
+00451         *    05  KIKPF13  PIC X VALUE X'C1'.
+00452              05  KIKPF13  PIC X VALUE 'A'.
+00453         *    05  KIKPF14  PIC X VALUE X'C2'.   9
+
+
+00454              05  KIKPF14  PIC X VALUE 'B'.
+00455         *    05  KIKPF15  PIC X VALUE X'C3'.
+00456              05  KIKPF15  PIC X VALUE 'C'.
+00457         *    05  KIKPF16  PIC X VALUE X'C4'.
+00458              05  KIKPF16  PIC X VALUE 'D'.
+00459         *    05  KIKPF17  PIC X VALUE X'C5'.
+00460              05  KIKPF17  PIC X VALUE 'E'.
+00461         *    05  KIKPF18  PIC X VALUE X'C6'.
+00462              05  KIKPF18  PIC X VALUE 'F'.
+00463         *    05  KIKPF19  PIC X VALUE X'C7'.
+00464              05  KIKPF19  PIC X VALUE 'G'.
+00465         *    05  KIKPF20  PIC X VALUE X'C8'.
+00466              05  KIKPF20  PIC X VALUE 'H'.
+00467         *    05  KIKPF21  PIC X VALUE X'C9'.
+00468              05  KIKPF21  PIC X VALUE 'I'.
+00469         *    05  KIKPF22  PIC X VALUE X'4A'.
+00470              05  KIKPF22  PIC X VALUE 'Ö'.
+00471         *    05  KIKPF23  PIC X VALUE X'4B'.
+00472              05  KIKPF23  PIC X VALUE '.'.
+00473         *    05  KIKPF24  PIC X VALUE X'4C'.
+00474              05  KIKPF24  PIC X VALUE '<'.
+00475
+00476         *COPY KIKBMSCA.
+00477         *///////////////////////////////////////////////////////////////
+00478         * KICKS is an enhancement for TSO that lets you run your CICS
+00479         * applications directly in TSO instead of having to 'install'
+00480         * those apps in CICS.
+00481         * You don't even need CICS itself installed on your machine!
+00482         *
+00483         * KICKS for TSO
+00484         *  Copyright 2008-2014, Michael Noel, All Rights Reserved.
+00485         *
+00486         * Usage of 'KICKS for TSO' is in all cases subject to license.
+00487         * See http://www.kicksfortso.com
+00488         * for most current information regarding licensing options.
+00489         *//1/////////2/////////3/////////4/////////5/////////6/////////7
+00490
+00491
+00492          01  KIKBMSCA.
+00493
+00494         *    KIKBMPEM Printer end-of-message
+00495
+00496         *    KIKBMPNL Printer new-line
+00497
+00498         *    KIKBMPFF Printer form feed
+00499
+00500         *    KIKBMPCR Printer carriage return
+00501
+00502         *    KIKBMASK Autoskip
+00503
+00504         *    05  KIKBMASK PIC X VALUE X'F0'.
+00505              05  KIKBMASK PIC X VALUE '0'.
+00506
+00507         *    KIKBMUNP Unprotected
+00508
+00509         *    KIKBMUNN Unprotected and numeric
+00510         *    05  KIKBMUNN PIC X VALUE X'50'.  10
+
+
+00511              05  KIKBMUNN PIC X VALUE '&'.
+00512
+00513         *    KIKBMPRO Protected
+00514         *    05  KIKBMPRO PIC X VALUE X'60'.
+00515              05  KIKBMPRO PIC X VALUE '-'.
+00516
+00517         *    KIKBMBRY Bright
+00518
+00519         *    KIKBMDAR Dark
+00520         *    05  KIKBMDAR PIC X VALUE X'4C'.
+00521              05  KIKBMDAR PIC X VALUE '<'.
+00522
+00523         *    KIKBMFSE MDT set
+00524
+00525         *    KIKBMPRF Protected and MDT set
+00526         *    05  KIKBMPRF PIC X VALUE X'61'.
+00527              05  KIKBMPRF PIC X VALUE '/'.
+00528
+00529         *    KIKBMASF Autoskip and MDT set
+00530         *    05  KIKBMASF PIC X VALUE X'F1'.
+00531              05  KIKBMASF PIC X VALUE '1'.
+00532
+00533         *    KIKBMASB Autoskip and bright
+00534         *    05  KIKBMASB PIC X VALUE X'F8'.
+00535              05  KIKBMASB PIC X VALUE '8'.
+00536
+00537         *    KIKBMPSO shift-out value X'0E'.
+00538
+00539         *    KIKBMPSI shift-in value X'0F'.
+00540
+00541         *    KIKBMEOF Field erased
+00542         *    05  KIKBMEOF PIC X VALUE X'80'.
+00543              05  KIKBMEOF PIC X VALUE 'ç'.
+00544
+00545         *    KIKBMCUR Field containing cursor flagged
+00546
+00547         *    KIKBMEC Erased field containing cursor (COBOL only)
+00548
+00549         *    KIKBMFLG Flags (COBOL only)
+00550
+00551         *    KIKBMDET Field detected
+00552
+00553         *    KIKSA(1) Set attribute (SA) order
+00554
+00555         *    KIKERROR Error code
+00556
+00557         *    KIKCOLOR(1 Color
+00558
+00559         *    KIKPS(1) Programmed symbols
+00560
+00561         *    KIKHLT(1) Highlight
+00562
+00563         *    KIK3270(1) Base 3270 field attribute
+00564
+00565         *    KIKVAL Validation
+00566
+00567         *    KIKOUTLN Field outlining attribute code  11
+
+
+00568
+00569         *    KIKBKTRN Background transparency attribute code
+00570
+00571         *    KIKALL(1) Reset all to defaults
+00572
+00573         *    KIKDFT Default
+00574         *    05  KIKDFT PIC X VALUE X'FF'.
+00575              05  KIKDFT PIC X VALUE 'ÿ'.
+00576
+00577         *    KIKDFCOL(1 Default color
+00578
+00579         *    KIKBLUE Blue
+00580         *    05  KIKBLUE PIC X VALUE X'F1'.
+00581              05  KIKBLUE PIC X VALUE '1'.
+00582
+00583         *    KIKRED Red
+00584         *    05  KIKRED PIC X VALUE X'F2'.
+00585              05  KIKRED PIC X VALUE '2'.
+00586
+00587         *    KIKPINK Pink
+00588         *    05  KIKPINK PIC X VALUE X'F3'.
+00589              05  KIKPINK PIC X VALUE '3'.
+00590
+00591         *    KIKGREEN Green
+00592         *    05  KIKGREEN PIC X VALUE X'F4'.
+00593              05  KIKGREEN PIC X VALUE '4'.
+00594
+00595         *    KIKTURQ Turquoise
+00596         *    05  KIKTURQ PIC X VALUE X'F5'.
+00597              05  KIKTURQ PIC X VALUE '5'.
+00598
+00599         *    KIKYELLO Yellow
+00600         *    05  KIKYELLO PIC X VALUE X'F6'.
+00601              05  KIKYELLO PIC X VALUE '6'.
+00602
+00603         *    KIKNEUTR Neutral
+00604         *    05  KIKNEUTR PIC X VALUE X'F7'.
+00605              05  KIKNEUTR PIC X VALUE '7'.
+00606
+00607         *    KIKBASE(1) Base programmed symbols
+00608
+00609         *    KIKKIKI(1) Normal
+00610
+00611         *    KIKBLINK Blink
+00612         *    05  KIKBLINK PIC X VALUE X'F1'.
+00613              05  KIKBLINK PIC X VALUE '1'.
+00614
+00615         *    KIKREVRS Reverse video
+00616         *    05  KIKREVRS PIC X VALUE X'F2'.
+00617              05  KIKREVRS PIC X VALUE '2'.
+00618
+00619         *    KIKUNDLN Underscore
+00620         *    05  KIKUNDLN PIC X VALUE X'F4'.
+00621              05  KIKUNDLN PIC X VALUE '4'.
+00622
+00623         *    KIKMFIL(2) Mandatory fill
+00624  12
+
+
+00625         *    KIKMENT(2) Mandatory enter
+00626
+00627         *    KIKMFE Mandatory fill and mandatory enter
+00628
+00629         *    KIKMT Trigger
+00630
+00631         *    KIKMFT Mandatory fill and trigger
+00632
+00633         *    KIKMET Mandatory enter and trigger
+00634
+00635         *    KIKMFET Mandatory fill and mandatory enter and trigger
+00636
+00637         *    KIKUNNOD Unprotected, nondisplay, nonprint, nondetectable, MD
+00638         *    05  KIKUNNOD PIC X VALUE X'4D'.
+00639              05  KIKUNNOD PIC X VALUE '('.
+00640
+00641         *    KIKUNIMD Unprotected, intensify, light-pen detectable, MDT
+00642         *    05  KIKUNIMD PIC X VALUE X'C9'.
+00643              05  KIKUNIMD PIC X VALUE 'I'.
+00644
+00645         *    KIKUNNUM Unprotected, numeric, MDT
+00646         *    05  KIKUNNUM PIC X VALUE X'D1'.
+00647              05  KIKUNNUM PIC X VALUE 'J'.
+00648
+00649         *    KIKUNNUB Unprotected, numeric, intensify, intensify,
+00650         *                          light-pen detectable
+00651         *    05  KIKUNNUB PIC X VALUE X'D8'.
+00652              05  KIKUNNUB PIC X VALUE 'Q'.
+00653
+00654         *    KIKUNINT Unprotected, numeric, intensify,
+00655         *                          light-pen detectable, MDT
+00656         *    05  KIKUNINT PIC X VALUE X'D9'.
+00657              05  KIKUNINT PIC X VALUE 'R'.
+00658
+00659         *    KIKUNNON Unprotected, numeric, nondisplay, nonprint,
+00660         *                          nondetectable, MDT
+00661         *    05  KIKUNNON PIC X VALUE X'5D'.
+00662              05  KIKUNNON PIC X VALUE ')'.
+00663
+00664         *    KIKPROTI Protected, intensify, light-pen detectable
+00665         *    05  KIKPROTI PIC X VALUE X'E8'.
+00666              05  KIKPROTI PIC X VALUE 'Y'.
+00667
+00668         *    KIKPROTN Protected, nondisplay, nonprint, nondetectable
+00669         *    05  KIKPROTN PIC X VALUE X'6C'.
+00670              05  KIKPROTN PIC X VALUE '%'.
+00671
+00672         *    KIKDFFR Default outline
+00673
+00674         *    KIKUNDER Underline
+00675
+00676         *    KIKRIGHT Right vertical line
+00677
+00678         *    KIKOVER Overline
+00679
+00680         *    KIKLEFT Left vertical line
+00681  13
+
+
+00682         *    KIKBOX Underline and right vertical and overline
+00683         *                          and left vertical
+00684
+00685         *    KIKSOSI SOSI=yes
+00686
+00687         *    KIKTRANS Background transparency
+00688
+00689         *    KIKOPAQ No background transparency
+00690
+00691
+00692         * VALUES USED IN EXEC-KICKS CALLS
+00693
+00694          01  KIK-MSG                         PIC X(80).
+00695          01  KIK-MAPSETNAME                  PIC X(8).
+00696          01  KIK-MAPNAME                     PIC X(8).
+00697          01  KIK-QUEUENAME.
+00698              05  KIK-FILENAME                PIC X(8).
+00699              05  KIK-PROGRAM                 PIC X(8).
+00700          01  KIK-TRAN                        PIC X(4).
+00701          01  KIK-ABND                        PIC X(4).
+00702          01  KIK-LEN                         PIC S9(4) COMP.
+00703          01  KIK-ITEM                        PIC S9(4) COMP.
+00704          01  KIK-ITEMSIZE                    PIC S9(4) COMP.
+00705          01  KIK-NUMITEMS                    PIC S9(4) COMP.
+00706          01  KIK-FLEN                        PIC S9(8) COMP.
+00707          01  KIK-KEYLEN                      PIC S9(4) COMP.
+00708          01  KIK-NUMREC                      PIC S9(4) COMP.
+00709          01  KIK-REQID                       PIC S9(4) COMP.
+00710          01  KIK-FLAGS                       PIC S9(8) COMP.
+00711          01  KIK-GOTOVAR                     PIC S9(4) COMP.
+00712          01  KIK-NUM-GOTO                    PIC S9(8) COMP.
+00713          01  KIK-AIDS1                       PIC S9(8) COMP.
+00714          01  KIK-AIDS2                       PIC S9(8) COMP.
+00715          01  KIK-AIDS3                       PIC S9(8) COMP.
+00716          01  KIK-AIDS4                       PIC S9(8) COMP.
+00717
+00718         * due to compiler bug (in ANSI MVT COBOL compiler)
+00719         * we can't have versions in value clause because
+00720         * the compiler doesn't like really big (but valid) numbers
+00721         * in value clauses. they seem ok in moves, computes, ...
+00722          01  KIK-V1                          PIC S9(8) COMP VALUE +0.
+00723          01  KIK-V2                          PIC S9(8) COMP VALUE +0.
+00724
+00725          01  KIK-NULL                        PIC S9(8) COMP VALUE +0.
+00726
+00727          LINKAGE SECTION.
+00728         *COPY KIKEIB.
+00729         *///////////////////////////////////////////////////////////////
+00730         * KICKS is an enhancement for TSO that lets you run your CICS
+00731         * applications directly in TSO instead of having to 'install'
+00732         * those apps in CICS.
+00733         * You don't even need CICS itself installed on your machine!
+00734         *
+00735         * KICKS for TSO
+00736         *  Copyright 2008-2014, Michael Noel, All Rights Reserved.
+00737         *
+00738         * Usage of 'KICKS for TSO' is in all cases subject to license.  14
+
+
+00739         * See http://www.kicksfortso.com
+00740         * for most current information regarding licensing options.
+00741         *//1/////////2/////////3/////////4/////////5/////////6/////////7
+00742
+00743          01  KIKEIB.
+00744              05  EIBTASKN PIC S9(8) COMP SYNC.
+00745              05  EIBCALEN PIC S9(4) COMP SYNC.
+00746              05  EIBCPOSN PIC S9(4) COMP SYNC.
+00747              05  EIBDATE PIC S9(7) COMP-3.
+00748              05  EIBTIME PIC S9(7) COMP-3.
+00749              05  EIBRESP PIC S9(8) COMP SYNC.
+00750              05  EIBRESP2 PIC S9(8) COMP SYNC.
+00751              05  EIBRSRCE PIC X(8).
+00752              05  EIBDS PIC X(8).
+00753              05  EIBFN PIC X(2).
+00754              05  EIBFN-2 REDEFINES EIBFN PIC S9(4) COMP.
+00755              05  EIBRCODE PIC X(6).
+00756              05  EIBTRMID PIC X(4).
+00757              05  EIBTRNID PIC X(4).
+00758              05  EIBAID PIC X.
+00759              05  EIBOPID PIC X(3).
+00760              05  EIBUSRID PIC X(8).
+00761              05  EIBSYSID PIC X(8).
+00762              05  EIBNETID PIC X(8).
+00763              05  EIBPGMID PIC X(8).
+00764         * following three added to PRO for source trace
+00765              05  EIBLINE  PIC S9(8) COMP SYNC.
+00766              05  EIBPROG  PIC X(8).
+00767              05  EIBWC    PIC X(20).
+00768         *
+00769
+00770
+00771          01  KIKCOMMAREA.
+00772            05  LK-COMMAREA               PIC X(01) OCCURS 1 TO 32767 TIMES
+00773                                            DEPENDING ON EIBCALEN.
+00774
+00775          PROCEDURE DIVISION USING
+00776                  KIKEIB,
+00777                  KIKCOMMAREA.
+00778
+00779         * Set up KIK-V1/V2 as x'01050000' - V1R5M0(0)
+00780              MOVE 17104896 TO KIK-V1.
+00781              MULTIPLY KIK-V1 BY -1 GIVING KIK-V2.
+00782
+00783         * Fill in EIB source trace fields even if not source tracing
+00784              MOVE 'COSGN00C' TO EIBPROG.
+00785              MOVE '20:07:00SEP 16, 2026' TO EIBWC.
+00786              MOVE 0 TO EIBLINE.
+00787
+00788         * Set up initial entry, final return
+00789              MOVE 0 TO EIBFN-2. MOVE -1 TO KIK-LEN.
+00790              CALL 'KIKCOBGL' USING KIKEIB, KIK-V1,
+00791                    KIK-LEN.
+00792              IF KIK-LEN > 0
+00793                  GOBACK.
+00794          MAIN-PARA.
+00795  15
+
+
+00796              MOVE 'N' TO WS-ERR-FLG.
+00797              MOVE SPACES TO WS-MESSAGE.
+00798              MOVE SPACES TO ERRMSGO OF COSGN0AO.
+00799
+00800              IF EIBCALEN = 0
+00801                  MOVE LOW-VALUES TO COSGN0AO
+00802                  MOVE -1       TO USERIDL OF COSGN0AI
+00803                  PERFORM SEND-SIGNON-SCREEN
+00804              ELSE
+00805                  PERFORM PROCESS-AID-KEY.
+00806
+00807         *    EXEC KICKS RETURN
+00808         *              TRANSID (WS-TRANID)
+00809         *              COMMAREA (CARDDEMO-COMMAREA)
+00810         *              LENGTH (WS-CA-LEN)
+00811         *    END-EXEC.
+00812              MOVE 83886170 TO EIBLINE
+00813              MOVE 3592 TO EIBFN-2
+00814              MOVE WS-TRANID TO KIK-TRAN
+00815              MOVE WS-CA-LEN TO KIK-FLEN
+00816              CALL 'KIKCOBGL' USING KIKEIB,
+00817                    KIK-V1,
+00818                    KIK-TRAN, CARDDEMO-COMMAREA, KIK-FLEN.
+00819
+00820         *----------------------------------------------------------------*
+00821         * EVALUATE EIBAID in the original; nested IF for ANS-74 COBOL.
+00822         *----------------------------------------------------------------*
+00823          PROCESS-AID-KEY.
+00824
+00825              IF EIBAID = KIKENTER
+00826                  PERFORM PROCESS-ENTER-KEY
+00827              ELSE
+00828              IF EIBAID = KIKPF3
+00829                  MOVE CCDA-MSG-THANK-YOU        TO WS-MESSAGE
+00830                  PERFORM SEND-PLAIN-TEXT
+00831              ELSE
+00832                  MOVE 'Y'                       TO WS-ERR-FLG
+00833                  MOVE CCDA-MSG-INVALID-KEY      TO WS-MESSAGE
+00834                  PERFORM SEND-SIGNON-SCREEN.
+00835
+00836         *----------------------------------------------------------------*
+00837         *                      PROCESS-ENTER-KEY
+00838         *----------------------------------------------------------------*
+00839          PROCESS-ENTER-KEY.
+00840
+00841         *    EXEC KICKS RECEIVE
+00842         *              MAP('COSGN0A')
+00843         *              MAPSET('COSGN00')
+00844         *              INTO(COSGN0AI)
+00845         *              RESP(WS-RESP-CD)
+00846         *              RESP2(WS-REAS-CD)
+00847         *    END-EXEC.
+00848              MOVE 117440629 TO EIBLINE
+00849              MOVE 6146 TO EIBFN-2
+00850              MOVE 'COSGN0A' TO KIK-MAPNAME
+00851              MOVE 'COSGN00' TO KIK-MAPSETNAME
+00852              MOVE 0 TO KIK-FLAGS  16
+
+
+00853              CALL 'KIKCOBGL' USING KIKEIB,
+00854                    KIK-V2,
+00855                    KIK-MAPSETNAME, KIK-MAPNAME, COSGN0AI,
+00856                    KIK-FLAGS, KIK-FLAGS
+00857              MOVE EIBRESP TO WS-RESP-CD
+00858              MOVE EIBRESP2 TO WS-REAS-CD.
+00859
+00860              IF USERIDI OF COSGN0AI = SPACES OR LOW-VALUES
+00861                  MOVE 'Y'      TO WS-ERR-FLG
+00862                  MOVE 'Please enter User ID ...' TO WS-MESSAGE
+00863                  MOVE -1       TO USERIDL OF COSGN0AI
+00864                  PERFORM SEND-SIGNON-SCREEN
+00865              ELSE
+00866              IF PASSWDI OF COSGN0AI = SPACES OR LOW-VALUES
+00867                  MOVE 'Y'      TO WS-ERR-FLG
+00868                  MOVE 'Please enter Password ...' TO WS-MESSAGE
+00869                  MOVE -1       TO PASSWDL OF COSGN0AI
+00870                  PERFORM SEND-SIGNON-SCREEN
+00871              ELSE
+00872                  NEXT SENTENCE.
+00873
+00874              IF ERR-FLG-OFF
+00875                  MOVE USERIDI OF COSGN0AI TO WS-USER-ID
+00876                  MOVE PASSWDI OF COSGN0AI TO WS-USER-PWD
+00877                  PERFORM UPPER-CASE-CREDENTIALS
+00878                  MOVE WS-USER-ID TO CDEMO-USER-ID
+00879                  PERFORM READ-USER-SEC-FILE.
+00880
+00881         *----------------------------------------------------------------*
+00882         * FUNCTION UPPER-CASE is COBOL-85; TRANSFORM is the OS/VS COBOL
+00883         * extension that does the same job on this compiler.
+00884         *----------------------------------------------------------------*
+00885          UPPER-CASE-CREDENTIALS.
+00886
+00887              TRANSFORM WS-USER-ID FROM 'abcdefghijklmnopqrstuvwxyz'
+00888                                   TO   'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
+00889              TRANSFORM WS-USER-PWD FROM 'abcdefghijklmnopqrstuvwxyz'
+00890                                    TO   'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
+00891
+00892         *----------------------------------------------------------------*
+00893         *                      SEND-SIGNON-SCREEN
+00894         *----------------------------------------------------------------*
+00895          SEND-SIGNON-SCREEN.
+00896
+00897              PERFORM POPULATE-HEADER-INFO.
+00898
+00899              MOVE WS-MESSAGE TO ERRMSGO OF COSGN0AO.
+00900
+00901         *    EXEC KICKS SEND
+00902         *              MAP('COSGN0A')
+00903         *              MAPSET('COSGN00')
+00904         *              FROM(COSGN0AO)
+00905         *              ERASE
+00906         *              CURSOR
+00907         *    END-EXEC.
+00908              MOVE 117440678 TO EIBLINE
+00909              MOVE 6148 TO EIBFN-2  17
+
+
+00910              MOVE 'COSGN0A' TO KIK-MAPNAME
+00911              MOVE 'COSGN00' TO KIK-MAPSETNAME
+00912              MOVE 62722 TO KIK-FLAGS
+00913              CALL 'KIKCOBGL' USING KIKEIB,
+00914                    KIK-V1,
+00915                    KIK-MAPSETNAME, KIK-MAPNAME, COSGN0AO
+00916                    KIK-NULL, KIK-FLAGS.
+00917
+00918         *----------------------------------------------------------------*
+00919         *                      SEND-PLAIN-TEXT
+00920         *----------------------------------------------------------------*
+00921          SEND-PLAIN-TEXT.
+00922
+00923         *    EXEC KICKS SEND TEXT
+00924         *              FROM(WS-MESSAGE)
+00925         *              LENGTH(WS-MSG-LEN)
+00926         *              ERASE
+00927         *              FREEKB
+00928         *    END-EXEC.
+00929              MOVE 100663475 TO EIBLINE
+00930              MOVE 6150 TO EIBFN-2
+00931              MOVE WS-MSG-LEN TO KIK-FLEN
+00932              MOVE 193792 TO KIK-FLAGS
+00933              CALL 'KIKCOBGL' USING KIKEIB,
+00934                    KIK-V1,
+00935                    WS-MESSAGE, KIK-FLEN, KIK-NULL,
+00936                    KIK-NULL, KIK-FLAGS.
+00937
+00938         *    EXEC KICKS RETURN
+00939         *    END-EXEC.
+00940              MOVE 33554618 TO EIBLINE
+00941              MOVE 3592 TO EIBFN-2
+00942              MOVE LOW-VALUES TO KIK-TRAN
+00943              MOVE 0 TO KIK-FLEN
+00944              CALL 'KIKCOBGL' USING KIKEIB,
+00945                    KIK-V1,
+00946                    KIK-TRAN, KIK-NULL, KIK-FLEN.
+00947
+00948         *----------------------------------------------------------------*
+00949         * FUNCTION CURRENT-DATE is COBOL-85; use ASKTIME / FORMATTIME.
+00950         * ASSIGN APPLID does not exist in KICKS; ASSIGN SYSID is X(4).
+00951         *----------------------------------------------------------------*
+00952          POPULATE-HEADER-INFO.
+00953
+00954              MOVE CCDA-TITLE01           TO TITLE01O OF COSGN0AO.
+00955              MOVE CCDA-TITLE02           TO TITLE02O OF COSGN0AO.
+00956              MOVE WS-TRANID              TO TRNNAMEO OF COSGN0AO.
+00957              MOVE WS-PGMNAME             TO PGMNAMEO OF COSGN0AO.
+00958
+00959         *    EXEC KICKS ASKTIME
+00960         *              ABSTIME(WS-ABSTIME)
+00961         *    END-EXEC.
+00962              MOVE 50331848 TO EIBLINE
+00963              MOVE 18946 TO EIBFN-2
+00964              MOVE 1 TO KIK-FLAGS
+00965              CALL 'KIKCOBGL' USING KIKEIB,
+00966                    KIK-V1,  18
+
+
+00967                    KIK-FLAGS,
+00968                    WS-ABSTIME.
+00969         *    EXEC KICKS FORMATTIME
+00970         *              ABSTIME(WS-ABSTIME)
+00971         *              MMDDYY(WS-DATE-MMDDYY)
+00972         *              DATESEP('/')
+00973         *    END-EXEC.
+00974              MOVE 83886283 TO EIBLINE
+00975              MOVE 18948 TO EIBFN-2
+00976              MOVE 41 TO KIK-FLAGS
+00977              MOVE '/' TO KIK-TRAN
+00978              MOVE ' ' TO KIK-ABND
+00979              CALL 'KIKCOBGL' USING KIKEIB,
+00980                    KIK-V1,
+00981                    WS-ABSTIME,
+00982                    KIK-FLAGS,
+00983                    WS-DATE-MMDDYY,
+00984                    KIK-TRAN,
+00985                    KIK-ABND.
+00986         *    EXEC KICKS FORMATTIME
+00987         *              ABSTIME(WS-ABSTIME)
+00988         *              TIME(WS-TIME-HHMMSS)
+00989         *              TIMESEP(':')
+00990         *    END-EXEC.
+00991              MOVE 83886288 TO EIBLINE
+00992              MOVE 18948 TO EIBFN-2
+00993              MOVE 80 TO KIK-FLAGS
+00994              MOVE ' ' TO KIK-TRAN
+00995              MOVE ':' TO KIK-ABND
+00996              CALL 'KIKCOBGL' USING KIKEIB,
+00997                    KIK-V1,
+00998                    WS-ABSTIME,
+00999                    KIK-FLAGS,
+01000                    WS-TIME-HHMMSS,
+01001                    KIK-TRAN,
+01002                    KIK-ABND.
+01003
+01004              MOVE WS-DATE-MMDDYY         TO CURDATEO OF COSGN0AO.
+01005              MOVE WS-TIME-HHMMSS         TO CURTIMEO OF COSGN0AO.
+01006
+01007              MOVE 'KICKS   '             TO APPLIDO OF COSGN0AO.
+01008
+01009         *    EXEC KICKS ASSIGN
+01010         *              SYSID(WS-SYSID4)
+01011         *    END-EXEC.
+01012              MOVE 50331867 TO EIBLINE
+01013              MOVE 520 TO EIBFN-2
+01014              MOVE 79 TO KIK-FLAGS
+01015              CALL 'KIKCOBGL' USING KIKEIB,
+01016                    KIK-V1,
+01017                    KIK-FLAGS,
+01018                    WS-SYSID4.
+01019              MOVE WS-SYSID4              TO SYSIDO OF COSGN0AO.
+01020
+01021         *----------------------------------------------------------------*
+01022         *                      READ-USER-SEC-FILE
+01023         *----------------------------------------------------------------*  19
+
+
+01024          READ-USER-SEC-FILE.
+01025
+01026         *    EXEC KICKS READ
+01027         *         DATASET   (WS-USRSEC-FILE)
+01028         *         INTO      (SEC-USER-DATA)
+01029         *         LENGTH    (WS-SEC-LEN)
+01030         *         RIDFLD    (WS-USER-ID)
+01031         *         KEYLENGTH (WS-KEY-LEN)
+01032         *         RESP      (WS-RESP-CD)
+01033         *         RESP2     (WS-REAS-CD)
+01034         *    END-EXEC.
+01035              MOVE 150995173 TO EIBLINE
+01036              MOVE 1538 TO EIBFN-2
+01037              MOVE WS-USRSEC-FILE TO KIK-FILENAME
+01038              MOVE 0 TO KIK-FLAGS
+01039              MOVE WS-KEY-LEN TO KIK-KEYLEN
+01040              CALL 'KIKCOBGL' USING KIKEIB,
+01041                    KIK-V2,
+01042                    KIK-FILENAME,
+01043                    KIK-FLAGS,
+01044                    SEC-USER-DATA,
+01045                    WS-SEC-LEN,
+01046                    WS-USER-ID,
+01047                    KIK-KEYLEN
+01048              MOVE EIBRESP TO WS-RESP-CD
+01049              MOVE EIBRESP2 TO WS-REAS-CD.
+01050
+01051         *    IF WS-RESP-CD = KIKRESP(NORMAL)
+01052              IF WS-RESP-CD =  +0
+01053                  PERFORM CHECK-PASSWORD
+01054              ELSE
+01055         *    IF WS-RESP-CD = KIKRESP(NOTFND)
+01056              IF WS-RESP-CD =  +13
+01057                  MOVE 'Y'     TO WS-ERR-FLG
+01058                  MOVE 'User not found. Try again ...' TO WS-MESSAGE
+01059                  MOVE -1       TO USERIDL OF COSGN0AI
+01060                  PERFORM SEND-SIGNON-SCREEN
+01061              ELSE
+01062                  MOVE 'Y'     TO WS-ERR-FLG
+01063                  MOVE 'Unable to verify the User ...' TO WS-MESSAGE
+01064                  MOVE -1       TO USERIDL OF COSGN0AI
+01065                  PERFORM SEND-SIGNON-SCREEN.
+01066
+01067          CHECK-PASSWORD.
+01068
+01069              IF SEC-USR-PWD = WS-USER-PWD
+01070                  MOVE WS-USER-ID   TO CDEMO-USER-ID
+01071                  MOVE SEC-USR-TYPE TO CDEMO-USER-TYPE
+01072                  MOVE ZEROS        TO CDEMO-PGM-CONTEXT
+01073                  PERFORM TRANSFER-TO-MENU
+01074              ELSE
+01075                  MOVE 'Y'     TO WS-ERR-FLG
+01076                  MOVE 'Wrong Password. Try again ...' TO WS-MESSAGE
+01077                  MOVE -1       TO PASSWDL OF COSGN0AI
+01078                  PERFORM SEND-SIGNON-SCREEN.
+01079
+01080         *----------------------------------------------------------------*  20
+
+
+01081         * KICKS requires the XCTL COMMAREA to live outside the program's
+01082         * WORKING-STORAGE, so it is copied into the incoming DFHCOMMAREA
+01083         * (always present here: we only reach this on a RETURN TRANSID).
+01084         *----------------------------------------------------------------*
+01085          TRANSFER-TO-MENU.
+01086
+01087              MOVE EIBCALEN TO WS-COMMAREA-LEN.
+01088              MOVE CARDDEMO-COMMAREA TO KIKCOMMAREA.
+01089
+01090              IF CDEMO-USRTYP-ADMIN
+01091         *        EXEC KICKS XCTL
+01092         *            PROGRAM ('COADM01C')
+01093         *            COMMAREA(DFHCOMMAREA)
+01094         *            LENGTH(WS-COMMAREA-LEN)
+01095         *            RESP(WS-RESP-CD)
+01096         *        END-EXEC
+01097              MOVE 100663573 TO EIBLINE
+01098              MOVE 3588 TO EIBFN-2
+01099              MOVE 'COADM01C' TO KIK-PROGRAM
+01100              MOVE WS-COMMAREA-LEN TO KIK-FLEN
+01101              CALL 'KIKCOBGL' USING KIKEIB,
+01102                    KIK-V2,
+01103                    KIK-PROGRAM, KIKCOMMAREA, KIK-FLEN
+01104              MOVE EIBRESP TO WS-RESP-CD
+01105              ELSE
+01106         *        EXEC KICKS XCTL
+01107         *            PROGRAM ('COMEN01C')
+01108         *            COMMAREA(DFHCOMMAREA)
+01109         *            LENGTH(WS-COMMAREA-LEN)
+01110         *            RESP(WS-RESP-CD)
+01111         *        END-EXEC.
+01112              MOVE 100663580 TO EIBLINE
+01113              MOVE 3588 TO EIBFN-2
+01114              MOVE 'COMEN01C' TO KIK-PROGRAM
+01115              MOVE WS-COMMAREA-LEN TO KIK-FLEN
+01116              CALL 'KIKCOBGL' USING KIKEIB,
+01117                    KIK-V2,
+01118                    KIK-PROGRAM, KIKCOMMAREA, KIK-FLEN
+01119              MOVE EIBRESP TO WS-RESP-CD.
+01120
+01121              MOVE 'Y'     TO WS-ERR-FLG.
+01122              MOVE 'Signed on, but the menu program is not installed'
+01123                           TO WS-MESSAGE.
+01124              PERFORM SEND-SIGNON-SCREEN.  21
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=1-266     01  WS-VARIABLES                    BL=1     000   DNM=1-266     DS 0CL160    GROUP
+       DNM=1-291     02  WS-PGMNAME                      BL=1     000   DNM=1-291     DS 8C        DISP
+       DNM=1-311     02  WS-TRANID                       BL=1     008   DNM=1-311     DS 4C        DISP
+       DNM=1-330     02  WS-MESSAGE                      BL=1     00C   DNM=1-330     DS 80C       DISP
+       DNM=1-350     02  WS-USRSEC-FILE                  BL=1     05C   DNM=1-350     DS 8C        DISP
+       DNM=1-374     02  WS-ERR-FLG                      BL=1     064   DNM=1-374     DS 1C        DISP
+       DNM=1-397     88  ERR-FLG-ON                                     DNM=1-397
+       DNM=1-418     88  ERR-FLG-OFF                                    DNM=1-418
+       DNM=1-440     02  WS-RESP-CD                      BL=1     065   DNM=1-440     DS 2C        COMP
+       DNM=1-460     02  WS-REAS-CD                      BL=1     067   DNM=1-460     DS 2C        COMP
+       DNM=1-480     02  WS-USR-MODIFIED                 BL=1     069   DNM=1-480     DS 1C        DISP
+       DNM=2-000     88  USR-MODIFIED-YES                               DNM=2-000
+       DNM=2-030     88  USR-MODIFIED-NO                                DNM=2-030
+       DNM=2-056     02  WS-USER-ID                      BL=1     06A   DNM=2-056     DS 8C        DISP
+       DNM=2-079     02  WS-USER-PWD                     BL=1     072   DNM=2-079     DS 8C        DISP
+       DNM=2-100     02  WS-SEC-LEN                      BL=1     07A   DNM=2-100     DS 2C        COMP
+       DNM=2-120     02  WS-KEY-LEN                      BL=1     07C   DNM=2-120     DS 2C        COMP
+       DNM=2-140     02  WS-SYSID4                       BL=1     07E   DNM=2-140     DS 4C        DISP
+       DNM=2-159     02  WS-ABSTIME                      BL=1     082   DNM=2-159     DS 8P        COMP-3
+       DNM=2-179     02  WS-DATE-MMDDYY                  BL=1     08A   DNM=2-179     DS 8C        DISP
+       DNM=2-203     02  WS-TIME-HHMMSS                  BL=1     092   DNM=2-203     DS 8C        DISP
+       DNM=2-227     02  WS-COMMAREA-LEN                 BL=1     09A   DNM=2-227     DS 2C        COMP
+       DNM=2-252     02  WS-CA-LEN                       BL=1     09C   DNM=2-252     DS 2C        COMP
+       DNM=2-271     02  WS-MSG-LEN                      BL=1     09E   DNM=2-271     DS 2C        COMP
+       DNM=2-291     01  CARDDEMO-COMMAREA               BL=1     0A0   DNM=2-291     DS 0CL160    GROUP
+       DNM=2-321     02  CDEMO-GENERAL-INFO              BL=1     0A0   DNM=2-321     DS 0CL34     GROUP
+       DNM=2-352     03  CDEMO-FROM-TRANID               BL=1     0A0   DNM=2-352     DS 4C        DISP
+       DNM=2-379     03  CDEMO-FROM-PROGRAM              BL=1     0A4   DNM=2-379     DS 8C        DISP
+       DNM=2-407     03  CDEMO-TO-TRANID                 BL=1     0AC   DNM=2-407     DS 4C        DISP
+       DNM=2-432     03  CDEMO-TO-PROGRAM                BL=1     0B0   DNM=2-432     DS 8C        DISP
+       DNM=2-461     03  CDEMO-USER-ID                   BL=1     0B8   DNM=2-461     DS 8C        DISP
+       DNM=3-000     03  CDEMO-USER-TYPE                 BL=1     0C0   DNM=3-000     DS 1C        DISP
+       DNM=3-028     88  CDEMO-USRTYP-ADMIN                             DNM=3-028
+       DNM=3-057     88  CDEMO-USRTYP-USER                              DNM=3-057
+       DNM=3-085     03  CDEMO-PGM-CONTEXT               BL=1     0C1   DNM=3-085     DS 1C        DISP-NM
+       DNM=3-115     88  CDEMO-PGM-ENTER                                DNM=3-115
+       DNM=3-143     88  CDEMO-PGM-REENTER                              DNM=3-143
+       DNM=3-173     02  CDEMO-CUSTOMER-INFO             BL=1     0C2   DNM=3-173     DS 0CL84     GROUP
+       DNM=3-205     03  CDEMO-CUST-ID                   BL=1     0C2   DNM=3-205     DS 9C        DISP-NM
+       DNM=3-228     03  CDEMO-CUST-FNAME                BL=1     0CB   DNM=3-228     DS 25C       DISP
+       DNM=3-254     03  CDEMO-CUST-MNAME                BL=1     0E4   DNM=3-254     DS 25C       DISP
+       DNM=3-280     03  CDEMO-CUST-LNAME                BL=1     0FD   DNM=3-280     DS 25C       DISP
+       DNM=3-309     02  CDEMO-ACCOUNT-INFO              BL=1     116   DNM=3-309     DS 0CL12     GROUP
+       DNM=3-340     03  CDEMO-ACCT-ID                   BL=1     116   DNM=3-340     DS 11C       DISP-NM
+       DNM=3-363     03  CDEMO-ACCT-STATUS               BL=1     121   DNM=3-363     DS 1C        DISP
+       DNM=3-390     02  CDEMO-CARD-INFO                 BL=1     122   DNM=3-390     DS 0CL16     GROUP
+       DNM=3-418     03  CDEMO-CARD-NUM                  BL=1     122   DNM=3-418     DS 16C       DISP-NM
+       DNM=3-442     02  CDEMO-MORE-INFO                 BL=1     132   DNM=3-442     DS 0CL14     GROUP
+       DNM=3-470     03  CDEMO-LAST-MAP                  BL=1     132   DNM=3-470     DS 7C        DISP
+       DNM=4-000     03  CDEMO-LAST-MAPSET               BL=1     139   DNM=4-000     DS 7C        DISP
+       DNM=4-027     01  COSGN0AI                        BL=1     140   DNM=4-027     DS 0CL308    GROUP
+       DNM=4-051     02  FILLER                          BL=1     140   DNM=4-051     DS 12C       DISP
+       DNM=4-067     02  TRNNAMEL                        BL=1     14C   DNM=4-067     DS 2C        COMP
+       DNM=4-085     02  TRNNAMEF                        BL=1     14E   DNM=4-085     DS 1C        DISP
+       DNM=4-103     02  TRNNAMEC                        BL=1     14F   DNM=4-103     DS 1C        DISP  22
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=4-124     02  TRNNAMEP                        BL=1     150   DNM=4-124     DS 1C        DISP
+       DNM=4-142     02  TRNNAMEH                        BL=1     151   DNM=4-142     DS 1C        DISP
+       DNM=4-160     02  TRNNAMEV                        BL=1     152   DNM=4-160     DS 1C        DISP
+       DNM=4-181     02  TRNNAMEI                        BL=1     153   DNM=4-181     DS 4C        DISP
+       DNM=4-199     02  TITLE01L                        BL=1     157   DNM=4-199     DS 2C        COMP
+       DNM=4-217     02  TITLE01F                        BL=1     159   DNM=4-217     DS 1C        DISP
+       DNM=4-235     02  TITLE01C                        BL=1     15A   DNM=4-235     DS 1C        DISP
+       DNM=4-253     02  TITLE01P                        BL=1     15B   DNM=4-253     DS 1C        DISP
+       DNM=4-271     02  TITLE01H                        BL=1     15C   DNM=4-271     DS 1C        DISP
+       DNM=4-289     02  TITLE01V                        BL=1     15D   DNM=4-289     DS 1C        DISP
+       DNM=4-307     02  TITLE01I                        BL=1     15E   DNM=4-307     DS 40C       DISP
+       DNM=4-325     02  CURDATEL                        BL=1     186   DNM=4-325     DS 2C        COMP
+       DNM=4-343     02  CURDATEF                        BL=1     188   DNM=4-343     DS 1C        DISP
+       DNM=4-361     02  CURDATEC                        BL=1     189   DNM=4-361     DS 1C        DISP
+       DNM=4-379     02  CURDATEP                        BL=1     18A   DNM=4-379     DS 1C        DISP
+       DNM=4-397     02  CURDATEH                        BL=1     18B   DNM=4-397     DS 1C        DISP
+       DNM=4-415     02  CURDATEV                        BL=1     18C   DNM=4-415     DS 1C        DISP
+       DNM=4-433     02  CURDATEI                        BL=1     18D   DNM=4-433     DS 8C        DISP
+       DNM=4-451     02  PGMNAMEL                        BL=1     195   DNM=4-451     DS 2C        COMP
+       DNM=4-469     02  PGMNAMEF                        BL=1     197   DNM=4-469     DS 1C        DISP
+       DNM=4-487     02  PGMNAMEC                        BL=1     198   DNM=4-487     DS 1C        DISP
+       DNM=5-000     02  PGMNAMEP                        BL=1     199   DNM=5-000     DS 1C        DISP
+       DNM=5-018     02  PGMNAMEH                        BL=1     19A   DNM=5-018     DS 1C        DISP
+       DNM=5-036     02  PGMNAMEV                        BL=1     19B   DNM=5-036     DS 1C        DISP
+       DNM=5-054     02  PGMNAMEI                        BL=1     19C   DNM=5-054     DS 8C        DISP
+       DNM=5-075     02  TITLE02L                        BL=1     1A4   DNM=5-075     DS 2C        COMP
+       DNM=5-093     02  TITLE02F                        BL=1     1A6   DNM=5-093     DS 1C        DISP
+       DNM=5-111     02  TITLE02C                        BL=1     1A7   DNM=5-111     DS 1C        DISP
+       DNM=5-132     02  TITLE02P                        BL=1     1A8   DNM=5-132     DS 1C        DISP
+       DNM=5-153     02  TITLE02H                        BL=1     1A9   DNM=5-153     DS 1C        DISP
+       DNM=5-171     02  TITLE02V                        BL=1     1AA   DNM=5-171     DS 1C        DISP
+       DNM=5-189     02  TITLE02I                        BL=1     1AB   DNM=5-189     DS 40C       DISP
+       DNM=5-207     02  CURTIMEL                        BL=1     1D3   DNM=5-207     DS 2C        COMP
+       DNM=5-225     02  CURTIMEF                        BL=1     1D5   DNM=5-225     DS 1C        DISP
+       DNM=5-243     02  CURTIMEC                        BL=1     1D6   DNM=5-243     DS 1C        DISP
+       DNM=5-261     02  CURTIMEP                        BL=1     1D7   DNM=5-261     DS 1C        DISP
+       DNM=5-279     02  CURTIMEH                        BL=1     1D8   DNM=5-279     DS 1C        DISP
+       DNM=5-297     02  CURTIMEV                        BL=1     1D9   DNM=5-297     DS 1C        DISP
+       DNM=5-315     02  CURTIMEI                        BL=1     1DA   DNM=5-315     DS 9C        DISP
+       DNM=5-333     02  APPLIDL                         BL=1     1E3   DNM=5-333     DS 2C        COMP
+       DNM=5-353     02  APPLIDF                         BL=1     1E5   DNM=5-353     DS 1C        DISP
+       DNM=5-370     02  APPLIDC                         BL=1     1E6   DNM=5-370     DS 1C        DISP
+       DNM=5-390     02  APPLIDP                         BL=1     1E7   DNM=5-390     DS 1C        DISP
+       DNM=5-407     02  APPLIDH                         BL=1     1E8   DNM=5-407     DS 1C        DISP
+       DNM=5-424     02  APPLIDV                         BL=1     1E9   DNM=5-424     DS 1C        DISP
+       DNM=5-441     02  APPLIDI                         BL=1     1EA   DNM=5-441     DS 8C        DISP
+       DNM=5-461     02  SYSIDL                          BL=1     1F2   DNM=5-461     DS 2C        COMP
+       DNM=5-477     02  SYSIDF                          BL=1     1F4   DNM=5-477     DS 1C        DISP
+       DNM=6-000     02  SYSIDC                          BL=1     1F5   DNM=6-000     DS 1C        DISP
+       DNM=6-016     02  SYSIDP                          BL=1     1F6   DNM=6-016     DS 1C        DISP
+       DNM=6-035     02  SYSIDH                          BL=1     1F7   DNM=6-035     DS 1C        DISP
+       DNM=6-051     02  SYSIDV                          BL=1     1F8   DNM=6-051     DS 1C        DISP
+       DNM=6-067     02  SYSIDI                          BL=1     1F9   DNM=6-067     DS 8C        DISP
+       DNM=6-083     02  USERIDL                         BL=1     201   DNM=6-083     DS 2C        COMP
+       DNM=6-100     02  USERIDF                         BL=1     203   DNM=6-100     DS 1C        DISP  23
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=6-120     02  USERIDC                         BL=1     204   DNM=6-120     DS 1C        DISP
+       DNM=6-137     02  USERIDP                         BL=1     205   DNM=6-137     DS 1C        DISP
+       DNM=6-154     02  USERIDH                         BL=1     206   DNM=6-154     DS 1C        DISP
+       DNM=6-174     02  USERIDV                         BL=1     207   DNM=6-174     DS 1C        DISP
+       DNM=6-191     02  USERIDI                         BL=1     208   DNM=6-191     DS 8C        DISP
+       DNM=6-208     02  PASSWDL                         BL=1     210   DNM=6-208     DS 2C        COMP
+       DNM=6-225     02  PASSWDF                         BL=1     212   DNM=6-225     DS 1C        DISP
+       DNM=6-242     02  PASSWDC                         BL=1     213   DNM=6-242     DS 1C        DISP
+       DNM=6-259     02  PASSWDP                         BL=1     214   DNM=6-259     DS 1C        DISP
+       DNM=6-276     02  PASSWDH                         BL=1     215   DNM=6-276     DS 1C        DISP
+       DNM=6-293     02  PASSWDV                         BL=1     216   DNM=6-293     DS 1C        DISP
+       DNM=6-310     02  PASSWDI                         BL=1     217   DNM=6-310     DS 8C        DISP
+       DNM=6-327     02  ERRMSGL                         BL=1     21F   DNM=6-327     DS 2C        COMP
+       DNM=6-344     02  ERRMSGF                         BL=1     221   DNM=6-344     DS 1C        DISP
+       DNM=6-361     02  ERRMSGC                         BL=1     222   DNM=6-361     DS 1C        DISP
+       DNM=6-378     02  ERRMSGP                         BL=1     223   DNM=6-378     DS 1C        DISP
+       DNM=6-395     02  ERRMSGH                         BL=1     224   DNM=6-395     DS 1C        DISP
+       DNM=6-412     02  ERRMSGV                         BL=1     225   DNM=6-412     DS 1C        DISP
+       DNM=6-429     02  ERRMSGI                         BL=1     226   DNM=6-429     DS 78C       DISP
+       DNM=6-446     01  COSGN0AO                        BL=1     140   DNM=6-446     DS 0CL308    GROUP      R
+       DNM=6-467     02  FILLER                          BL=1     140   DNM=6-467     DS 12C       DISP
+       DNM=6-486     02  FILLER                          BL=1     14C   DNM=6-486     DS 2C        DISP
+       DNM=7-000     02  TRNNAMEA                        BL=1     14E   DNM=7-000     DS 1C        DISP
+       DNM=7-018     02  FILLER                          BL=1     14F   DNM=7-018     DS 4C        DISP
+       DNM=7-037     02  TRNNAMEO                        BL=1     153   DNM=7-037     DS 4C        DISP
+       DNM=7-055     02  FILLER                          BL=1     157   DNM=7-055     DS 2C        DISP
+       DNM=7-074     02  TITLE01A                        BL=1     159   DNM=7-074     DS 1C        DISP
+       DNM=7-092     02  FILLER                          BL=1     15A   DNM=7-092     DS 4C        DISP
+       DNM=7-111     02  TITLE01O                        BL=1     15E   DNM=7-111     DS 40C       DISP
+       DNM=7-129     02  FILLER                          BL=1     186   DNM=7-129     DS 2C        DISP
+       DNM=7-148     02  CURDATEA                        BL=1     188   DNM=7-148     DS 1C        DISP
+       DNM=7-169     02  FILLER                          BL=1     189   DNM=7-169     DS 4C        DISP
+       DNM=7-188     02  CURDATEO                        BL=1     18D   DNM=7-188     DS 8C        DISP
+       DNM=7-206     02  FILLER                          BL=1     195   DNM=7-206     DS 2C        DISP
+       DNM=7-225     02  PGMNAMEA                        BL=1     197   DNM=7-225     DS 1C        DISP
+       DNM=7-243     02  FILLER                          BL=1     198   DNM=7-243     DS 4C        DISP
+       DNM=7-262     02  PGMNAMEO                        BL=1     19C   DNM=7-262     DS 8C        DISP
+       DNM=7-280     02  FILLER                          BL=1     1A4   DNM=7-280     DS 2C        DISP
+       DNM=7-299     02  TITLE02A                        BL=1     1A6   DNM=7-299     DS 1C        DISP
+       DNM=7-317     02  FILLER                          BL=1     1A7   DNM=7-317     DS 4C        DISP
+       DNM=7-336     02  TITLE02O                        BL=1     1AB   DNM=7-336     DS 40C       DISP
+       DNM=7-354     02  FILLER                          BL=1     1D3   DNM=7-354     DS 2C        DISP
+       DNM=7-373     02  CURTIMEA                        BL=1     1D5   DNM=7-373     DS 1C        DISP
+       DNM=7-391     02  FILLER                          BL=1     1D6   DNM=7-391     DS 4C        DISP
+       DNM=7-410     02  CURTIMEO                        BL=1     1DA   DNM=7-410     DS 9C        DISP
+       DNM=7-428     02  FILLER                          BL=1     1E3   DNM=7-428     DS 2C        DISP
+       DNM=7-447     02  APPLIDA                         BL=1     1E5   DNM=7-447     DS 1C        DISP
+       DNM=7-464     02  FILLER                          BL=1     1E6   DNM=7-464     DS 4C        DISP
+       DNM=7-483     02  APPLIDO                         BL=1     1EA   DNM=7-483     DS 8C        DISP
+       DNM=8-000     02  FILLER                          BL=1     1F2   DNM=8-000     DS 2C        DISP
+       DNM=8-019     02  SYSIDA                          BL=1     1F4   DNM=8-019     DS 1C        DISP
+       DNM=8-035     02  FILLER                          BL=1     1F5   DNM=8-035     DS 4C        DISP
+       DNM=8-054     02  SYSIDO                          BL=1     1F9   DNM=8-054     DS 8C        DISP
+       DNM=8-070     02  FILLER                          BL=1     201   DNM=8-070     DS 2C        DISP
+       DNM=8-089     02  USERIDA                         BL=1     203   DNM=8-089     DS 1C        DISP  24
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=8-106     02  FILLER                          BL=1     204   DNM=8-106     DS 4C        DISP
+       DNM=8-125     02  USERIDO                         BL=1     208   DNM=8-125     DS 8C        DISP
+       DNM=8-142     02  FILLER                          BL=1     210   DNM=8-142     DS 2C        DISP
+       DNM=8-161     02  PASSWDA                         BL=1     212   DNM=8-161     DS 1C        DISP
+       DNM=8-181     02  FILLER                          BL=1     213   DNM=8-181     DS 4C        DISP
+       DNM=8-200     02  PASSWDO                         BL=1     217   DNM=8-200     DS 8C        DISP
+       DNM=8-220     02  FILLER                          BL=1     21F   DNM=8-220     DS 2C        DISP
+       DNM=8-239     02  ERRMSGA                         BL=1     221   DNM=8-239     DS 1C        DISP
+       DNM=8-256     02  FILLER                          BL=1     222   DNM=8-256     DS 4C        DISP
+       DNM=8-275     02  ERRMSGO                         BL=1     226   DNM=8-275     DS 78C       DISP
+       DNM=8-292     01  CCDA-SCREEN-TITLE               BL=1     278   DNM=8-292     DS 0CL120    GROUP
+       DNM=8-325     02  CCDA-TITLE01                    BL=1     278   DNM=8-325     DS 40C       DISP
+       DNM=8-350     02  CCDA-TITLE02                    BL=1     2A0   DNM=8-350     DS 40C       DISP
+       DNM=8-372     02  CCDA-THANK-YOU                  BL=1     2C8   DNM=8-372     DS 40C       DISP
+       DNM=8-399     01  WS-DATE-TIME                    BL=1     2F0   DNM=8-399     DS 0CL58     GROUP
+       DNM=8-424     02  WS-CURDATE-DATA                 BL=1     2F0   DNM=8-424     DS 0CL16     GROUP
+       DNM=8-452     03  WS-CURDATE                      BL=1     2F0   DNM=8-452     DS 0CL8      GROUP
+       DNM=8-475     04  WS-CURDATE-YEAR                 BL=1     2F0   DNM=8-475     DS 4C        DISP-NM
+       DNM=9-000     04  WS-CURDATE-MONTH                BL=1     2F4   DNM=9-000     DS 2C        DISP-NM
+       DNM=9-029     04  WS-CURDATE-DAY                  BL=1     2F6   DNM=9-029     DS 2C        DISP-NM
+       DNM=9-053     03  WS-CURDATE-N                    BL=1     2F0   DNM=9-053     DS 8C        DISP-NM    R
+       DNM=9-075     03  WS-CURTIME                      BL=1     2F8   DNM=9-075     DS 0CL8      GROUP
+       DNM=9-101     04  WS-CURTIME-HOURS                BL=1     2F8   DNM=9-101     DS 2C        DISP-NM
+       DNM=9-127     04  WS-CURTIME-MINUTE               BL=1     2FA   DNM=9-127     DS 2C        DISP-NM
+       DNM=9-154     04  WS-CURTIME-SECOND               BL=1     2FC   DNM=9-154     DS 2C        DISP-NM
+       DNM=9-181     04  WS-CURTIME-MILSEC               BL=1     2FE   DNM=9-181     DS 2C        DISP-NM
+       DNM=9-208     03  WS-CURTIME-N                    BL=1     2F8   DNM=9-208     DS 8C        DISP-NM    R
+       DNM=9-233     02  WS-CURDATE-MM-DD-YY             BL=1     300   DNM=9-233     DS 0CL8      GROUP
+       DNM=9-265     03  WS-CURDATE-MM                   BL=1     300   DNM=9-265     DS 2C        DISP-NM
+       DNM=9-288     03  FILLER                          BL=1     302   DNM=9-288     DS 1C        DISP
+       DNM=9-307     03  WS-CURDATE-DD                   BL=1     303   DNM=9-307     DS 2C        DISP-NM
+       DNM=9-330     03  FILLER                          BL=1     305   DNM=9-330     DS 1C        DISP
+       DNM=9-349     03  WS-CURDATE-YY                   BL=1     306   DNM=9-349     DS 2C        DISP-NM
+       DNM=9-372     02  WS-CURTIME-HH-MM-SS             BL=1     308   DNM=9-372     DS 0CL8      GROUP
+       DNM=9-404     03  WS-CURTIME-HH                   BL=1     308   DNM=9-404     DS 2C        DISP-NM
+       DNM=9-427     03  FILLER                          BL=1     30A   DNM=9-427     DS 1C        DISP
+       DNM=9-446     03  WS-CURTIME-MM                   BL=1     30B   DNM=9-446     DS 2C        DISP-NM
+       DNM=9-469     03  FILLER                          BL=1     30D   DNM=9-469     DS 1C        DISP
+       DNM=9-488     03  WS-CURTIME-SS                   BL=1     30E   DNM=9-488     DS 2C        DISP-NM
+       DNM=10-000    02  WS-TIMESTAMP                    BL=1     310   DNM=10-000    DS 0CL26     GROUP
+       DNM=10-028    03  WS-TIMESTAMP-DT-YYYY            BL=1     310   DNM=10-028    DS 4C        DISP-NM
+       DNM=10-058    03  FILLER                          BL=1     314   DNM=10-058    DS 1C        DISP
+       DNM=10-077    03  WS-TIMESTAMP-DT-MM              BL=1     315   DNM=10-077    DS 2C        DISP-NM
+       DNM=10-105    03  FILLER                          BL=1     317   DNM=10-105    DS 1C        DISP
+       DNM=10-124    03  WS-TIMESTAMP-DT-DD              BL=1     318   DNM=10-124    DS 2C        DISP-NM
+       DNM=10-152    03  FILLER                          BL=1     31A   DNM=10-152    DS 1C        DISP
+       DNM=10-171    03  WS-TIMESTAMP-TM-HH              BL=1     31B   DNM=10-171    DS 2C        DISP-NM
+       DNM=10-199    03  FILLER                          BL=1     31D   DNM=10-199    DS 1C        DISP
+       DNM=10-218    03  WS-TIMESTAMP-TM-MM              BL=1     31E   DNM=10-218    DS 2C        DISP-NM
+       DNM=10-246    03  FILLER                          BL=1     320   DNM=10-246    DS 1C        DISP
+       DNM=10-265    03  WS-TIMESTAMP-TM-SS              BL=1     321   DNM=10-265    DS 2C        DISP-NM
+       DNM=10-296    03  FILLER                          BL=1     323   DNM=10-296    DS 1C        DISP
+       DNM=10-315    03  WS-TIMESTAMP-TM-MS6             BL=1     324   DNM=10-315    DS 6C        DISP-NM
+       DNM=10-344    01  CCDA-COMMON-MESSAGES            BL=1     330   DNM=10-344    DS 0CL100    GROUP
+       DNM=10-380    02  CCDA-MSG-THANK-YOU              BL=1     330   DNM=10-380    DS 50C       DISP  25
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=10-408    02  CCDA-MSG-INVALID-KEY            BL=1     362   DNM=10-408    DS 50C       DISP
+       DNM=10-438    01  SEC-USER-DATA                   BL=1     398   DNM=10-438    DS 0CL80     GROUP
+       DNM=10-467    02  SEC-USR-ID                      BL=1     398   DNM=10-467    DS 8C        DISP
+       DNM=10-487    02  SEC-USR-FNAME                   BL=1     3A0   DNM=10-487    DS 20C       DISP
+       DNM=11-000    02  SEC-USR-LNAME                   BL=1     3B4   DNM=11-000    DS 20C       DISP
+       DNM=11-023    02  SEC-USR-PWD                     BL=1     3C8   DNM=11-023    DS 8C        DISP
+       DNM=11-044    02  SEC-USR-TYPE                    BL=1     3D0   DNM=11-044    DS 1C        DISP
+       DNM=11-066    02  SEC-USR-FILLER                  BL=1     3D1   DNM=11-066    DS 23C       DISP
+       DNM=11-090    01  KIKAID                          BL=1     3E8   DNM=11-090    DS 0CL30     GROUP
+       DNM=11-109    02  KIKENTER                        BL=1     3E8   DNM=11-109    DS 1C        DISP
+       DNM=11-127    02  KIKCLEAR                        BL=1     3E9   DNM=11-127    DS 1C        DISP
+       DNM=11-145    02  KIKNULL                         BL=1     3EA   DNM=11-145    DS 1C        DISP
+       DNM=11-165    02  KIKPA1                          BL=1     3EB   DNM=11-165    DS 1C        DISP
+       DNM=11-181    02  KIKPA2                          BL=1     3EC   DNM=11-181    DS 1C        DISP
+       DNM=11-197    02  KIKPA3                          BL=1     3ED   DNM=11-197    DS 1C        DISP
+       DNM=11-216    02  KIKPF1                          BL=1     3EE   DNM=11-216    DS 1C        DISP
+       DNM=11-232    02  KIKPF2                          BL=1     3EF   DNM=11-232    DS 1C        DISP
+       DNM=11-248    02  KIKPF3                          BL=1     3F0   DNM=11-248    DS 1C        DISP
+       DNM=11-267    02  KIKPF4                          BL=1     3F1   DNM=11-267    DS 1C        DISP
+       DNM=11-283    02  KIKPF5                          BL=1     3F2   DNM=11-283    DS 1C        DISP
+       DNM=11-299    02  KIKPF6                          BL=1     3F3   DNM=11-299    DS 1C        DISP
+       DNM=11-318    02  KIKPF7                          BL=1     3F4   DNM=11-318    DS 1C        DISP
+       DNM=11-337    02  KIKPF8                          BL=1     3F5   DNM=11-337    DS 1C        DISP
+       DNM=11-353    02  KIKPF9                          BL=1     3F6   DNM=11-353    DS 1C        DISP
+       DNM=11-369    02  KIKPF10                         BL=1     3F7   DNM=11-369    DS 1C        DISP
+       DNM=11-386    02  KIKPF11                         BL=1     3F8   DNM=11-386    DS 1C        DISP
+       DNM=11-403    02  KIKPF12                         BL=1     3F9   DNM=11-403    DS 1C        DISP
+       DNM=11-420    02  KIKPF13                         BL=1     3FA   DNM=11-420    DS 1C        DISP
+       DNM=11-437    02  KIKPF14                         BL=1     3FB   DNM=11-437    DS 1C        DISP
+       DNM=11-454    02  KIKPF15                         BL=1     3FC   DNM=11-454    DS 1C        DISP
+       DNM=11-474    02  KIKPF16                         BL=1     3FD   DNM=11-474    DS 1C        DISP
+       DNM=11-491    02  KIKPF17                         BL=1     3FE   DNM=11-491    DS 1C        DISP
+       DNM=12-000    02  KIKPF18                         BL=1     3FF   DNM=12-000    DS 1C        DISP
+       DNM=12-017    02  KIKPF19                         BL=1     400   DNM=12-017    DS 1C        DISP
+       DNM=12-037    02  KIKPF20                         BL=1     401   DNM=12-037    DS 1C        DISP
+       DNM=12-054    02  KIKPF21                         BL=1     402   DNM=12-054    DS 1C        DISP
+       DNM=12-074    02  KIKPF22                         BL=1     403   DNM=12-074    DS 1C        DISP
+       DNM=12-094    02  KIKPF23                         BL=1     404   DNM=12-094    DS 1C        DISP
+       DNM=12-114    02  KIKPF24                         BL=1     405   DNM=12-114    DS 1C        DISP
+       DNM=12-131    01  KIKBMSCA                        BL=1     408   DNM=12-131    DS 0CL27     GROUP
+       DNM=12-152    02  KIKBMASK                        BL=1     408   DNM=12-152    DS 1C        DISP
+       DNM=12-173    02  KIKBMUNN                        BL=1     409   DNM=12-173    DS 1C        DISP
+       DNM=12-191    02  KIKBMPRO                        BL=1     40A   DNM=12-191    DS 1C        DISP
+       DNM=12-209    02  KIKBMDAR                        BL=1     40B   DNM=12-209    DS 1C        DISP
+       DNM=12-230    02  KIKBMPRF                        BL=1     40C   DNM=12-230    DS 1C        DISP
+       DNM=12-248    02  KIKBMASF                        BL=1     40D   DNM=12-248    DS 1C        DISP
+       DNM=12-266    02  KIKBMASB                        BL=1     40E   DNM=12-266    DS 1C        DISP
+       DNM=12-287    02  KIKBMEOF                        BL=1     40F   DNM=12-287    DS 1C        DISP
+       DNM=12-305    02  KIKDFT                          BL=1     410   DNM=12-305    DS 1C        DISP
+       DNM=12-321    02  KIKBLUE                         BL=1     411   DNM=12-321    DS 1C        DISP
+       DNM=12-341    02  KIKRED                          BL=1     412   DNM=12-341    DS 1C        DISP
+       DNM=12-360    02  KIKPINK                         BL=1     413   DNM=12-360    DS 1C        DISP
+       DNM=12-380    02  KIKGREEN                        BL=1     414   DNM=12-380    DS 1C        DISP
+       DNM=12-401    02  KIKTURQ                         BL=1     415   DNM=12-401    DS 1C        DISP
+       DNM=12-418    02  KIKYELLO                        BL=1     416   DNM=12-418    DS 1C        DISP  26
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=12-439    02  KIKNEUTR                        BL=1     417   DNM=12-439    DS 1C        DISP
+       DNM=12-457    02  KIKBLINK                        BL=1     418   DNM=12-457    DS 1C        DISP
+       DNM=12-478    02  KIKREVRS                        BL=1     419   DNM=12-478    DS 1C        DISP
+       DNM=13-000    02  KIKUNDLN                        BL=1     41A   DNM=13-000    DS 1C        DISP
+       DNM=13-018    02  KIKUNNOD                        BL=1     41B   DNM=13-018    DS 1C        DISP
+       DNM=13-039    02  KIKUNIMD                        BL=1     41C   DNM=13-039    DS 1C        DISP
+       DNM=13-057    02  KIKUNNUM                        BL=1     41D   DNM=13-057    DS 1C        DISP
+       DNM=13-075    02  KIKUNNUB                        BL=1     41E   DNM=13-075    DS 1C        DISP
+       DNM=13-093    02  KIKUNINT                        BL=1     41F   DNM=13-093    DS 1C        DISP
+       DNM=13-111    02  KIKUNNON                        BL=1     420   DNM=13-111    DS 1C        DISP
+       DNM=13-132    02  KIKPROTI                        BL=1     421   DNM=13-132    DS 1C        DISP
+       DNM=13-150    02  KIKPROTN                        BL=1     422   DNM=13-150    DS 1C        DISP
+       DNM=13-171    01  KIK-MSG                         BL=1     428   DNM=13-171    DS 80C       DISP
+       DNM=13-191    01  KIK-MAPSETNAME                  BL=1     478   DNM=13-191    DS 8C        DISP
+       DNM=13-215    01  KIK-MAPNAME                     BL=1     480   DNM=13-215    DS 8C        DISP
+       DNM=13-236    01  KIK-QUEUENAME                   BL=1     488   DNM=13-236    DS 0CL16     GROUP
+       DNM=13-262    02  KIK-FILENAME                    BL=1     488   DNM=13-262    DS 8C        DISP
+       DNM=13-287    02  KIK-PROGRAM                     BL=1     490   DNM=13-287    DS 8C        DISP
+       DNM=13-308    01  KIK-TRAN                        BL=1     498   DNM=13-308    DS 4C        DISP
+       DNM=13-329    01  KIK-ABND                        BL=1     4A0   DNM=13-329    DS 4C        DISP
+       DNM=13-350    01  KIK-LEN                         BL=1     4A8   DNM=13-350    DS 2C        COMP
+       DNM=13-367    01  KIK-ITEM                        BL=1     4B0   DNM=13-367    DS 2C        COMP
+       DNM=13-385    01  KIK-ITEMSIZE                    BL=1     4B8   DNM=13-385    DS 2C        COMP
+       DNM=13-410    01  KIK-NUMITEMS                    BL=1     4C0   DNM=13-410    DS 2C        COMP
+       DNM=13-432    01  KIK-FLEN                        BL=1     4C8   DNM=13-432    DS 4C        COMP
+       DNM=13-453    01  KIK-KEYLEN                      BL=1     4D0   DNM=13-453    DS 2C        COMP
+       DNM=13-473    01  KIK-NUMREC                      BL=1     4D8   DNM=13-473    DS 2C        COMP
+       DNM=14-000    01  KIK-REQID                       BL=1     4E0   DNM=14-000    DS 2C        COMP
+       DNM=14-022    01  KIK-FLAGS                       BL=1     4E8   DNM=14-022    DS 4C        COMP
+       DNM=14-044    01  KIK-GOTOVAR                     BL=1     4F0   DNM=14-044    DS 2C        COMP
+       DNM=14-065    01  KIK-NUM-GOTO                    BL=1     4F8   DNM=14-065    DS 4C        COMP
+       DNM=14-090    01  KIK-AIDS1                       BL=1     500   DNM=14-090    DS 4C        COMP
+       DNM=14-112    01  KIK-AIDS2                       BL=1     508   DNM=14-112    DS 4C        COMP
+       DNM=14-134    01  KIK-AIDS3                       BL=1     510   DNM=14-134    DS 4C        COMP
+       DNM=14-156    01  KIK-AIDS4                       BL=1     518   DNM=14-156    DS 4C        COMP
+       DNM=14-178    01  KIK-V1                          BL=1     520   DNM=14-178    DS 4C        COMP
+       DNM=14-197    01  KIK-V2                          BL=1     528   DNM=14-197    DS 4C        COMP
+       DNM=14-213    01  KIK-NULL                        BL=1     530   DNM=14-213    DS 4C        COMP
+       DNM=14-234    01  KIKEIB                         BLL=3     000   DNM=14-234    DS 0CL124    GROUP            Q
+       DNM=14-253    02  EIBTASKN                       BLL=3     000   DNM=14-253    DS 1F        COMP
+       DNM=14-271    02  EIBCALEN                       BLL=3     004   DNM=14-271    DS 1H        COMP             Q
+       DNM=14-289    02  EIBCPOSN                       BLL=3     006   DNM=14-289    DS 1H        COMP
+       DNM=14-310    02  EIBDATE                        BLL=3     008   DNM=14-310    DS 4P        COMP-3
+       DNM=14-327    02  EIBTIME                        BLL=3     00C   DNM=14-327    DS 4P        COMP-3
+       DNM=14-344    02  EIBRESP                        BLL=3     010   DNM=14-344    DS 1F        COMP
+       DNM=14-361    02  EIBRESP2                       BLL=3     014   DNM=14-361    DS 1F        COMP
+       DNM=14-379    02  EIBRSRCE                       BLL=3     018   DNM=14-379    DS 8C        DISP
+       DNM=14-400    02  EIBDS                          BLL=3     020   DNM=14-400    DS 8C        DISP
+       DNM=14-415    02  EIBFN                          BLL=3     028   DNM=14-415    DS 2C        DISP
+       DNM=14-430    02  EIBFN-2                        BLL=3     028   DNM=14-430    DS 2C        COMP       R
+       DNM=14-450    02  EIBRCODE                       BLL=3     02A   DNM=14-450    DS 6C        DISP
+       DNM=14-468    02  EIBTRMID                       BLL=3     030   DNM=14-468    DS 4C        DISP
+       DNM=14-489    02  EIBTRNID                       BLL=3     034   DNM=14-489    DS 4C        DISP
+       DNM=15-000    02  EIBAID                         BLL=3     038   DNM=15-000    DS 1C        DISP
+       DNM=15-019    02  EIBOPID                        BLL=3     039   DNM=15-019    DS 3C        DISP  27
+
+
+       INTRNL NAME   LVL SOURCE NAME                     BASE   DISPL   INTRNL NAME   DEFINITION   USAGE      R  O  Q  M
+       DNM=15-036    02  EIBUSRID                       BLL=3     03C   DNM=15-036    DS 8C        DISP
+       DNM=15-054    02  EIBSYSID                       BLL=3     044   DNM=15-054    DS 8C        DISP
+       DNM=15-075    02  EIBNETID                       BLL=3     04C   DNM=15-075    DS 8C        DISP
+       DNM=15-096    02  EIBPGMID                       BLL=3     054   DNM=15-096    DS 8C        DISP
+       DNM=15-114    02  EIBLINE                        BLL=3     05C   DNM=15-114    DS 1F        COMP
+       DNM=15-134    02  EIBPROG                        BLL=3     060   DNM=15-134    DS 8C        DISP
+       DNM=15-151    02  EIBWC                          BLL=3     068   DNM=15-151    DS 20C       DISP
+       DNM=15-169    01  KIKCOMMAREA                    BLL=4     000   DNM=15-169    DS VLC=1     GROUP
+       DNM=15-193    02  LK-COMMAREA                    BLL=4     000   DNM=15-193    DS 1C        DISP          O  28
+
+
+
+                                                  CONDENSED LISTING
+
+ 775     ENTRY      000BCA                    780     MOVE       000C22                    781     MULTIPLY   000C28
+ 784     MOVE       000C40                    785     MOVE       000C4A                    786     MOVE       000C50
+ 789     MOVE       000C56                    789     MOVE       000C5C                    790     CALL       000C62
+ 792     IF         000C92                    793     GOBACK     000CA6                    796     MOVE       000CD4
+ 797     MOVE       000CDA                    798     MOVE       000CE4                    800     IF         000CEE
+ 801     MOVE       000D00                    802     MOVE       000D10                    803     PERFORM    000D16
+ 805     ELSE       000D34                    805     PERFORM    000D3A                    812     MOVE       000D58
+ 813     MOVE       000D62                    814     MOVE       000D68                    815     MOVE       000D6E
+ 816     CALL       000D82                    825     IF         000DC2                    826     PERFORM    000DD2
+ 828     ELSE       000DF0                    828     IF         000DF6                    829     MOVE       000E06
+ 830     PERFORM    000E16                    832     ELSE       000E34                    832     MOVE       000E3A
+ 833     MOVE       000E40                    834     PERFORM    000E50                    848     MOVE       000E74
+ 849     MOVE       000E7E                    850     MOVE       000E84                    851     MOVE       000E8E
+ 852     MOVE       000E98                    853     CALL       000E9E                    857     MOVE       000EEE
+ 858     MOVE       000EF8                    860     IF         000EFE                    861     MOVE       000F26
+ 862     MOVE       000F2C                    863     MOVE       000F3C                    864     PERFORM    000F42
+ 866     ELSE       000F60                    866     IF         000F66                    867     MOVE       000F8E
+ 868     MOVE       000F94                    869     MOVE       000FA4                    870     PERFORM    000FAA
+ 872     ELSE       000FC8                    874     IF         000FC8                    875     MOVE       000FD4
+ 876     MOVE       000FDA                    877     PERFORM    000FE0                    878     MOVE       000FFE
+ 879     PERFORM    001004                    887     TRANSFORM  001028                    889     TRANSFORM  001052
+ 897     PERFORM    001082                    899     MOVE       0010A0                    908     MOVE       0010A6
+ 909     MOVE       0010B0                    910     MOVE       0010B6                    911     MOVE       0010C0
+ 912     MOVE       0010CA                    913     CALL       0010D0                    929     MOVE       001126
+ 930     MOVE       001130                    931     MOVE       001136                    932     MOVE       00114A
+ 933     CALL       001150                    940     MOVE       0011A0                    941     MOVE       0011AA
+ 942     MOVE       0011B0                    943     MOVE       0011BA                    944     CALL       0011C0
+ 954     MOVE       001206                    955     MOVE       00120C                    956     MOVE       001212
+ 957     MOVE       001218                    962     MOVE       00121E                    963     MOVE       001228
+ 964     MOVE       00122E                    965     CALL       001234                    974     MOVE       00126C
+ 975     MOVE       001276                    976     MOVE       00127C                    977     MOVE       001282
+ 978     MOVE       001292                    979     CALL       0012A2                    991     MOVE       0012F2
+ 992     MOVE       0012FC                    993     MOVE       001302                    994     MOVE       001308
+ 995     MOVE       001318                    996     CALL       001328                    1004    MOVE       001378
+ 1005    MOVE       00137E                    1007    MOVE       001388                    1012    MOVE       00138E
+ 1013    MOVE       001398                    1014    MOVE       00139E                    1015    CALL       0013A4
+ 1019    MOVE       0013DC                    1035    MOVE       0013F2                    1036    MOVE       0013FC
+ 1037    MOVE       001402                    1038    MOVE       001408                    1039    MOVE       00140E
+ 1040    CALL       001414                    1048    MOVE       00146C                    1049    MOVE       001476
+ 1052    IF         00147C                    1053    PERFORM    001490                    1056    ELSE       0014AE
+ 1056    IF         0014B4                    1057    MOVE       0014C8                    1058    MOVE       0014CE
+ 1059    MOVE       0014DE                    1060    PERFORM    0014E4                    1062    ELSE       001502
+ 1062    MOVE       001508                    1063    MOVE       00150E                    1064    MOVE       00151E
+ 1065    PERFORM    001524                    1069    IF         001548                    1070    MOVE       001554
+ 1071    MOVE       00155A                    1072    MOVE       001560                    1073    PERFORM    001566
+ 1075    ELSE       001584                    1075    MOVE       00158A                    1076    MOVE       001590
+ 1077    MOVE       0015A0                    1078    PERFORM    0015A6                    1087    MOVE       0015CA
+ 1088    MOVE       0015D4                    1090    IF         0015EE                    1097    MOVE       0015FA
+ 1098    MOVE       001604                    1099    MOVE       00160A                    1100    MOVE       001610
+ 1101    CALL       001624                    1104    MOVE       001668                    1112    ELSE       001672
+ 1112    MOVE       001678                    1113    MOVE       001682                    1114    MOVE       001688
+ 1115    MOVE       00168E                    1116    CALL       0016A2                    1119    MOVE       0016E6
+ 1121    MOVE       0016F0                    1122    MOVE       0016F6                    1124    PERFORM    001706
+  29
+
+
+
+
+*STATISTICS*     SOURCE RECORDS =  1124     DATA DIVISION STATEMENTS =   339     PROCEDURE DIVISION STATEMENTS =   158
+*OPTIONS IN EFFECT*     SIZE = 2097152  BUF = 1048576  LINECNT = 57  SPACE1, FLAGW,   SEQ,   SOURCE
+*OPTIONS IN EFFECT*       DMAP, NOPMAP,   CLIST,   SUPMAP, NOXREF,   LOAD, NODECK, APOST, NOTRUNC,   LIB,   VERB
+*OPTIONS IN EFFECT*       ZWB  30
+
+
+ CARD   ERROR MESSAGE
+
+ 49     IKF2190I-W     PICTURE CLAUSE IS SIGNED, VALUE CLAUSE UNSIGNED. ASSUMED POSITIVE.
+ 50     IKF2190I-W     PICTURE CLAUSE IS SIGNED, VALUE CLAUSE UNSIGNED. ASSUMED POSITIVE.
+ 56     IKF2190I-W     PICTURE CLAUSE IS SIGNED, VALUE CLAUSE UNSIGNED. ASSUMED POSITIVE.
+ 78     IKF1087I-W     ' CARDDEMO-COMMAREA ' SHOULD NOT BEGIN A-MARGIN.
+ 57     IKF2190I-W     PICTURE CLAUSE IS SIGNED, VALUE CLAUSE UNSIGNED. ASSUMED POSITIVE.
+ 270    IKF1087I-W     ' CCDA-SCREEN-TITLE ' SHOULD NOT BEGIN A-MARGIN.
+ 298    IKF1087I-W     ' WS-DATE-TIME ' SHOULD NOT BEGIN A-MARGIN.
+ 357    IKF1087I-W     ' CCDA-COMMON-MESSAGES ' SHOULD NOT BEGIN A-MARGIN.
+ 382    IKF1087I-W     ' SEC-USER-DATA ' SHOULD NOT BEGIN A-MARGIN.
+ 834    IKF4072I-W     EXIT FROM PERFORMED PROCEDURE ASSUMED BEFORE PROCEDURE-NAME .
+ 879    IKF4072I-W     EXIT FROM PERFORMED PROCEDURE ASSUMED BEFORE PROCEDURE-NAME .
+ 1065   IKF4072I-W     EXIT FROM PERFORMED PROCEDURE ASSUMED BEFORE PROCEDURE-NAME .
+ 1078   IKF4072I-W     EXIT FROM PERFORMED PROCEDURE ASSUMED BEFORE PROCEDURE-NAME .
+
+ F64-LEVEL LINKAGE EDITOR OPTIONS SPECIFIED XREF,LIST,LET,MAP
+          DEFAULT OPTION(S) USED -  SIZE=(231424,55296)
+IEW0000     INCLUDE SKIKLOAD(KIKCOBGL)
+IEW0000     ENTRY COSGN00C
+IEW0000     NAME COSGN00C(R)
+
+
+
+                                                CROSS REFERENCE TABLE
+
+
+  CONTROL SECTION                       ENTRY
+
+    NAME    ORIGIN  LENGTH                NAME   LOCATION     NAME   LOCATION     NAME   LOCATION     NAME   LOCATION
+  COSGN00C      00    1802
+  KIKBLLIN    1808      46
+ $PRIVATE     1850    5B20
+                                        KIKCOBGL    4208    KIKCOBGZ    70A8
+  ILBOSTP0*   7370      35
+                                        ILBOSTP1    7386
+  ILBOTRN0*   73A8     100
+  ILBOVMO0*   74A8     20A
+                                        ILBOVMO1    74B4
+
+
+
+  LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION             LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION
+      940            ILBOSTP0        ILBOSTP0                     944            KIKCOBGL
+      948            ILBOSTP1        ILBOSTP0                     94C            ILBOTRN0        ILBOTRN0
+      950            ILBOVMO0        ILBOVMO0                    45B4            KCEEHDLR       $UNRESOLVED(W)
+
+ ENTRY ADDRESS       00
+
+ TOTAL LENGTH      76B8
+****COSGN00C  DOES NOT EXIST BUT HAS BEEN ADDED TO DATA SET
+AUTHORIZATION CODE IS         0.
+
+                  CCCCCCCCCC   OOOOOOOOOOOO  BBBBBBBBBBB    CCCCCCCCCC   OOOOOOOOOOOO   SSSSSSSSSS    GGGGGGGGGG   NN        NN
+                CCCCCCCCCCCC  OOOOOOOOOOOO  BBBBBBBBBBBB  CCCCCCCCCCCC  OOOOOOOOOOOO  SSSSSSSSSSSS  GGGGGGGGGGGG  NNN       NN
+               CC        CC  OO        OO  BB        BB  CC        CC  OO        OO  SS        SS  GG        GG  NNNN      NN
+              CC            OO        OO  BB        BB  CC            OO        OO  SS            GG            NN NN     NN
+             CC            OO        OO  BB       BB   CC            OO        OO  SSS           GG            NN  NN    NN
+            CC            OO        OO  BBBBBBBBBB    CC            OO        OO   SSSSSSSSS    GG            NN   NN   NN
+           CC            OO        OO  BBBBBBBBBB    CC            OO        OO    SSSSSSSSS   GG     GGGGG  NN    NN  NN
+          CC            OO        OO  BB       BB   CC            OO        OO           SSS  GG     GGGGG  NN     NN NN
+         CC            OO        OO  BB        BB  CC            OO        OO            SS  GG        GG  NN      NNNN
+        CC        CC  OO        OO  BB        BB  CC        CC  OO        OO  SS        SS  GG        GG  NN       NNN
+       CCCCCCCCCCCC  OOOOOOOOOOOO  BBBBBBBBBBBB  CCCCCCCCCCCC  OOOOOOOOOOOO  SSSSSSSSSSSS  GGGGGGGGGGGG  NN        NN
+       CCCCCCCCCC   OOOOOOOOOOOO  BBBBBBBBBBB    CCCCCCCCCC   OOOOOOOOOOOO   SSSSSSSSSS    GGGGGGGGGG   NN         N
+
+
+
+                    JJJJJJJJJJ   6666666666     00000000                                               AAAAAAAAAA
+                    JJJJJJJJJJ  666666666666   0000000000                                             AAAAAAAAAAAA
+                        JJ      66        66  00      0000                                            AA        AA
+                        JJ      66            00     00 00                                            AA        AA
+                        JJ      66            00    00  00                                            AA        AA
+                        JJ      66666666666   00   00   00                                            AAAAAAAAAAAA
+                        JJ      666666666666  00  00    00                                            AAAAAAAAAAAA
+                        JJ      66        66  00 00     00                                            AA        AA
+                  JJ    JJ      66        66  0000      00                                            AA        AA
+                  JJ    JJ      66        66  000       00                                            AA        AA
+                  JJJJJJJJ      666666666666   0000000000                                             AA        AA
+                   JJJJJJ        6666666666     00000000                                              AA        AA
+
+
+****A   END   JOB   60  COBCOSGN  COBOL COSGN00C        ROOM        8.07.00 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   60   END   A****
+****A   END   JOB   60  COBCOSGN  COBOL COSGN00C        ROOM        8.07.00 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   60   END   A****
+****A   END   JOB   60  COBCOSGN  COBOL COSGN00C        ROOM        8.07.00 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   60   END   A****
+****A   END   JOB   60  COBCOSGN  COBOL COSGN00C        ROOM        8.07.00 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   60   END   A****
+

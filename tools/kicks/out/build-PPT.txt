@@ -1,0 +1,220 @@
+                 KK        KK   IIIIIIIIII   KK        KK  PPPPPPPPPPP   PPPPPPPPPPP   TTTTTTTTTTTT   CCCCCCCCCC   DDDDDDDDD
+                KK       KK    IIIIIIIIII   KK       KK   PPPPPPPPPPPP  PPPPPPPPPPPP  TTTTTTTTTTTT  CCCCCCCCCCCC  DDDDDDDDDD
+               KK      KK         II       KK      KK    PP        PP  PP        PP       TT       CC        CC  DD       DD
+              KK     KK          II       KK     KK     PP        PP  PP        PP       TT       CC            DD        DD
+             KK    KK           II       KK    KK      PP        PP  PP        PP       TT       CC            DD        DD
+            KKKKKKK            II       KKKKKKK       PPPPPPPPPPPP  PPPPPPPPPPPP       TT       CC            DD        DD
+           KKKKKKK            II       KKKKKKK       PPPPPPPPPPP   PPPPPPPPPPP        TT       CC            DD        DD
+          KK    KK           II       KK    KK      PP            PP                 TT       CC            DD        DD
+         KK     KK          II       KK     KK     PP            PP                 TT       CC            DD        DD
+        KK      KK         II       KK      KK    PP            PP                 TT       CC        CC  DD       DD
+       KK       KK    IIIIIIIIII   KK       KK   PP            PP                 TT       CCCCCCCCCCCC  DDDDDDDDDD
+      KK        KK   IIIIIIIIII   KK        KK  PP            PP                 TT        CCCCCCCCCC   DDDDDDDDD
+
+
+
+                    JJJJJJJJJJ   8888888888        11                                                  AAAAAAAAAA
+                    JJJJJJJJJJ  888888888888      111                                                 AAAAAAAAAAAA
+                        JJ      88        88     1111                                                 AA        AA
+                        JJ      88        88       11                                                 AA        AA
+                        JJ       88      88        11                                                 AA        AA
+                        JJ        88888888         11                                                 AAAAAAAAAAAA
+                        JJ        88888888         11                                                 AAAAAAAAAAAA
+                        JJ       88      88        11                                                 AA        AA
+                  JJ    JJ      88        88       11                                                 AA        AA
+                  JJ    JJ      88        88       11                                                 AA        AA
+                  JJJJJJJJ      888888888888   1111111111                                             AA        AA
+                   JJJJJJ        8888888888    1111111111                                             AA        AA
+
+
+****A  START  JOB   81  KIKPPTCD  PPT CD                ROOM        8.17.22 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   81  START  A****
+****A  START  JOB   81  KIKPPTCD  PPT CD                ROOM        8.17.22 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   81  START  A****
+****A  START  JOB   81  KIKPPTCD  PPT CD                ROOM        8.17.22 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   81  START  A****
+****A  START  JOB   81  KIKPPTCD  PPT CD                ROOM        8.17.22 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   81  START  A****
+                                                J E S 2   J O B   L O G
+
+
+20.17.21 JOB   81  $HASP373 KIKPPTCD STARTED - INIT  1 - CLASS A - SYS TK5R
+20.17.21 JOB   81  IEF403I KIKPPTCD - STARTED - TIME=20.17.21
+20.17.22 JOB   81  IEFACTRT - Stepname  Procstep  Program   Retcode
+20.17.22 JOB   81  KIKPPTCD   ASM                 IFOX00    RC= 0000
+20.17.22 JOB   81  KIKPPTCD   LKED                IEWL      RC= 0000
+20.17.22 JOB   81  IEF404I KIKPPTCD - ENDED - TIME=20.17.22
+20.17.22 JOB   81  $HASP395 KIKPPTCD ENDED
+
+
+------ JES2 JOB STATISTICS ------
+
+
+ 16 SEP 26 JOB EXECUTION DATE
+
+
+       249 CARDS READ
+
+
+       128 SYSOUT PRINT RECORDS
+
+
+         0 SYSOUT PUNCH RECORDS
+
+
+      0.00 MINUTES EXECUTION TIME
+    1     //KIKPPTCD JOB (KICKS),'PPT CD',CLASS=A,MSGCLASS=A,                     JOB   81
+          // MSGLEVEL=(1,1),REGION=4096K,USER=HERC01,PASSWORD=
+          ***
+    2     //ASM      EXEC PGM=IFOX00,
+          //            PARM='DECK,NOLIST'
+    3     //SYSLIB   DD DSN=SYS1.MACLIB,DISP=SHR
+    4     //         DD DSN=HERC01.KICKSSYS.V1R5M0.MACLIB,DISP=SHR
+    5     //SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(2,1))
+    6     //SYSUT2   DD UNIT=SYSDA,SPACE=(CYL,(2,1))
+    7     //SYSUT3   DD UNIT=SYSDA,SPACE=(CYL,(2,1))
+    8     //SYSPRINT DD SYSOUT=*
+    9     //SYSLIN   DD DUMMY
+   10     //SYSPUNCH DD DSN=&&OBJSET,
+          //         UNIT=SYSDA,SPACE=(80,(200,200)),
+          //         DISP=(,PASS)
+   11     //SYSIN    DD *
+   12     //LKED     EXEC PGM=IEWL,PARM='XREF,MAP,LET,NCAL',
+          //         COND=(0,NE,ASM)
+   13     //SYSLIN   DD DSN=&&OBJSET,DISP=(OLD,DELETE)
+   14     //SYSIN    DD DUMMY
+   15     //SYSLMOD  DD DSN=HERC01.KICKS.V1R5M0.SKIKLOAD(KIKPPTCD),DISP=SHR
+   16     //SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(2,1))
+   17     //SYSPRINT DD SYSOUT=*
+   18     //SYSIN     DD *               GENERATED STATEMENT
+IEF236I ALLOC. FOR KIKPPTCD ASM
+IEF237I 390  ALLOCATED TO SYSLIB
+IEF237I 192  ALLOCATED TO
+IEF237I 190  ALLOCATED TO SYS00270
+IEF237I 291  ALLOCATED TO SYSUT1
+IEF237I 292  ALLOCATED TO SYSUT2
+IEF237I 293  ALLOCATED TO SYSUT3
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSLIN
+IEF237I 290  ALLOCATED TO SYSPUNCH
+IEF237I JES2 ALLOCATED TO SYSIN
+IEF142I KIKPPTCD ASM - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   SYS1.MACLIB                                  KEPT          *--------1
+IEF285I   VOL SER NOS= TK5RES.
+IEF285I   HERC01.KICKSSYS.V1R5M0.MACLIB                KEPT          *--------5
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T201721.RA000.KIKPPTCD.R0000001     DELETED       *------522
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   SYS26259.T201721.RA000.KIKPPTCD.R0000002     DELETED       *-------13
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   SYS26259.T201721.RA000.KIKPPTCD.R0000003     DELETED       *-------10
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   JES2.JOB00081.SO0103                         SYSOUT
+IEF285I   SYS26259.T201721.RA000.KIKPPTCD.OBJSET       PASSED        *------278
+IEF285I   VOL SER NOS= WORK01.
+IEF285I   JES2.JOB00081.SI0101                         SYSIN
+IEF373I STEP /ASM     / START 26259.2017
+IEF374I STEP /ASM     / STOP  26259.2017 CPU    0MIN 00.11SEC SRB    0MIN 00.02SEC VIRT  2116K SYS   268K
+************************************************************************************************************************************
+*     1. Jobstep of job: KIKPPTCD    Stepname: ASM         Program name: IFOX00     Executed on 16.09.26 from 20.17.21 to 20.17.22 *
+*         elapsed time  00:00:00,23                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,13               Virtual Storage used:   2116K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,13   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:    224                                                                           *
+*     390.......1 192.......5 190.......0 291.....522 292......13 293......10 DMY.......0 DMY.......0 290.....278 DMY.......0      *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,21                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR KIKPPTCD LKED
+IEF237I 290  ALLOCATED TO SYSLIN
+IEF237I DMY  ALLOCATED TO SYSIN
+IEF237I 191  ALLOCATED TO SYSLMOD
+IEF237I 190  ALLOCATED TO SYS00272
+IEF237I 291  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO SYSIN
+IEF142I KIKPPTCD LKED - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   SYS26259.T201721.RA000.KIKPPTCD.OBJSET       DELETED       *------279
+IEF285I   VOL SER NOS= WORK01.
+IEF285I   HERC01.KICKS.V1R5M0.SKIKLOAD                 KEPT          *-------12
+IEF285I   VOL SER NOS= TSO002.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T201721.RA000.KIKPPTCD.R0000004     DELETED       *--------0
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   JES2.JOB00081.SO0104                         SYSOUT
+IEF285I   JES2.JOB00081.SI0102                         SYSIN
+IEF373I STEP /LKED    / START 26259.2017
+IEF374I STEP /LKED    / STOP  26259.2017 CPU    0MIN 00.03SEC SRB    0MIN 00.01SEC VIRT   260K SYS   264K
+************************************************************************************************************************************
+*     2. Jobstep of job: KIKPPTCD    Stepname: LKED        Program name: IEWL       Executed on 16.09.26 from 20.17.22 to 20.17.22 *
+*         elapsed time  00:00:00,12                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,04               Virtual Storage used:    260K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,04   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      1                                                                           *
+*     290.....279 DMY.......0 191......12 190.......0 291.......0 DMY.......0 DMY.......0                                          *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,06                                             *
+************************************************************************************************************************************
+IEF375I  JOB /KIKPPTCD/ START 26259.2017
+IEF376I  JOB /KIKPPTCD/ STOP  26259.2017 CPU    0MIN 00.14SEC SRB    0MIN 00.03SEC
+
+ F64-LEVEL LINKAGE EDITOR OPTIONS SPECIFIED XREF,MAP,LET,NCAL
+          DEFAULT OPTION(S) USED -  SIZE=(231424,55296)
+
+
+
+                                                CROSS REFERENCE TABLE
+
+
+  CONTROL SECTION                       ENTRY
+
+    NAME    ORIGIN  LENGTH                NAME   LOCATION     NAME   LOCATION     NAME   LOCATION     NAME   LOCATION
+  KIKPPTCD      00    10B0
+
+
+
+
+  LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION             LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION
+
+ ENTRY ADDRESS       00
+
+ TOTAL LENGTH      10B0
+****KIKPPTCD  NOW REPLACED IN DATA SET
+AUTHORIZATION CODE IS         0.
+                 KK        KK   IIIIIIIIII   KK        KK  PPPPPPPPPPP   PPPPPPPPPPP   TTTTTTTTTTTT   CCCCCCCCCC   DDDDDDDDD
+                KK       KK    IIIIIIIIII   KK       KK   PPPPPPPPPPPP  PPPPPPPPPPPP  TTTTTTTTTTTT  CCCCCCCCCCCC  DDDDDDDDDD
+               KK      KK         II       KK      KK    PP        PP  PP        PP       TT       CC        CC  DD       DD
+              KK     KK          II       KK     KK     PP        PP  PP        PP       TT       CC            DD        DD
+             KK    KK           II       KK    KK      PP        PP  PP        PP       TT       CC            DD        DD
+            KKKKKKK            II       KKKKKKK       PPPPPPPPPPPP  PPPPPPPPPPPP       TT       CC            DD        DD
+           KKKKKKK            II       KKKKKKK       PPPPPPPPPPP   PPPPPPPPPPP        TT       CC            DD        DD
+          KK    KK           II       KK    KK      PP            PP                 TT       CC            DD        DD
+         KK     KK          II       KK     KK     PP            PP                 TT       CC            DD        DD
+        KK      KK         II       KK      KK    PP            PP                 TT       CC        CC  DD       DD
+       KK       KK    IIIIIIIIII   KK       KK   PP            PP                 TT       CCCCCCCCCCCC  DDDDDDDDDD
+      KK        KK   IIIIIIIIII   KK        KK  PP            PP                 TT        CCCCCCCCCC   DDDDDDDDD
+
+
+
+                    JJJJJJJJJJ   8888888888        11                                                  AAAAAAAAAA
+                    JJJJJJJJJJ  888888888888      111                                                 AAAAAAAAAAAA
+                        JJ      88        88     1111                                                 AA        AA
+                        JJ      88        88       11                                                 AA        AA
+                        JJ       88      88        11                                                 AA        AA
+                        JJ        88888888         11                                                 AAAAAAAAAAAA
+                        JJ        88888888         11                                                 AAAAAAAAAAAA
+                        JJ       88      88        11                                                 AA        AA
+                  JJ    JJ      88        88       11                                                 AA        AA
+                  JJ    JJ      88        88       11                                                 AA        AA
+                  JJJJJJJJ      888888888888   1111111111                                             AA        AA
+                   JJJJJJ        8888888888    1111111111                                             AA        AA
+
+
+****A   END   JOB   81  KIKPPTCD  PPT CD                ROOM        8.17.22 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   81   END   A****
+****A   END   JOB   81  KIKPPTCD  PPT CD                ROOM        8.17.22 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   81   END   A****
+****A   END   JOB   81  KIKPPTCD  PPT CD                ROOM        8.17.22 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   81   END   A****
+****A   END   JOB   81  KIKPPTCD  PPT CD                ROOM        8.17.22 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   81   END   A****
+

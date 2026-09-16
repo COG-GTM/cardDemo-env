@@ -1,0 +1,24 @@
+ HELO                    CARDDEMO-ENV  KICKS BMS PROBE                      HELO
+                                                                                
+ KICKS TIME 19:57:51  ON MVS38J                                                 
+                                                                                
+ Your name . . . . . . .                                                        
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+ Type your name and press ENTER.                                                
+ ENTER=Greet   F3=Exit                                                          

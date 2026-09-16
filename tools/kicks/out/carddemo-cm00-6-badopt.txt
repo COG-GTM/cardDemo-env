@@ -1,0 +1,24 @@
+ Tran: CM00                AWS Mainframe Modernization           Date: 09/16/26 
+ Prog: COMEN01C                    CardDemo                      Time: 20:20:50 
+                                                                                
+                                   Main Menu                                    
+                                                                                
+                    01. Account View                                            
+                    02. Account Update                                          
+                    03. Credit Card List                                        
+                    04. Credit Card View                                        
+                    05. Credit Card Update                                      
+                    06. Transaction List                                        
+                    07. Transaction View                                        
+                    08. Transaction Add                                         
+                    09. Transaction Reports                                     
+                    10. Bill Payment                                            
+                    11. Pending Authorization View                              
+                                                                                
+                                                                                
+                                                                                
+               Please select an option : 99                                     
+                                                                                
+                                                                                
+ Please enter a valid option number...                                          
+ ENTER=Continue  F3=Exit                                                        

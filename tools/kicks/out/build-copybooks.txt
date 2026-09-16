@@ -1,0 +1,248 @@
+                         CCCCCCCCCC   OOOOOOOOOOOO  PPPPPPPPPPP   YY        YY  BBBBBBBBBBB   KK        KK   SSSSSSSSSS
+                       CCCCCCCCCCCC  OOOOOOOOOOOO  PPPPPPPPPPPP  YY        YY  BBBBBBBBBBBB  KK       KK   SSSSSSSSSSSS
+                      CC        CC  OO        OO  PP        PP   YY      YY   BB        BB  KK      KK    SS        SS
+                     CC            OO        OO  PP        PP    YY    YY    BB        BB  KK     KK     SS
+                    CC            OO        OO  PP        PP     YY  YY     BB       BB   KK    KK      SSS
+                   CC            OO        OO  PPPPPPPPPPPP      YYYY      BBBBBBBBBB    KKKKKKK        SSSSSSSSS
+                  CC            OO        OO  PPPPPPPPPPP        YY       BBBBBBBBBB    KKKKKKK         SSSSSSSSS
+                 CC            OO        OO  PP                 YY       BB       BB   KK    KK               SSS
+                CC            OO        OO  PP                 YY       BB        BB  KK     KK               SS
+               CC        CC  OO        OO  PP                 YY       BB        BB  KK      KK    SS        SS
+              CCCCCCCCCCCC  OOOOOOOOOOOO  PP                 YY       BBBBBBBBBBBB  KK       KK   SSSSSSSSSSSS
+              CCCCCCCCCC   OOOOOOOOOOOO  PP                 YY       BBBBBBBBBBB   KK        KK   SSSSSSSSSS
+
+
+
+                    JJJJJJJJJJ  777777777777   6666666666                                              AAAAAAAAAA
+                    JJJJJJJJJJ  77777777777   666666666666                                            AAAAAAAAAAAA
+                        JJ      77      77    66        66                                            AA        AA
+                        JJ             77     66                                                      AA        AA
+                        JJ            77      66                                                      AA        AA
+                        JJ           77       66666666666                                             AAAAAAAAAAAA
+                        JJ           77       666666666666                                            AAAAAAAAAAAA
+                        JJ           77       66        66                                            AA        AA
+                  JJ    JJ           77       66        66                                            AA        AA
+                  JJ    JJ           77       66        66                                            AA        AA
+                  JJJJJJJJ           77       666666666666                                            AA        AA
+                   JJJJJJ            77        6666666666                                             AA        AA
+
+
+****A  START  JOB   76  COPYBKS   COPYBOOKS             ROOM        8.16.45 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   76  START  A****
+****A  START  JOB   76  COPYBKS   COPYBOOKS             ROOM        8.16.45 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   76  START  A****
+****A  START  JOB   76  COPYBKS   COPYBOOKS             ROOM        8.16.45 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   76  START  A****
+****A  START  JOB   76  COPYBKS   COPYBOOKS             ROOM        8.16.45 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   76  START  A****
+                                                J E S 2   J O B   L O G
+
+
+20.16.45 JOB   76  $HASP373 COPYBKS  STARTED - INIT  1 - CLASS A - SYS TK5R
+20.16.45 JOB   76  IEF403I COPYBKS - STARTED - TIME=20.16.45
+20.16.45 JOB   76  IEFACTRT - Stepname  Procstep  Program   Retcode
+20.16.45 JOB   76  COPYBKS    UPD                 IEBUPDTE  RC= 0000
+20.16.45 JOB   76  IEF404I COPYBKS - ENDED - TIME=20.16.45
+20.16.45 JOB   76  $HASP395 COPYBKS  ENDED
+
+
+------ JES2 JOB STATISTICS ------
+
+
+ 16 SEP 26 JOB EXECUTION DATE
+
+
+       118 CARDS READ
+
+
+       159 SYSOUT PRINT RECORDS
+
+
+         0 SYSOUT PUNCH RECORDS
+
+
+      0.00 MINUTES EXECUTION TIME
+    1     //COPYBKS JOB (KICKS),'COPYBOOKS',CLASS=A,MSGCLASS=A,                   JOB   76
+          // MSGLEVEL=(1,1),REGION=4096K,USER=HERC01,PASSWORD=
+    2     //UPD EXEC PGM=IEBUPDTE,PARM=NEW
+    3     //SYSPRINT DD SYSOUT=*
+    4     //SYSUT2 DD DSN=HERC01.KICKS.V1R5M0.COBCOPY,DISP=SHR
+    5     //SYSIN DD DATA
+IEF236I ALLOC. FOR COPYBKS UPD
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I 192  ALLOCATED TO SYSUT2
+IEF237I 190  ALLOCATED TO SYS00254
+IEF237I JES2 ALLOCATED TO SYSIN
+IEF142I COPYBKS UPD - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   JES2.JOB00076.SO0102                         SYSOUT
+IEF285I   HERC01.KICKS.V1R5M0.COBCOPY                  KEPT          *--------6
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   JES2.JOB00076.SI0101                         SYSIN
+IEF373I STEP /UPD     / START 26259.2016
+IEF374I STEP /UPD     / STOP  26259.2016 CPU    0MIN 00.01SEC SRB    0MIN 00.00SEC VIRT    32K SYS   264K
+************************************************************************************************************************************
+*     1. Jobstep of job: COPYBKS     Stepname: UPD         Program name: IEBUPDTE   Executed on 16.09.26 from 20.16.45 to 20.16.45 *
+*         elapsed time  00:00:00,02                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,01               Virtual Storage used:     32K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,01   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:    111                                                                           *
+*     DMY.......0 192.......6 190.......0 DMY.......0                                                                              *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,01                                             *
+************************************************************************************************************************************
+IEF375I  JOB /COPYBKS / START 26259.2016
+IEF376I  JOB /COPYBKS / STOP  26259.2016 CPU    0MIN 00.01SEC SRB    0MIN 00.00SEC
+       SYSIN                            NEW MASTER                                        IEBUPDTE LOG PAGE 0001
+
+
+       ./ ADD NAME=COMEN02Y,LIST=ALL
+                                              ******************************************************************
+                                              * CardDemo - Admin Menu Options
+                                              ******************************************************************
+                                              * Copyright Amazon.com, Inc. or its affiliates.
+                                              * All Rights Reserved.
+                                              *
+                                              * Licensed under the Apache License, Version 2.0 (the "License").
+                                              * You may not use this file except in compliance with the License.
+                                              * You may obtain a copy of the License at
+                                              *
+                                              *    http://www.apache.org/licenses/LICENSE-2.0
+                                              *
+                                              * Unless required by applicable law or agreed to in writing,
+                                              * software distributed under the License is distributed on an
+                                              * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+                                              * either express or implied. See the License for the specific
+                                              * language governing permissions and limitations under the License
+                                              ******************************************************************
+                                               01 CARDDEMO-MAIN-MENU-OPTIONS.
+
+                                                 05 CDEMO-MENU-OPT-COUNT           PIC 9(02) VALUE 11.
+
+                                                 05 CDEMO-MENU-OPTIONS-DATA.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 1.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Account View                       '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COACTVWC'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 2.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Account Update                     '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COACTUPC'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 3.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Credit Card List                   '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COCRDLIC'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 4.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Credit Card View                   '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COCRDSLC'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 5.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Credit Card Update                 '.       SYSIN                            NEW MASTER                                        IEBUPDTE LOG PAGE 0002
+
+
+                                                   10 FILLER                       PIC X(08) VALUE 'COCRDUPC'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 6.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Transaction List                   '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COTRN00C'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 7.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Transaction View                   '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COTRN01C'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                        PIC 9(02) VALUE 8.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                              *        'Transaction Add (Admin Only)       '.
+                                                       'Transaction Add                    '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COTRN02C'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 9.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Transaction Reports                '.
+                                                   10 FILLER                       PIC X(08) VALUE 'CORPT00C'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 10.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Bill Payment                       '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COBIL00C'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                                   10 FILLER                       PIC 9(02) VALUE 11.
+                                                   10 FILLER                       PIC X(35) VALUE
+                                                       'Pending Authorization View         '.
+                                                   10 FILLER                       PIC X(08) VALUE 'COPAUS0C'.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+                                              * tools/kicks: upstream declares OCCURS 12 over 11 entries; MVT
+                                              * COBOL flags the short REDEFINES object (IKF2118I-C, RC=8), so a
+                                              * 12th empty slot pads the table to the declared size.
+                                                   10 FILLER                       PIC 9(02) VALUE 12.
+                                                   10 FILLER                       PIC X(35) VALUE SPACES.
+                                                   10 FILLER                       PIC X(08) VALUE 'DUMMY   '.
+                                                   10 FILLER                       PIC X(01) VALUE 'U'.
+
+
+                                                 05 CDEMO-MENU-OPTIONS REDEFINES CDEMO-MENU-OPTIONS-DATA.
+                                                   10 CDEMO-MENU-OPT OCCURS 12 TIMES.
+                                                     15 CDEMO-MENU-OPT-NUM           PIC 9(02).       SYSIN                            NEW MASTER                                        IEBUPDTE LOG PAGE 0003
+
+
+                                                     15 CDEMO-MENU-OPT-NAME          PIC X(35).
+                                                     15 CDEMO-MENU-OPT-PGMNAME       PIC X(08).
+                                                     15 CDEMO-MENU-OPT-USRTYPE       PIC X(01).
+                                              *
+                                              * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:15:58 CDT
+                                              *
+       ./ ENDUP
+IEB816I MEMBER NAME (COMEN02Y) FOUND IN NM DIRECTORY. TTR IS NOW ALTERED.
+IEB818I HIGHEST CONDITION CODE WAS 00000000
+IEB819I END OF JOB IEBUPDTE.                         CCCCCCCCCC   OOOOOOOOOOOO  PPPPPPPPPPP   YY        YY  BBBBBBBBBBB   KK        KK   SSSSSSSSSS
+                       CCCCCCCCCCCC  OOOOOOOOOOOO  PPPPPPPPPPPP  YY        YY  BBBBBBBBBBBB  KK       KK   SSSSSSSSSSSS
+                      CC        CC  OO        OO  PP        PP   YY      YY   BB        BB  KK      KK    SS        SS
+                     CC            OO        OO  PP        PP    YY    YY    BB        BB  KK     KK     SS
+                    CC            OO        OO  PP        PP     YY  YY     BB       BB   KK    KK      SSS
+                   CC            OO        OO  PPPPPPPPPPPP      YYYY      BBBBBBBBBB    KKKKKKK        SSSSSSSSS
+                  CC            OO        OO  PPPPPPPPPPP        YY       BBBBBBBBBB    KKKKKKK         SSSSSSSSS
+                 CC            OO        OO  PP                 YY       BB       BB   KK    KK               SSS
+                CC            OO        OO  PP                 YY       BB        BB  KK     KK               SS
+               CC        CC  OO        OO  PP                 YY       BB        BB  KK      KK    SS        SS
+              CCCCCCCCCCCC  OOOOOOOOOOOO  PP                 YY       BBBBBBBBBBBB  KK       KK   SSSSSSSSSSSS
+              CCCCCCCCCC   OOOOOOOOOOOO  PP                 YY       BBBBBBBBBBB   KK        KK   SSSSSSSSSS
+
+
+
+                    JJJJJJJJJJ  777777777777   6666666666                                              AAAAAAAAAA
+                    JJJJJJJJJJ  77777777777   666666666666                                            AAAAAAAAAAAA
+                        JJ      77      77    66        66                                            AA        AA
+                        JJ             77     66                                                      AA        AA
+                        JJ            77      66                                                      AA        AA
+                        JJ           77       66666666666                                             AAAAAAAAAAAA
+                        JJ           77       666666666666                                            AAAAAAAAAAAA
+                        JJ           77       66        66                                            AA        AA
+                  JJ    JJ           77       66        66                                            AA        AA
+                  JJ    JJ           77       66        66                                            AA        AA
+                  JJJJJJJJ           77       666666666666                                            AA        AA
+                   JJJJJJ            77        6666666666                                             AA        AA
+
+
+****A   END   JOB   76  COPYBKS   COPYBOOKS             ROOM        8.16.45 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   76   END   A****
+****A   END   JOB   76  COPYBKS   COPYBOOKS             ROOM        8.16.45 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   76   END   A****
+****A   END   JOB   76  COPYBKS   COPYBOOKS             ROOM        8.16.45 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   76   END   A****
+****A   END   JOB   76  COPYBKS   COPYBOOKS             ROOM        8.16.45 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   76   END   A****
+

@@ -1,0 +1,56 @@
+         PRINT NOGEN
+HELOSET  DFHMSD TYPE=&SYSPARM,                                         X
+               LANG=COBOL,                                             X
+               MODE=INOUT,                                             X
+               TERM=3270-2,                                            X
+               CTRL=FREEKB,                                            X
+               STORAGE=AUTO,                                           X
+               TIOAPFX=YES
+***********************************************************************
+* Minimal CardDemo-env probe map: proves KICKS BMS SEND/RECEIVE MAP   *
+* end to end (map assembled by KIKMG, DSECT copied into COBOL).       *
+***********************************************************************
+HELOMAP  DFHMDI SIZE=(24,80),                                          X
+               LINE=1,                                                 X
+               COLUMN=1
+         DFHMDF POS=(1,1),                                             X
+               LENGTH=4,                                               X
+               ATTRB=(BRT,PROT),                                       X
+               INITIAL='HELO'
+         DFHMDF POS=(1,25),                                            X
+               LENGTH=30,                                              X
+               ATTRB=(NORM,PROT),                                      X
+               INITIAL='CARDDEMO-ENV  KICKS BMS PROBE'
+TRANID   DFHMDF POS=(1,76),                                            X
+               LENGTH=4,                                               X
+               ATTRB=(NORM,PROT),                                      X
+               INITIAL='HELO'
+CURTIME  DFHMDF POS=(3,1),                                             X
+               LENGTH=40,                                              X
+               ATTRB=(NORM,PROT)
+         DFHMDF POS=(5,1),                                             X
+               LENGTH=24,                                              X
+               ATTRB=(NORM,PROT),                                      X
+               INITIAL='Your name . . . . . . .'
+NAME     DFHMDF POS=(5,26),                                            X
+               LENGTH=20,                                              X
+               ATTRB=(NORM,UNPROT,IC)
+         DFHMDF POS=(5,47),                                            X
+               LENGTH=1,                                               X
+               ATTRB=ASKIP
+GREETING DFHMDF POS=(7,1),                                             X
+               LENGTH=62,                                              X
+               ATTRB=(BRT,PROT)
+MESSAGE  DFHMDF POS=(23,1),                                            X
+               LENGTH=79,                                              X
+               ATTRB=(BRT,PROT)
+         DFHMDF POS=(24,1),                                            X
+               LENGTH=30,                                              X
+               ATTRB=(NORM,PROT),                                      X
+               INITIAL='ENTER=Greet   F3=Exit'
+DUMMY    DFHMDF POS=(24,79),                                           X
+               LENGTH=1,                                               X
+               ATTRB=(DRK,PROT,FSET),                                  X
+               INITIAL=' '
+         DFHMSD TYPE=FINAL
+         END

@@ -1,0 +1,24 @@
+ Tran : CC00               AWS Mainframe Modernization          Date : 09/16/26 
+ Prog : COSGN00C                   CardDemo                     Time : 20:20:52 
+ AppID: KICKS                                                   SysID: TK5R     
+                                                                                
+      This is a Credit Card Demo Application for Mainframe Modernization        
+                                                                                
+                     +========================================+                 
+                     Â¦%%%%%%%  NATIONAL RESERVE NOTE  %%%%%%%%Â¦                 
+                     Â¦%(1)  THE UNITED STATES OF KICSLAND (1)%Â¦                 
+                     Â¦%$$              ___       ********  $$%Â¦                 
+                     Â¦%$    {x}       (o o)                 $%Â¦                 
+                     Â¦%$     ******  (  V  )      O N E     $%Â¦                 
+                     Â¦%(1)          ---m-m---             (1)%Â¦                 
+                     Â¦%%~~~~~~~~~~~ ONE DOLLAR ~~~~~~~~~~~~~%%Â¦                 
+                     +========================================+                 
+                                                                                
+                Type your User ID and Password, then press ENTER:               
+                                                                                
+                             User ID     :          (8 Char)                    
+                             Password    :          (8 Char)                    
+                                                                                
+                                                                                
+                                                                                
+ ENTER=Sign-on  F3=Exit                                                         

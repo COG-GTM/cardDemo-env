@@ -1,0 +1,434 @@
+                 MM        MM   AAAAAAAAAA   PPPPPPPPPPP   HH        HH  EEEEEEEEEEEE  LL            OOOOOOOOOOOO   SSSSSSSSSS
+                MMM      MMM  AAAAAAAAAAAA  PPPPPPPPPPPP  HH        HH  EEEEEEEEEEEE  LL            OOOOOOOOOOOO  SSSSSSSSSSSS
+               MMMM    MMMM  AA        AA  PP        PP  HH        HH  EE            LL            OO        OO  SS        SS
+              MM MM  MM MM  AA        AA  PP        PP  HH        HH  EE            LL            OO        OO  SS
+             MM  MMMM  MM  AA        AA  PP        PP  HH        HH  EE            LL            OO        OO  SSS
+            MM   MM   MM  AAAAAAAAAAAA  PPPPPPPPPPPP  HHHHHHHHHHHH  EEEEEEEE      LL            OO        OO   SSSSSSSSS
+           MM        MM  AAAAAAAAAAAA  PPPPPPPPPPP   HHHHHHHHHHHH  EEEEEEEE      LL            OO        OO    SSSSSSSSS
+          MM        MM  AA        AA  PP            HH        HH  EE            LL            OO        OO           SSS
+         MM        MM  AA        AA  PP            HH        HH  EE            LL            OO        OO            SS
+        MM        MM  AA        AA  PP            HH        HH  EE            LL            OO        OO  SS        SS
+       MM        MM  AA        AA  PP            HH        HH  EEEEEEEEEEEE  LLLLLLLLLLLL  OOOOOOOOOOOO  SSSSSSSSSSSS
+      MM        MM  AA        AA  PP            HH        HH  EEEEEEEEEEEE  LLLLLLLLLLLL  OOOOOOOOOOOO   SSSSSSSSSS
+
+
+
+                    JJJJJJJJJJ        444      9999999999                                              AAAAAAAAAA
+                    JJJJJJJJJJ       4444     999999999999                                            AAAAAAAAAAAA
+                        JJ          44 44     99        99                                            AA        AA
+                        JJ         44  44     99        99                                            AA        AA
+                        JJ        44   44     99        99                                            AA        AA
+                        JJ       44444444444  999999999999                                            AAAAAAAAAAAA
+                        JJ      444444444444  999999999999                                            AAAAAAAAAAAA
+                        JJ             44               99                                            AA        AA
+                  JJ    JJ             44               99                                            AA        AA
+                  JJ    JJ             44     99        99                                            AA        AA
+                  JJJJJJJJ             44     999999999999                                            AA        AA
+                   JJJJJJ              44      9999999999                                             AA        AA
+
+
+****A  START  JOB   49  MAPHELOS  MAP HELOSET           ROOM        7.57.19 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   49  START  A****
+****A  START  JOB   49  MAPHELOS  MAP HELOSET           ROOM        7.57.19 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   49  START  A****
+****A  START  JOB   49  MAPHELOS  MAP HELOSET           ROOM        7.57.19 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   49  START  A****
+****A  START  JOB   49  MAPHELOS  MAP HELOSET           ROOM        7.57.19 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   49  START  A****
+                                                J E S 2   J O B   L O G
+
+
+19.57.19 JOB   49  IEF196I IEF237I 192  ALLOCATED TO IEF0PDS0
+19.57.19 JOB   49  IEF196I IEF285I   HERC01.KICKSSYS.V1R5M0.PROCLIB               KEPT
+19.57.19 JOB   49  IEF196I IEF285I   VOL SER NOS= TSO003.
+19.57.19 JOB   49  $HASP373 MAPHELOS STARTED - INIT  1 - CLASS A - SYS TK5R
+19.57.19 JOB   49  IEF403I MAPHELOS - STARTED - TIME=19.57.19
+19.57.19 JOB   49  IEFACTRT - Stepname  Procstep  Program   Retcode
+19.57.19 JOB   49  MAPHELOS   HELOSET   COPY      IEBGENER  RC= 0000
+19.57.19 JOB   49  MAPHELOS   HELOSET   BMAP      KIKMG     RC= 0004
+19.57.19 JOB   49  MAPHELOS   HELOSET   ASM       IFOX00    RC= 0000
+19.57.19 JOB   49  MAPHELOS   HELOSET   LINKMAP   IEWL      RC= 0000
+19.57.19 JOB   49  MAPHELOS   HELOSET   COBMAP    KIKMG     RC= 0004
+19.57.19 JOB   49  MAPHELOS   HELOSET   GCCMAP    KIKMG     RC= 0004
+19.57.19 JOB   49  IEF404I MAPHELOS - ENDED - TIME=19.57.19
+19.57.19 JOB   49  $HASP395 MAPHELOS ENDED
+
+
+------ JES2 JOB STATISTICS ------
+
+
+ 16 SEP 26 JOB EXECUTION DATE
+
+
+        62 CARDS READ
+
+
+       341 SYSOUT PRINT RECORDS
+
+
+         0 SYSOUT PUNCH RECORDS
+
+
+      0.01 MINUTES EXECUTION TIME
+    1     //MAPHELOS JOB (KICKS),'MAP HELOSET',CLASS=A,MSGCLASS=A,                JOB   49
+          // MSGLEVEL=(1,1),REGION=4096K,USER=HERC01,PASSWORD=
+    2     //JOBPROC DD DSN=HERC01.KICKSSYS.V1R5M0.PROCLIB,DISP=SHR
+    3     //HELOSET EXEC KIKMAPS,MAPNAME=HELOSET
+    4     XXKIKMAPS PROC SOUT='*',
+          XX        DSCTLIB=COBCOPY,
+          XX        DSCTLIC=GCCCOPY,
+          XX        MAPLIB=KIKRPL,
+          XX        KICKSYS='HERC01.KICKSSYS',
+          XX        KIKSUSR='HERC01.KICKS',
+          XX        VER=V1R5M0,
+          XX        ASM=IFOX00,                ASMA90 FOR Z/OS
+          XX        MAPNAME=DUMMY
+          ***
+    5     XXCOPY    EXEC PGM=IEBGENER
+    6     XXSYSPRINT DD SYSOUT=&SOUT
+    7     XXSYSIN    DD DUMMY
+    8     XXSYSUT2   DD DSN=&&MAP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,(15,15))
+    9     //COPY.SYSUT1 DD *
+          X/SYSUT1   DD DSN=&KIKSUSR..&VER..MAPSRC(&MAPNAME),DISP=SHR
+          ***
+   10     XXBMAP     EXEC PGM=KIKMG,
+          XX PARM='-v -t -g=map'
+   11     XXSTEPLIB  DD DSN=&KICKSYS..&VER..SKIKLOAD,DISP=SHR
+   12     XXSYSUDUMP DD SYSOUT=&SOUT
+   13     XXSYSPRINT DD DSN=&&MAPOUT,DISP=(,PASS),
+          XX         DCB=(RECFM=FB,LRECL=80,BLKSIZE=800),
+          XX         UNIT=SYSDA,SPACE=(TRK,(90,90),RLSE)
+   14     XXSYSUT1   DD UNIT=SYSDA,SPACE=(TRK,(15,15)),
+          XX         DCB=(RECFM=U,BLKSIZE=800)
+   15     XXSYSTERM  DD SYSOUT=&SOUT,DCB=(BLKSIZE=120,RECFM=F)
+   16     XXSYSIN    DD DSN=&&MAP,DISP=(OLD,PASS)
+          ***
+   17     XXASM      EXEC PGM=&ASM,COND=(5,LT),
+          XX            PARM='DECK,NOLIST'
+   18     XXSYSLIB   DD DSN=SYS1.MACLIB,DISP=SHR,DCB=BLKSIZE=32720
+   19     XXSYSUT1   DD UNIT=SYSALLDA,SPACE=(CYL,(20,10))
+   20     XXSYSUT2   DD UNIT=SYSALLDA,SPACE=(CYL,(10,10))
+   21     XXSYSUT3   DD UNIT=SYSALLDA,SPACE=(CYL,(10,10))
+   22     XXSYSPRINT DD SYSOUT=&SOUT
+   23     XXSYSLIN   DD DUMMY
+   24     XXSYSGO    DD DUMMY
+   25     XXSYSPUNCH DD DSN=&&OBJSET,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,(15,15))
+   26     XXSYSIN    DD DSN=&&MAPOUT,DISP=(OLD,DELETE)
+          ***
+   27     XXLINKMAP  EXEC PGM=IEWL,PARM='XREF,MAP,LET,NCAL',
+          XX            COND=(8,LT)
+   28     XXSYSLIN   DD DSN=&&OBJSET,DISP=(OLD,DELETE)
+   29     XXSYSIN    DD DUMMY
+   30     XXSYSLMOD  DD DSN=&KIKSUSR..&VER..&MAPLIB(&MAPNAME),DISP=SHR
+   31     XXSYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(2,1))
+   32     XXSYSPRINT DD SYSOUT=&SOUT
+          ***
+   33     XXCOBMAP   EXEC PGM=KIKMG,COND=(5,LT),
+          XX PARM='-t -g=dsect -l=cobol'
+   34     XXSTEPLIB  DD DSN=&KICKSYS..&VER..SKIKLOAD,DISP=SHR
+          ***YSUDUMP DD SYSOUT=&SOUT
+   35     XXSYSPRINT DD DSN=&KIKSUSR..&VER..&DSCTLIB(&MAPNAME),DISP=SHR
+   36     XXSYSUT1   DD UNIT=SYSDA,SPACE=(TRK,(15,15)),
+          XX         DCB=(RECFM=U,BLKSIZE=800)
+   37     XXSYSTERM DD SYSOUT=&SOUT,DCB=(BLKSIZE=120,RECFM=F)
+   38     XXSYSIN DD DSN=&&MAP,DISP=(OLD,PASS)
+          ***
+   39     XXGCCMAP   EXEC PGM=KIKMG,COND=(5,LT),
+          XX PARM='-t -g=dsect -l=c'
+   40     XXSTEPLIB  DD DSN=&KICKSYS..&VER..SKIKLOAD,DISP=SHR
+          ***YSUDUMP DD SYSOUT=&SOUT
+   41     XXSYSPRINT DD DSN=&KIKSUSR..&VER..&DSCTLIC(&MAPNAME),DISP=SHR
+   42     XXSYSUT1   DD UNIT=SYSDA,SPACE=(TRK,(15,15)),
+          XX         DCB=(RECFM=U,BLKSIZE=800)
+   43     XXSYSTERM DD SYSOUT=&SOUT,DCB=(BLKSIZE=120,RECFM=F)
+   44     XXSYSIN DD DSN=&&MAP,DISP=(OLD,DELETE)
+ STMT NO. MESSAGE
+-
+    6     IEF653I SUBSTITUTION JCL - SYSOUT=*
+    9     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.MAPSRC(HELOSET),DISP=SHR
+   11     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD,DISP=SHR
+   12     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   15     IEF653I SUBSTITUTION JCL - SYSOUT=*,DCB=(BLKSIZE=120,RECFM=F)
+   17     IEF653I SUBSTITUTION JCL - PGM=IFOX00,COND=(5,LT),
+   22     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   30     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.KIKRPL(HELOSET),DISP=SHR
+   32     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   34     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD,DISP=SHR
+   35     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.COBCOPY(HELOSET),DISP=SHR
+   37     IEF653I SUBSTITUTION JCL - SYSOUT=*,DCB=(BLKSIZE=120,RECFM=F)
+   40     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD,DISP=SHR
+   41     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.GCCCOPY(HELOSET),DISP=SHR
+   43     IEF653I SUBSTITUTION JCL - SYSOUT=*,DCB=(BLKSIZE=120,RECFM=F)
+IEF236I ALLOC. FOR MAPHELOS COPY HELOSET
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSIN
+IEF237I 292  ALLOCATED TO SYSUT2
+IEF237I JES2 ALLOCATED TO SYSUT1
+IEF142I MAPHELOS COPY HELOSET - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   JES2.JOB00049.SO0102                         SYSOUT
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.MAP          PASSED        *-------56
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   JES2.JOB00049.SI0101                         SYSIN
+IEF373I STEP /COPY    / START 26259.1957
+IEF374I STEP /COPY    / STOP  26259.1957 CPU    0MIN 00.01SEC SRB    0MIN 00.00SEC VIRT    36K SYS   268K
+************************************************************************************************************************************
+*     1. Jobstep of job: MAPHELOS    Stepname: COPY        Program name: IEBGENER   Executed on 16.09.26 from 19.57.19 to 19.57.19 *
+*         elapsed time  00:00:00,04                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,01               Virtual Storage used:     36K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,01   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:     56                                                                           *
+*     DMY.......0 DMY.......0 292......56 DMY.......0                                                                              *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,01                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPHELOS BMAP HELOSET
+IEF237I 192  ALLOCATED TO STEPLIB
+IEF237I 190  ALLOCATED TO SYS00162
+IEF237I JES2 ALLOCATED TO SYSUDUMP
+IEF237I 293  ALLOCATED TO SYSPRINT
+IEF237I 291  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSTERM
+IEF237I 292  ALLOCATED TO SYSIN
+IEF142I MAPHELOS BMAP HELOSET - STEP WAS EXECUTED - COND CODE 0004
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   JES2.JOB00049.SO0103                         SYSOUT
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.MAPOUT       PASSED        *-------29
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.R0000001     DELETED       *--------0
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   JES2.JOB00049.SO0104                         SYSOUT
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.MAP          PASSED        *------228
+IEF285I   VOL SER NOS= WORK03.
+IEF373I STEP /BMAP    / START 26259.1957
+IEF374I STEP /BMAP    / STOP  26259.1957 CPU    0MIN 00.06SEC SRB    0MIN 00.01SEC VIRT   540K SYS   272K
+************************************************************************************************************************************
+*     2. Jobstep of job: MAPHELOS    Stepname: BMAP        Program name: KIKMG      Executed on 16.09.26 from 19.57.19 to 19.57.19 *
+*         elapsed time  00:00:00,17                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,07               Virtual Storage used:    540K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,07   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     192.......0 190.......0 DMY.......0 293......29 291.......0 DMY.......0 292.....228                                          *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,11                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPHELOS ASM HELOSET
+IEF237I 390  ALLOCATED TO SYSLIB
+IEF237I 292  ALLOCATED TO SYSUT1
+IEF237I 291  ALLOCATED TO SYSUT2
+IEF237I 290  ALLOCATED TO SYSUT3
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSLIN
+IEF237I DMY  ALLOCATED TO SYSGO
+IEF237I 293  ALLOCATED TO SYSPUNCH
+IEF237I 293  ALLOCATED TO SYSIN
+IEF142I MAPHELOS ASM HELOSET - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   SYS1.MACLIB                                  KEPT          *--------0
+IEF285I   VOL SER NOS= TK5RES.
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.R0000002     DELETED       *--------8
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.R0000003     DELETED       *--------7
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.R0000004     DELETED       *--------7
+IEF285I   VOL SER NOS= WORK01.
+IEF285I   JES2.JOB00049.SO0105                         SYSOUT
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.OBJSET       PASSED        *-------16
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.MAPOUT       DELETED       *-------30
+IEF285I   VOL SER NOS= WORK04.
+IEF373I STEP /ASM     / START 26259.1957
+IEF374I STEP /ASM     / STOP  26259.1957 CPU    0MIN 00.04SEC SRB    0MIN 00.00SEC VIRT  2124K SYS   272K
+************************************************************************************************************************************
+*     3. Jobstep of job: MAPHELOS    Stepname: ASM         Program name: IFOX00     Executed on 16.09.26 from 19.57.19 to 19.57.19 *
+*         elapsed time  00:00:00,09                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,04               Virtual Storage used:   2124K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,04   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     390.......0 292.......8 291.......7 290.......7 DMY.......0 DMY.......0 DMY.......0 293......16 293......30                  *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,06                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPHELOS LINKMAP HELOSET
+IEF237I 293  ALLOCATED TO SYSLIN
+IEF237I DMY  ALLOCATED TO SYSIN
+IEF237I 192  ALLOCATED TO SYSLMOD
+IEF237I 190  ALLOCATED TO SYS00164
+IEF237I 291  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF142I MAPHELOS LINKMAP HELOSET - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.OBJSET       DELETED       *-------17
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   HERC01.KICKS.V1R5M0.KIKRPL                   KEPT          *-------10
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.R0000005     DELETED       *--------0
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   JES2.JOB00049.SO0106                         SYSOUT
+IEF373I STEP /LINKMAP / START 26259.1957
+IEF374I STEP /LINKMAP / STOP  26259.1957 CPU    0MIN 00.01SEC SRB    0MIN 00.00SEC VIRT   260K SYS   276K
+************************************************************************************************************************************
+*     4. Jobstep of job: MAPHELOS    Stepname: LINKMAP     Program name: IEWL       Executed on 16.09.26 from 19.57.19 to 19.57.19 *
+*         elapsed time  00:00:00,04                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,01               Virtual Storage used:    260K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,01   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     293......17 DMY.......0 192......10 190.......0 291.......0 DMY.......0                                                      *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,01                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPHELOS COBMAP HELOSET
+IEF237I 192  ALLOCATED TO STEPLIB
+IEF237I 190  ALLOCATED TO SYS00166
+IEF237I 192  ALLOCATED TO SYSPRINT
+IEF237I 293  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSTERM
+IEF237I 292  ALLOCATED TO SYSIN
+IEF142I MAPHELOS COBMAP HELOSET - STEP WAS EXECUTED - COND CODE 0004
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   HERC01.KICKS.V1R5M0.COBCOPY                  KEPT          *--------5
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.R0000006     DELETED       *--------3
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   JES2.JOB00049.SO0107                         SYSOUT
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.MAP          PASSED        *------228
+IEF285I   VOL SER NOS= WORK03.
+IEF373I STEP /COBMAP  / START 26259.1957
+IEF374I STEP /COBMAP  / STOP  26259.1957 CPU    0MIN 00.06SEC SRB    0MIN 00.01SEC VIRT   540K SYS   276K
+************************************************************************************************************************************
+*     5. Jobstep of job: MAPHELOS    Stepname: COBMAP      Program name: KIKMG      Executed on 16.09.26 from 19.57.19 to 19.57.19 *
+*         elapsed time  00:00:00,15                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,07               Virtual Storage used:    540K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,07   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     192.......0 190.......0 192.......5 293.......3 DMY.......0 292.....228                                                      *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,11                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPHELOS GCCMAP HELOSET
+IEF237I 192  ALLOCATED TO STEPLIB
+IEF237I 190  ALLOCATED TO SYS00168
+IEF237I 192  ALLOCATED TO SYSPRINT
+IEF237I 293  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSTERM
+IEF237I 292  ALLOCATED TO SYSIN
+IEF142I MAPHELOS GCCMAP HELOSET - STEP WAS EXECUTED - COND CODE 0004
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   HERC01.KICKS.V1R5M0.GCCCOPY                  KEPT          *--------4
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.R0000007     DELETED       *--------3
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   JES2.JOB00049.SO0108                         SYSOUT
+IEF285I   SYS26259.T195719.RA000.MAPHELOS.MAP          DELETED       *------228
+IEF285I   VOL SER NOS= WORK03.
+IEF373I STEP /GCCMAP  / START 26259.1957
+IEF374I STEP /GCCMAP  / STOP  26259.1957 CPU    0MIN 00.06SEC SRB    0MIN 00.01SEC VIRT   540K SYS   276K
+************************************************************************************************************************************
+*     6. Jobstep of job: MAPHELOS    Stepname: GCCMAP      Program name: KIKMG      Executed on 16.09.26 from 19.57.19 to 19.57.19 *
+*         elapsed time  00:00:00,15                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,07               Virtual Storage used:    540K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,07   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     192.......0 190.......0 192.......4 293.......3 DMY.......0 292.....228                                                      *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,11                                             *
+************************************************************************************************************************************
+IEF375I  JOB /MAPHELOS/ START 26259.1957
+IEF376I  JOB /MAPHELOS/ STOP  26259.1957 CPU    0MIN 00.24SEC SRB    0MIN 00.03SEC
+DATA SET UTILITY - GENERATE                                                                       PAGE 0001
+
+
+IEB352I WARNING : OUTPUT RECFM/LRECL/BLKSIZE COPIED FROM INPUT
+
+PROCESSING ENDED AT EOD'KICKS for TSO' Map Generator version V1R5M0(0)
+Remark(0) at line 8, ?TYPE= overriden by -g=map
+Warning(4) at line 8, ?TERM= taken as comments
+Remark(0) at line 8, ?TIOAPFX=YES default and taken as comments
+Remark(0) at line 15, ?LINE=1 default and taken as comments
+Remark(0) at line 15, ?COLUMN=1 default and taken as comments
+
+ F64-LEVEL LINKAGE EDITOR OPTIONS SPECIFIED XREF,MAP,LET,NCAL
+          DEFAULT OPTION(S) USED -  SIZE=(231424,55296)
+
+
+
+                                                CROSS REFERENCE TABLE
+
+
+  CONTROL SECTION                       ENTRY
+
+    NAME    ORIGIN  LENGTH                NAME   LOCATION     NAME   LOCATION     NAME   LOCATION     NAME   LOCATION
+  HELOSET       00     180
+
+
+
+
+  LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION             LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION
+
+ ENTRY ADDRESS       00
+
+ TOTAL LENGTH       180
+****HELOSET   NOW REPLACED IN DATA SET
+AUTHORIZATION CODE IS         0.
+Remark(0) at line 8, ?TYPE= overriden by -g=dsect
+Remark(0) at line 8, ?LANG= overriden by -l=cobol
+Warning(4) at line 8, ?TERM= taken as comments
+Remark(0) at line 8, ?TIOAPFX=YES default and taken as comments
+Remark(0) at line 15, ?LINE=1 default and taken as comments
+Remark(0) at line 15, ?COLUMN=1 default and taken as comments
+Remark(0) at line 8, ?TYPE= overriden by -g=dsect
+Remark(0) at line 8, ?LANG= overriden by -l=c
+Warning(4) at line 8, ?TERM= taken as comments
+Remark(0) at line 8, ?TIOAPFX=YES default and taken as comments
+Remark(0) at line 15, ?LINE=1 default and taken as comments
+Remark(0) at line 15, ?COLUMN=1 default and taken as comments
+                 MM        MM   AAAAAAAAAA   PPPPPPPPPPP   HH        HH  EEEEEEEEEEEE  LL            OOOOOOOOOOOO   SSSSSSSSSS
+                MMM      MMM  AAAAAAAAAAAA  PPPPPPPPPPPP  HH        HH  EEEEEEEEEEEE  LL            OOOOOOOOOOOO  SSSSSSSSSSSS
+               MMMM    MMMM  AA        AA  PP        PP  HH        HH  EE            LL            OO        OO  SS        SS
+              MM MM  MM MM  AA        AA  PP        PP  HH        HH  EE            LL            OO        OO  SS
+             MM  MMMM  MM  AA        AA  PP        PP  HH        HH  EE            LL            OO        OO  SSS
+            MM   MM   MM  AAAAAAAAAAAA  PPPPPPPPPPPP  HHHHHHHHHHHH  EEEEEEEE      LL            OO        OO   SSSSSSSSS
+           MM        MM  AAAAAAAAAAAA  PPPPPPPPPPP   HHHHHHHHHHHH  EEEEEEEE      LL            OO        OO    SSSSSSSSS
+          MM        MM  AA        AA  PP            HH        HH  EE            LL            OO        OO           SSS
+         MM        MM  AA        AA  PP            HH        HH  EE            LL            OO        OO            SS
+        MM        MM  AA        AA  PP            HH        HH  EE            LL            OO        OO  SS        SS
+       MM        MM  AA        AA  PP            HH        HH  EEEEEEEEEEEE  LLLLLLLLLLLL  OOOOOOOOOOOO  SSSSSSSSSSSS
+      MM        MM  AA        AA  PP            HH        HH  EEEEEEEEEEEE  LLLLLLLLLLLL  OOOOOOOOOOOO   SSSSSSSSSS
+
+
+
+                    JJJJJJJJJJ        444      9999999999                                              AAAAAAAAAA
+                    JJJJJJJJJJ       4444     999999999999                                            AAAAAAAAAAAA
+                        JJ          44 44     99        99                                            AA        AA
+                        JJ         44  44     99        99                                            AA        AA
+                        JJ        44   44     99        99                                            AA        AA
+                        JJ       44444444444  999999999999                                            AAAAAAAAAAAA
+                        JJ      444444444444  999999999999                                            AAAAAAAAAAAA
+                        JJ             44               99                                            AA        AA
+                  JJ    JJ             44               99                                            AA        AA
+                  JJ    JJ             44     99        99                                            AA        AA
+                  JJJJJJJJ             44     999999999999                                            AA        AA
+                   JJJJJJ              44      9999999999                                             AA        AA
+
+
+****A   END   JOB   49  MAPHELOS  MAP HELOSET           ROOM        7.57.19 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   49   END   A****
+****A   END   JOB   49  MAPHELOS  MAP HELOSET           ROOM        7.57.19 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   49   END   A****
+****A   END   JOB   49  MAPHELOS  MAP HELOSET           ROOM        7.57.19 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   49   END   A****
+****A   END   JOB   49  MAPHELOS  MAP HELOSET           ROOM        7.57.19 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   49   END   A****
+

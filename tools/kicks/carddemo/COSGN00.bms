@@ -1,0 +1,207 @@
+******************************************************************
+*    CardDemo - Login Screen
+***********************************************************************
+* Copyright Amazon.com, Inc. or its affiliates.
+* All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License").
+* You may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+* either express or implied. See the License for the specific
+* language governing permissions and limitations under the License
+******************************************************************
+COSGN00 DFHMSD CTRL=(ALARM,FREEKB),                                    X
+               EXTATT=YES,                                             X
+               LANG=COBOL,                                             X
+               MODE=INOUT,                                             X
+               STORAGE=AUTO,                                           X
+               TIOAPFX=YES,                                            X
+               TYPE=&SYSPARM
+COSGN0A DFHMDI COLUMN=1,                                               X
+               LINE=1,                                                 X
+               SIZE=(24,80)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=6,                                               X
+               POS=(1,1),                                              X
+               INITIAL='Tran :'
+TRNNAME DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=4,                                               X
+               POS=(1,8)
+TITLE01 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=YELLOW,                                           X
+               LENGTH=40,                                              X
+               POS=(1,21)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=6,                                               X
+               POS=(1,64),                                             X
+               INITIAL='Date :'
+CURDATE DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(1,71),                                             X
+               INITIAL='mm/dd/yy'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=6,                                               X
+               POS=(2,1),                                              X
+               INITIAL='Prog :'
+PGMNAME DFHMDF ATTRB=(FSET,NORM,PROT),                                 X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(2,8)
+TITLE02 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=YELLOW,                                           X
+               LENGTH=40,                                              X
+               POS=(2,21)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=6,                                               X
+               POS=(2,64),                                             X
+               INITIAL='Time :'
+CURTIME DFHMDF ATTRB=(FSET,NORM,PROT),                                 X
+               COLOR=BLUE,                                             X
+               LENGTH=9,                                               X
+               POS=(2,71),                                             X
+               INITIAL='Ahh:mm:ss'
+        DFHMDF ATTRB=(FSET,NORM,PROT),                                 X
+               COLOR=BLUE,                                             X
+               LENGTH=6,                                               X
+               POS=(3,1),                                              X
+               INITIAL='AppID:'
+APPLID  DFHMDF ATTRB=(FSET,NORM,PROT),                                 X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(3,8)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=6,                                               X
+               POS=(3,64),                                             X
+               INITIAL='SysID:'
+SYSID   DFHMDF ATTRB=(FSET,NORM,PROT),                                 X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(3,71),                                             X
+               INITIAL='        '
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=NEUTRAL,                                          X
+               LENGTH=42,                                              X
+               POS=(5,6),                                              X
+               INITIAL='This is a Credit Card Demo Application for'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=NEUTRAL,                                          X
+               LENGTH=23,                                              X
+               POS=(5,49),                                             X
+               INITIAL='Mainframe Modernization'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(7,21),                                             X
+               INITIAL='+========================================+'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(8,21),                                             X
+               INITIAL='|%%%%%%%  NATIONAL RESERVE NOTE  %%%%%%%%|'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(9,21),                                             X
+               INITIAL='|%(1)  THE UNITED STATES OF KICSLAND (1)%|'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(10,21),                                            X
+               INITIAL='|%$$              ___       ********  $$%|'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(11,21),                                            X
+               INITIAL='|%$    {x}       (o o)                 $%|'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(12,21),                                            X
+               INITIAL='|%$     ******  (  V  )      O N E     $%|'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(13,21),                                            X
+               INITIAL='|%(1)          ---m-m---             (1)%|'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(14,21),                                            X
+               INITIAL='|%%~~~~~~~~~~~ ONE DOLLAR ~~~~~~~~~~~~~%%|'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=42,                                              X
+               POS=(15,21),                                            X
+               INITIAL='+========================================+'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=TURQUOISE,                                        X
+               LENGTH=31,                                              X
+               POS=(17,16),                                            X
+               INITIAL='Type your User ID and Password,'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=TURQUOISE,                                        X
+               LENGTH=17,                                              X
+               POS=(17,48),                                            X
+               INITIAL='then press ENTER:'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=TURQUOISE,                                        X
+               LENGTH=13,                                              X
+               POS=(19,29),                                            X
+               INITIAL='User ID     :'
+USERID  DFHMDF ATTRB=(FSET,IC,NORM,UNPROT),                            X
+               COLOR=GREEN,                                            X
+               HILIGHT=OFF,                                            X
+               LENGTH=8,                                               X
+               POS=(19,43)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(19,52),                                            X
+               INITIAL='(8 Char)'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=TURQUOISE,                                        X
+               LENGTH=13,                                              X
+               POS=(20,29),                                            X
+               INITIAL='Password    :'
+PASSWD  DFHMDF ATTRB=(DRK,FSET,UNPROT),                                X
+               COLOR=GREEN,                                            X
+               HILIGHT=OFF,                                            X
+               LENGTH=8,                                               X
+               POS=(20,43),                                            X
+               INITIAL='________'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(20,52),                                            X
+               INITIAL='(8 Char)'
+        DFHMDF ATTRB=(DRK,UNPROT),                                     X
+               LENGTH=1,                                               X
+               POS=(20,61),                                            X
+               INITIAL=' '
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               LENGTH=1,                                               X
+               POS=(20,63)
+ERRMSG  DFHMDF ATTRB=(ASKIP,BRT,FSET),                                 X
+               COLOR=RED,                                              X
+               LENGTH=78,                                              X
+               POS=(23,1)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=YELLOW,                                           X
+               LENGTH=22,                                              X
+               POS=(24,1),                                             X
+               INITIAL='ENTER=Sign-on  F3=Exit'
+        DFHMSD TYPE=FINAL
+        END

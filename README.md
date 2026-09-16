@@ -86,6 +86,22 @@ make chain-graph-check
 
 The generated Markdown is `docs/chain-graph.md`.
 
+## Genuine 3270 path (Hercules + MVS 3.8j + KICKS)
+
+An optional `mvs` Compose profile boots a real MVS 3.8j (TK5) under Hercules
+and runs the CardDemo sign-on and main menu on KICKS for TSO, a free CICS
+look-alike. It is a feasibility spike, separate from the batch estate above:
+
+```sh
+make mvs-up        # build (downloads TK5 + KICKS, SHA256-verified), IPL
+make mvs-install   # install KICKS onto the mvs-dasd volume (re-runnable)
+make mvs-carddemo  # compile + run COSGN00C / COMEN01C, dump screens
+make mvs-3270      # interactive c3270 on localhost:3270
+```
+
+What runs, what had to be rewritten and why, and what can never run there
+(Db2, MQ, COBOL-85) is in `docs/KICKS-NOTES.md`.
+
 ## Reset
 
 Remove local datasets, build output, work output, and the Compose database:
