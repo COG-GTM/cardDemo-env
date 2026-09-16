@@ -26,7 +26,7 @@ if __package__ in (None, ""):
 import psycopg2  # noqa: E402
 
 from xferfee import post_fees, run_chain  # noqa: E402
-from xferfee.cobol_numeric import fit_picture  # noqa: E402
+from xferfee.cobol_numeric import fit_picture, rounded_cents  # noqa: E402
 from xferfee.layouts import CVTRA05Y  # noqa: E402
 
 HLQ = run_chain.HLQ
@@ -184,6 +184,12 @@ class FixedWidthAccumulators(unittest.TestCase):
 
     def test_negative_overflow(self) -> None:
         self.assertEqual(fit_picture(Decimal("-1000000000.01"), 11, 2), Decimal("-0.01"))
+
+    def test_fee_truncated_before_cap(self) -> None:
+        # WS-FEE-AMT overflow: 999,999,999.99 * 1.1 -> 1,099,999,999.99 -> 99,999,999.99 (< cap)
+        fee = fit_picture(rounded_cents(Decimal("999999999.99") * Decimal("1.100000")), 11, 2)
+        self.assertEqual(fee, Decimal("99999999.99"))
+        self.assertFalse(fee > Decimal("500000000.00"))
 
     def test_sign_change(self) -> None:
         self.assertEqual(fit_picture(Decimal("5.00") + Decimal("-7.25"), 11, 2), Decimal("-2.25"))

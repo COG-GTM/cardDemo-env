@@ -124,7 +124,7 @@ def run(xferextr: Path, acctfile: Path, acctout: Path, xferfee: Path) -> StepRes
             cap_applied = "N"
             rule = select_rule(cursor, book_id, tran_dt, sysout)  # BR-7 (also for zero amounts, BR-10)
             if amount != 0:  # BR-10
-                fee = rounded_cents(amount * rule.fee_pct)  # BR-8
+                fee = fit_picture(rounded_cents(amount * rule.fee_pct), 11, 2)  # BR-8, WS-FEE-AMT S9(09)V99
                 if fee > rule.fee_cap:  # BR-9 (strict)
                     fee = rule.fee_cap
                     cap_applied = "Y"
