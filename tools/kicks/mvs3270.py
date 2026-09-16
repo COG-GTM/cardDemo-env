@@ -46,6 +46,7 @@ class Screen:
         # s3270 only reliably answers the scripting protocol over -scriptport
         # when it has no tty, so talk to it over a loopback socket.
         self.port = 4270 + os.getpid() % 1000
+        self.sock = None
         self.proc = subprocess.Popen(
             ["s3270", "-model", "3279-2", "-scriptport", str(self.port), target],
             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
@@ -74,7 +75,7 @@ class Screen:
             time.sleep(1)
             self.cmd("Wait(10,Unlock)")
         except Exception:
-            if getattr(self, "sock", None):
+            if self.sock is not None:
                 self.sock.close()
             self.proc.kill()
             self.proc.wait()
