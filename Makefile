@@ -1,5 +1,7 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	run-python parity-python deadcode chain-graph chain-graph-check
+
+PYTHON_CASES ?= default under_cap at_cap rate_change zero_amount non_transfer half_cent
 
 up:
 	docker compose up -d --build --wait
@@ -38,6 +40,23 @@ parity:
 			python3 tools/parity/compare.py --chain xferfee --all \
 			--report work/parity/report.md; \
 		fi'
+
+# Python port (python/xferfee): run one fixture case and compare it with the
+# recorded COBOL outputs. Report: work/parity/$(CASE)/python-report.md
+run-python:
+	docker compose exec -T estate sh -c \
+		'python3 python/xferfee/run_chain.py --case $(CASE) --db-reset --fresh \
+		--datasets work/python/$(CASE)/datasets \
+		--joblog-dir work/python/$(CASE)/joblog \
+		--candidate work/parity/$(CASE)/python && \
+		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
+		--candidate work/parity/$(CASE)/python \
+		--report work/parity/$(CASE)/python-report.md'
+
+parity-python:
+	@rc=0; for c in $(PYTHON_CASES); do \
+		$(MAKE) --no-print-directory run-python CASE=$$c || rc=1; \
+	done; exit $$rc
 
 parity-naive:
 	docker compose exec -T estate sh -c \
