@@ -694,6 +694,12 @@ with `LEDGER INSERT FAILED` after writing partial fee records (BR-13). Confirm n
 text (no carriage-control byte, trailing spaces stripped, `\n`). The port will match the recorded
 files, not the DCB.
 
+**Q16 — Unchecked COMMIT and file status.** `XFERFEE.cbl:114-121` does not test `SQLCODE` after
+`COMMIT` (a failed commit still ends with RC 0 and both output generations written), and none of the
+programs test their `FILE STATUS` fields, so I/O errors surface as a runtime crash rather than RC 8.
+The port preserves this (only CONNECT / rule SELECT / ledger INSERT failures route to RC 8). Confirm
+whether a commit failure should become RC 8 in the port.
+
 **(inferred)** items: sign-byte encodings in §2 preamble; `ROUNDED` = half-away-from-zero (proved by
 `half_cent`, not by a compiler option in the source); `SQLCODE` for multi-row SELECT causing abend
 (from ESQL semantics, not observed).
