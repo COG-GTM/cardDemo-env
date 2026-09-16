@@ -1,0 +1,204 @@
+                               UU        UU   SSSSSSSSSS   RRRRRRRRRRR    SSSSSSSSSS   EEEEEEEEEEEE   CCCCCCCCCC
+                              UU        UU  SSSSSSSSSSSS  RRRRRRRRRRRR  SSSSSSSSSSSS  EEEEEEEEEEEE  CCCCCCCCCCCC
+                             UU        UU  SS        SS  RR        RR  SS        SS  EE            CC        CC
+                            UU        UU  SS            RR        RR  SS            EE            CC
+                           UU        UU  SSS           RR        RR  SSS           EE            CC
+                          UU        UU   SSSSSSSSS    RRRRRRRRRRRR   SSSSSSSSS    EEEEEEEE      CC
+                         UU        UU    SSSSSSSSS   RRRRRRRRRRR     SSSSSSSSS   EEEEEEEE      CC
+                        UU        UU           SSS  RR    RR               SSS  EE            CC
+                       UU        UU            SS  RR     RR               SS  EE            CC
+                      UU        UU  SS        SS  RR      RR    SS        SS  EE            CC        CC
+                     UUUUUUUUUUUU  SSSSSSSSSSSS  RR       RR   SSSSSSSSSSSS  EEEEEEEEEEEE  CCCCCCCCCCCC
+                     UUUUUUUUUU    SSSSSSSSSS   RR        RR   SSSSSSSSSS   EEEEEEEEEEEE   CCCCCCCCCC
+
+
+
+                    JJJJJJJJJJ  555555555555   6666666666                                              AAAAAAAAAA
+                    JJJJJJJJJJ  555555555555  666666666666                                            AAAAAAAAAAAA
+                        JJ      55            66        66                                            AA        AA
+                        JJ      55            66                                                      AA        AA
+                        JJ      55            66                                                      AA        AA
+                        JJ      555555555     66666666666                                             AAAAAAAAAAAA
+                        JJ      5555555555    666666666666                                            AAAAAAAAAAAA
+                        JJ               55   66        66                                            AA        AA
+                  JJ    JJ                55  66        66                                            AA        AA
+                  JJ    JJ                55  66        66                                            AA        AA
+                  JJJJJJJJ      555555555555  666666666666                                            AA        AA
+                   JJJJJJ       55555555555    6666666666                                             AA        AA
+
+
+****A  START  JOB   56  USRSEC    USRSEC KSDS           ROOM        8.05.03 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   56  START  A****
+****A  START  JOB   56  USRSEC    USRSEC KSDS           ROOM        8.05.03 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   56  START  A****
+****A  START  JOB   56  USRSEC    USRSEC KSDS           ROOM        8.05.03 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   56  START  A****
+****A  START  JOB   56  USRSEC    USRSEC KSDS           ROOM        8.05.03 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   56  START  A****
+                                                J E S 2   J O B   L O G
+
+
+20.05.03 JOB   56  $HASP373 USRSEC   STARTED - INIT  1 - CLASS A - SYS TK5R
+20.05.03 JOB   56  IEF403I USRSEC - STARTED - TIME=20.05.03
+20.05.03 JOB   56  IEFACTRT - Stepname  Procstep  Program   Retcode
+20.05.03 JOB   56  USRSEC     DEFINE              IDCAMS    RC= 0000
+20.05.03 JOB   56  USRSEC     LOAD                IDCAMS    RC= 0000
+20.05.03 JOB   56  IEF404I USRSEC - ENDED - TIME=20.05.03
+20.05.03 JOB   56  $HASP395 USRSEC   ENDED
+
+
+------ JES2 JOB STATISTICS ------
+
+
+ 16 SEP 26 JOB EXECUTION DATE
+
+
+        32 CARDS READ
+
+
+       106 SYSOUT PRINT RECORDS
+
+
+         0 SYSOUT PUNCH RECORDS
+
+
+      0.00 MINUTES EXECUTION TIME
+    1     //USRSEC JOB (KICKS),'USRSEC KSDS',CLASS=A,MSGCLASS=A,                  JOB   56
+          // MSGLEVEL=(1,1),REGION=4096K,USER=HERC01,PASSWORD=
+    2     //DEFINE EXEC PGM=IDCAMS
+    3     //SYSPRINT DD SYSOUT=*
+    4     //SYSIN DD *
+    5     //LOAD EXEC PGM=IDCAMS,COND=(0,NE)
+    6     //SYSPRINT DD SYSOUT=*
+    7     //IN DD *
+    8     //OUT DD DSN=HERC01.CARDDEMO.USRSEC,DISP=SHR
+    9     //SYSIN DD *
+IEF236I ALLOC. FOR USRSEC DEFINE
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO SYSIN
+IEF237I 190  ALLOCATED TO SYS00001
+IEF237I 191  ALLOCATED TO SYS00002
+IEF237I 191  ALLOCATED TO SYS00004
+IEF285I   SYS26259.T200503.RA000.USRSEC.R0000002       KEPT          *--------0
+IEF285I   VOL SER NOS= TSO002.
+IEF285I   SYS26259.T200503.RA000.USRSEC.R0000004       KEPT          *--------0
+IEF285I   VOL SER NOS= TSO002.
+IEF142I USRSEC DEFINE - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   JES2.JOB00056.SO0104                         SYSOUT
+IEF285I   JES2.JOB00056.SI0101                         SYSIN
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF373I STEP /DEFINE  / START 26259.2005
+IEF374I STEP /DEFINE  / STOP  26259.2005 CPU    0MIN 00.03SEC SRB    0MIN 00.00SEC VIRT   284K SYS   284K
+************************************************************************************************************************************
+*     1. Jobstep of job: USRSEC      Stepname: DEFINE      Program name: IDCAMS     Executed on 16.09.26 from 20.05.03 to 20.05.03 *
+*         elapsed time  00:00:00,07                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,03               Virtual Storage used:    284K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,03   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      8                                                                           *
+*     DMY.......0 DMY.......0 190.......0                                                                                          *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,05                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR USRSEC LOAD
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO IN
+IEF237I 191  ALLOCATED TO OUT
+IEF237I 190  ALLOCATED TO SYS00182
+IEF237I JES2 ALLOCATED TO SYSIN
+IEF142I USRSEC LOAD - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   JES2.JOB00056.SO0105                         SYSOUT
+IEF285I   JES2.JOB00056.SI0102                         SYSIN
+IEF285I   HERC01.CARDDEMO.USRSEC                       KEPT          *--------0
+IEF285I   VOL SER NOS= TSO002.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   JES2.JOB00056.SI0103                         SYSIN
+IEF373I STEP /LOAD    / START 26259.2005
+IEF374I STEP /LOAD    / STOP  26259.2005 CPU    0MIN 00.02SEC SRB    0MIN 00.00SEC VIRT   236K SYS   272K
+************************************************************************************************************************************
+*     2. Jobstep of job: USRSEC      Stepname: LOAD        Program name: IDCAMS     Executed on 16.09.26 from 20.05.03 to 20.05.03 *
+*         elapsed time  00:00:00,06                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,02               Virtual Storage used:    236K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,02   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:     11                                                                           *
+*     DMY.......0 DMY.......0 191.......0 190.......0 DMY.......0                                                                  *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,03                                             *
+************************************************************************************************************************************
+IEF375I  JOB /USRSEC  / START 26259.2005
+IEF376I  JOB /USRSEC  / STOP  26259.2005 CPU    0MIN 00.05SEC SRB    0MIN 00.00SEC
+IDCAMS  SYSTEM SERVICES                                           TIME: 20:05:03        09/16/26     PAGE   1
+
+
+ DELETE HERC01.CARDDEMO.USRSEC CLUSTER PURGE
+
+IDC3012I ENTRY HERC01.CARDDEMO.USRSEC NOT FOUND
+IDC3009I ** VSAM CATALOG RETURN CODE IS 8 - REASON CODE IS IGG0CLAG-6
+IDC0551I **ENTRY HERC01.CARDDEMO.USRSEC NOT DELETED
+
+IDC0001I FUNCTION COMPLETED, HIGHEST CONDITION CODE WAS 8
+
+
+ SET MAXCC = 0
+
+ DEFINE CLUSTER -
+   (NAME(HERC01.CARDDEMO.USRSEC) VOLUMES(TSO002) -
+    KEYS(8 0) RECORDSIZE(80 80) INDEXED -
+    TRACKS(5 5) FREESPACE(10 15) SHAREOPTIONS(2 3) UNIQUE) -
+   DATA (NAME(HERC01.CARDDEMO.USRSEC.DATA)) -
+   INDEX (NAME(HERC01.CARDDEMO.USRSEC.INDEX))
+
+IDC0508I DATA ALLOCATION STATUS FOR VOLUME TSO002 IS 0
+
+IDC0509I INDEX ALLOCATION STATUS FOR VOLUME TSO002 IS 0
+
+IDC0001I FUNCTION COMPLETED, HIGHEST CONDITION CODE WAS 0
+
+
+
+IDC0002I IDCAMS PROCESSING COMPLETE. MAXIMUM CONDITION CODE WAS 0IDCAMS  SYSTEM SERVICES                                           TIME: 20:05:03        09/16/26     PAGE   1
+
+
+ REPRO INFILE(IN) OUTFILE(OUT)
+
+IDC0005I NUMBER OF RECORDS PROCESSED WAS 10
+
+IDC0001I FUNCTION COMPLETED, HIGHEST CONDITION CODE WAS 0
+
+
+
+IDC0002I IDCAMS PROCESSING COMPLETE. MAXIMUM CONDITION CODE WAS 0                               UU        UU   SSSSSSSSSS   RRRRRRRRRRR    SSSSSSSSSS   EEEEEEEEEEEE   CCCCCCCCCC
+                              UU        UU  SSSSSSSSSSSS  RRRRRRRRRRRR  SSSSSSSSSSSS  EEEEEEEEEEEE  CCCCCCCCCCCC
+                             UU        UU  SS        SS  RR        RR  SS        SS  EE            CC        CC
+                            UU        UU  SS            RR        RR  SS            EE            CC
+                           UU        UU  SSS           RR        RR  SSS           EE            CC
+                          UU        UU   SSSSSSSSS    RRRRRRRRRRRR   SSSSSSSSS    EEEEEEEE      CC
+                         UU        UU    SSSSSSSSS   RRRRRRRRRRR     SSSSSSSSS   EEEEEEEE      CC
+                        UU        UU           SSS  RR    RR               SSS  EE            CC
+                       UU        UU            SS  RR     RR               SS  EE            CC
+                      UU        UU  SS        SS  RR      RR    SS        SS  EE            CC        CC
+                     UUUUUUUUUUUU  SSSSSSSSSSSS  RR       RR   SSSSSSSSSSSS  EEEEEEEEEEEE  CCCCCCCCCCCC
+                     UUUUUUUUUU    SSSSSSSSSS   RR        RR   SSSSSSSSSS   EEEEEEEEEEEE   CCCCCCCCCC
+
+
+
+                    JJJJJJJJJJ  555555555555   6666666666                                              AAAAAAAAAA
+                    JJJJJJJJJJ  555555555555  666666666666                                            AAAAAAAAAAAA
+                        JJ      55            66        66                                            AA        AA
+                        JJ      55            66                                                      AA        AA
+                        JJ      55            66                                                      AA        AA
+                        JJ      555555555     66666666666                                             AAAAAAAAAAAA
+                        JJ      5555555555    666666666666                                            AAAAAAAAAAAA
+                        JJ               55   66        66                                            AA        AA
+                  JJ    JJ                55  66        66                                            AA        AA
+                  JJ    JJ                55  66        66                                            AA        AA
+                  JJJJJJJJ      555555555555  666666666666                                            AA        AA
+                   JJJJJJ       55555555555    6666666666                                             AA        AA
+
+
+****A   END   JOB   56  USRSEC    USRSEC KSDS           ROOM        8.05.03 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   56   END   A****
+****A   END   JOB   56  USRSEC    USRSEC KSDS           ROOM        8.05.03 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   56   END   A****
+****A   END   JOB   56  USRSEC    USRSEC KSDS           ROOM        8.05.03 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   56   END   A****
+****A   END   JOB   56  USRSEC    USRSEC KSDS           ROOM        8.05.03 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   56   END   A****
+

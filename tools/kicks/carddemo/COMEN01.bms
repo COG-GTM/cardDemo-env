@@ -1,0 +1,163 @@
+******************************************************************
+*    CardDemo - Main Menu Screen
+***********************************************************************
+* Copyright Amazon.com, Inc. or its affiliates.
+* All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License").
+* You may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+* either express or implied. See the License for the specific
+* language governing permissions and limitations under the License
+******************************************************************
+COMEN01 DFHMSD CTRL=(ALARM,FREEKB),                                    X
+               EXTATT=YES,                                             X
+               LANG=COBOL,                                             X
+               MODE=INOUT,                                             X
+               STORAGE=AUTO,                                           X
+               TIOAPFX=YES,                                            X
+               TYPE=&SYSPARM
+COMEN1A DFHMDI COLUMN=1,                                               X
+               LINE=1,                                                 X
+               SIZE=(24,80)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=5,                                               X
+               POS=(1,1),                                              X
+               INITIAL='Tran:'
+TRNNAME DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=4,                                               X
+               POS=(1,7)
+TITLE01 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=YELLOW,                                           X
+               LENGTH=40,                                              X
+               POS=(1,21)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=5,                                               X
+               POS=(1,65),                                             X
+               INITIAL='Date:'
+CURDATE DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(1,71),                                             X
+               INITIAL='mm/dd/yy'
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=5,                                               X
+               POS=(2,1),                                              X
+               INITIAL='Prog:'
+PGMNAME DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(2,7)
+TITLE02 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=YELLOW,                                           X
+               LENGTH=40,                                              X
+               POS=(2,21)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=BLUE,                                             X
+               LENGTH=5,                                               X
+               POS=(2,65),                                             X
+               INITIAL='Time:'
+CURTIME DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=8,                                               X
+               POS=(2,71),                                             X
+               INITIAL='hh:mm:ss'
+        DFHMDF ATTRB=(ASKIP,BRT),                                      X
+               COLOR=NEUTRAL,                                          X
+               LENGTH=9,                                               X
+               POS=(4,35),                                             X
+               INITIAL='Main Menu'
+OPTN001 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(6,20),                                             X
+               INITIAL=' '
+OPTN002 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(7,20),                                             X
+               INITIAL=' '
+OPTN003 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(8,20),                                             X
+               INITIAL=' '
+OPTN004 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(9,20),                                             X
+               INITIAL=' '
+OPTN005 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(10,20),                                            X
+               INITIAL=' '
+OPTN006 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(11,20),                                            X
+               INITIAL=' '
+OPTN007 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(12,20),                                            X
+               INITIAL=' '
+OPTN008 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(13,20),                                            X
+               INITIAL=' '
+OPTN009 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(14,20),                                            X
+               INITIAL=' '
+OPTN010 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(15,20),                                            X
+               INITIAL=' '
+OPTN011 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(16,20),                                            X
+               INITIAL=' '
+OPTN012 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                X
+               COLOR=BLUE,                                             X
+               LENGTH=40,                                              X
+               POS=(17,20),                                            X
+               INITIAL=' '
+        DFHMDF ATTRB=(ASKIP,BRT),                                      X
+               COLOR=TURQUOISE,                                        X
+               LENGTH=25,                                              X
+               POS=(20,15),                                            X
+               INITIAL='Please select an option :'
+OPTION  DFHMDF ATTRB=(FSET,IC,NORM,NUM,UNPROT),                        X
+               HILIGHT=UNDERLINE,                                      X
+               LENGTH=2,                                               X
+               POS=(20,41)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=GREEN,                                            X
+               LENGTH=1,                                               X
+               POS=(20,44)
+ERRMSG  DFHMDF ATTRB=(ASKIP,BRT,FSET),                                 X
+               COLOR=RED,                                              X
+               LENGTH=78,                                              X
+               POS=(23,1)
+        DFHMDF ATTRB=(ASKIP,NORM),                                     X
+               COLOR=YELLOW,                                           X
+               LENGTH=23,                                              X
+               POS=(24,1),                                             X
+               INITIAL='ENTER=Continue  F3=Exit'
+        DFHMSD TYPE=FINAL
+        END

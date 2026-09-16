@@ -41,5 +41,25 @@ services:
       PGPASSWORD: carddemo
     command: ["sleep", "infinity"]
 
+  mvs:
+    profiles: ["mvs"]
+    build:
+      context: tools/kicks
+    image: carddemo-mvs
+    container_name: carddemo-mvs
+    ports:
+      - "3270:3270"
+      - "8038:8038"
+      - "3505:3505"
+    volumes:
+      - mvs-dasd:/opt/mvs/dasd
+      - ./copybook:/opt/carddemo/copybook:ro
+      - ./fixtures:/opt/carddemo/fixtures:ro
+      - ./tools/kicks/out:/opt/kicks/out
+    environment:
+      CARDDEMO_REPO: /opt/carddemo
+    stop_grace_period: 90s
+
 volumes:
   carddemo-db:
+  mvs-dasd:

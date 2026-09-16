@@ -1,0 +1,431 @@
+                 MM        MM   AAAAAAAAAA   PPPPPPPPPPP    CCCCCCCCCC   OOOOOOOOOOOO   SSSSSSSSSS    GGGGGGGGGG   NN        NN
+                MMM      MMM  AAAAAAAAAAAA  PPPPPPPPPPPP  CCCCCCCCCCCC  OOOOOOOOOOOO  SSSSSSSSSSSS  GGGGGGGGGGGG  NNN       NN
+               MMMM    MMMM  AA        AA  PP        PP  CC        CC  OO        OO  SS        SS  GG        GG  NNNN      NN
+              MM MM  MM MM  AA        AA  PP        PP  CC            OO        OO  SS            GG            NN NN     NN
+             MM  MMMM  MM  AA        AA  PP        PP  CC            OO        OO  SSS           GG            NN  NN    NN
+            MM   MM   MM  AAAAAAAAAAAA  PPPPPPPPPPPP  CC            OO        OO   SSSSSSSSS    GG            NN   NN   NN
+           MM        MM  AAAAAAAAAAAA  PPPPPPPPPPP   CC            OO        OO    SSSSSSSSS   GG     GGGGG  NN    NN  NN
+          MM        MM  AA        AA  PP            CC            OO        OO           SSS  GG     GGGGG  NN     NN NN
+         MM        MM  AA        AA  PP            CC            OO        OO            SS  GG        GG  NN      NNNN
+        MM        MM  AA        AA  PP            CC        CC  OO        OO  SS        SS  GG        GG  NN       NNN
+       MM        MM  AA        AA  PP            CCCCCCCCCCCC  OOOOOOOOOOOO  SSSSSSSSSSSS  GGGGGGGGGGGG  NN        NN
+      MM        MM  AA        AA  PP             CCCCCCCCCC   OOOOOOOOOOOO   SSSSSSSSSS    GGGGGGGGGG   NN         N
+
+
+
+                    JJJJJJJJJJ  555555555555   8888888888                                              AAAAAAAAAA
+                    JJJJJJJJJJ  555555555555  888888888888                                            AAAAAAAAAAAA
+                        JJ      55            88        88                                            AA        AA
+                        JJ      55            88        88                                            AA        AA
+                        JJ      55             88      88                                             AA        AA
+                        JJ      555555555       88888888                                              AAAAAAAAAAAA
+                        JJ      5555555555      88888888                                              AAAAAAAAAAAA
+                        JJ               55    88      88                                             AA        AA
+                  JJ    JJ                55  88        88                                            AA        AA
+                  JJ    JJ                55  88        88                                            AA        AA
+                  JJJJJJJJ      555555555555  888888888888                                            AA        AA
+                   JJJJJJ       55555555555    8888888888                                             AA        AA
+
+
+****A  START  JOB   58  MAPCOSGN  MAP COSGN00           ROOM        8.05.47 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   58  START  A****
+****A  START  JOB   58  MAPCOSGN  MAP COSGN00           ROOM        8.05.47 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   58  START  A****
+****A  START  JOB   58  MAPCOSGN  MAP COSGN00           ROOM        8.05.47 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   58  START  A****
+****A  START  JOB   58  MAPCOSGN  MAP COSGN00           ROOM        8.05.47 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   58  START  A****
+                                                J E S 2   J O B   L O G
+
+
+20.05.46 JOB   58  IEF196I IEF237I 192  ALLOCATED TO IEF0PDS0
+20.05.46 JOB   58  IEF196I IEF285I   HERC01.KICKSSYS.V1R5M0.PROCLIB               KEPT
+20.05.46 JOB   58  IEF196I IEF285I   VOL SER NOS= TSO003.
+20.05.46 JOB   58  $HASP373 MAPCOSGN STARTED - INIT  1 - CLASS A - SYS TK5R
+20.05.46 JOB   58  IEF403I MAPCOSGN - STARTED - TIME=20.05.46
+20.05.46 JOB   58  IEFACTRT - Stepname  Procstep  Program   Retcode
+20.05.46 JOB   58  MAPCOSGN   COSGN00   COPY      IEBGENER  RC= 0000
+20.05.46 JOB   58  MAPCOSGN   COSGN00   BMAP      KIKMG     RC= 0000
+20.05.46 JOB   58  MAPCOSGN   COSGN00   ASM       IFOX00    RC= 0000
+20.05.46 JOB   58  MAPCOSGN   COSGN00   LINKMAP   IEWL      RC= 0000
+20.05.47 JOB   58  MAPCOSGN   COSGN00   COBMAP    KIKMG     RC= 0000
+20.05.47 JOB   58  MAPCOSGN   COSGN00   GCCMAP    KIKMG     RC= 0000
+20.05.47 JOB   58  IEF404I MAPCOSGN - ENDED - TIME=20.05.47
+20.05.47 JOB   58  $HASP395 MAPCOSGN ENDED
+
+
+------ JES2 JOB STATISTICS ------
+
+
+ 16 SEP 26 JOB EXECUTION DATE
+
+
+       213 CARDS READ
+
+
+       338 SYSOUT PRINT RECORDS
+
+
+         0 SYSOUT PUNCH RECORDS
+
+
+      0.02 MINUTES EXECUTION TIME
+    1     //MAPCOSGN JOB (KICKS),'MAP COSGN00',CLASS=A,MSGCLASS=A,                JOB   58
+          // MSGLEVEL=(1,1),REGION=4096K,USER=HERC01,PASSWORD=
+    2     //JOBPROC DD DSN=HERC01.KICKSSYS.V1R5M0.PROCLIB,DISP=SHR
+    3     //COSGN00 EXEC KIKMAPS,MAPNAME=COSGN00
+    4     XXKIKMAPS PROC SOUT='*',
+          XX        DSCTLIB=COBCOPY,
+          XX        DSCTLIC=GCCCOPY,
+          XX        MAPLIB=KIKRPL,
+          XX        KICKSYS='HERC01.KICKSSYS',
+          XX        KIKSUSR='HERC01.KICKS',
+          XX        VER=V1R5M0,
+          XX        ASM=IFOX00,                ASMA90 FOR Z/OS
+          XX        MAPNAME=DUMMY
+          ***
+    5     XXCOPY    EXEC PGM=IEBGENER
+    6     XXSYSPRINT DD SYSOUT=&SOUT
+    7     XXSYSIN    DD DUMMY
+    8     XXSYSUT2   DD DSN=&&MAP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,(15,15))
+    9     //COPY.SYSUT1 DD *
+          X/SYSUT1   DD DSN=&KIKSUSR..&VER..MAPSRC(&MAPNAME),DISP=SHR
+          ***
+   10     XXBMAP     EXEC PGM=KIKMG,
+          XX PARM='-v -t -g=map'
+   11     XXSTEPLIB  DD DSN=&KICKSYS..&VER..SKIKLOAD,DISP=SHR
+   12     XXSYSUDUMP DD SYSOUT=&SOUT
+   13     XXSYSPRINT DD DSN=&&MAPOUT,DISP=(,PASS),
+          XX         DCB=(RECFM=FB,LRECL=80,BLKSIZE=800),
+          XX         UNIT=SYSDA,SPACE=(TRK,(90,90),RLSE)
+   14     XXSYSUT1   DD UNIT=SYSDA,SPACE=(TRK,(15,15)),
+          XX         DCB=(RECFM=U,BLKSIZE=800)
+   15     XXSYSTERM  DD SYSOUT=&SOUT,DCB=(BLKSIZE=120,RECFM=F)
+   16     XXSYSIN    DD DSN=&&MAP,DISP=(OLD,PASS)
+          ***
+   17     XXASM      EXEC PGM=&ASM,COND=(5,LT),
+          XX            PARM='DECK,NOLIST'
+   18     XXSYSLIB   DD DSN=SYS1.MACLIB,DISP=SHR,DCB=BLKSIZE=32720
+   19     XXSYSUT1   DD UNIT=SYSALLDA,SPACE=(CYL,(20,10))
+   20     XXSYSUT2   DD UNIT=SYSALLDA,SPACE=(CYL,(10,10))
+   21     XXSYSUT3   DD UNIT=SYSALLDA,SPACE=(CYL,(10,10))
+   22     XXSYSPRINT DD SYSOUT=&SOUT
+   23     XXSYSLIN   DD DUMMY
+   24     XXSYSGO    DD DUMMY
+   25     XXSYSPUNCH DD DSN=&&OBJSET,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,(15,15))
+   26     XXSYSIN    DD DSN=&&MAPOUT,DISP=(OLD,DELETE)
+          ***
+   27     XXLINKMAP  EXEC PGM=IEWL,PARM='XREF,MAP,LET,NCAL',
+          XX            COND=(8,LT)
+   28     XXSYSLIN   DD DSN=&&OBJSET,DISP=(OLD,DELETE)
+   29     XXSYSIN    DD DUMMY
+   30     XXSYSLMOD  DD DSN=&KIKSUSR..&VER..&MAPLIB(&MAPNAME),DISP=SHR
+   31     XXSYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(2,1))
+   32     XXSYSPRINT DD SYSOUT=&SOUT
+          ***
+   33     XXCOBMAP   EXEC PGM=KIKMG,COND=(5,LT),
+          XX PARM='-t -g=dsect -l=cobol'
+   34     XXSTEPLIB  DD DSN=&KICKSYS..&VER..SKIKLOAD,DISP=SHR
+          ***YSUDUMP DD SYSOUT=&SOUT
+   35     XXSYSPRINT DD DSN=&KIKSUSR..&VER..&DSCTLIB(&MAPNAME),DISP=SHR
+   36     XXSYSUT1   DD UNIT=SYSDA,SPACE=(TRK,(15,15)),
+          XX         DCB=(RECFM=U,BLKSIZE=800)
+   37     XXSYSTERM DD SYSOUT=&SOUT,DCB=(BLKSIZE=120,RECFM=F)
+   38     XXSYSIN DD DSN=&&MAP,DISP=(OLD,PASS)
+          ***
+   39     XXGCCMAP   EXEC PGM=KIKMG,COND=(5,LT),
+          XX PARM='-t -g=dsect -l=c'
+   40     XXSTEPLIB  DD DSN=&KICKSYS..&VER..SKIKLOAD,DISP=SHR
+          ***YSUDUMP DD SYSOUT=&SOUT
+   41     XXSYSPRINT DD DSN=&KIKSUSR..&VER..&DSCTLIC(&MAPNAME),DISP=SHR
+   42     XXSYSUT1   DD UNIT=SYSDA,SPACE=(TRK,(15,15)),
+          XX         DCB=(RECFM=U,BLKSIZE=800)
+   43     XXSYSTERM DD SYSOUT=&SOUT,DCB=(BLKSIZE=120,RECFM=F)
+   44     XXSYSIN DD DSN=&&MAP,DISP=(OLD,DELETE)
+ STMT NO. MESSAGE
+-
+    6     IEF653I SUBSTITUTION JCL - SYSOUT=*
+    9     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.MAPSRC(COSGN00),DISP=SHR
+   11     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD,DISP=SHR
+   12     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   15     IEF653I SUBSTITUTION JCL - SYSOUT=*,DCB=(BLKSIZE=120,RECFM=F)
+   17     IEF653I SUBSTITUTION JCL - PGM=IFOX00,COND=(5,LT),
+   22     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   30     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.KIKRPL(COSGN00),DISP=SHR
+   32     IEF653I SUBSTITUTION JCL - SYSOUT=*
+   34     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD,DISP=SHR
+   35     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.COBCOPY(COSGN00),DISP=SHR
+   37     IEF653I SUBSTITUTION JCL - SYSOUT=*,DCB=(BLKSIZE=120,RECFM=F)
+   40     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKSSYS.V1R5M0.SKIKLOAD,DISP=SHR
+   41     IEF653I SUBSTITUTION JCL - DSN=HERC01.KICKS.V1R5M0.GCCCOPY(COSGN00),DISP=SHR
+   43     IEF653I SUBSTITUTION JCL - SYSOUT=*,DCB=(BLKSIZE=120,RECFM=F)
+IEF236I ALLOC. FOR MAPCOSGN COPY COSGN00
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSIN
+IEF237I 293  ALLOCATED TO SYSUT2
+IEF237I JES2 ALLOCATED TO SYSUT1
+IEF142I MAPCOSGN COPY COSGN00 - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   JES2.JOB00058.SO0102                         SYSOUT
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.MAP          PASSED        *------207
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   JES2.JOB00058.SI0101                         SYSIN
+IEF373I STEP /COPY    / START 26259.2005
+IEF374I STEP /COPY    / STOP  26259.2005 CPU    0MIN 00.02SEC SRB    0MIN 00.01SEC VIRT    36K SYS   268K
+************************************************************************************************************************************
+*     1. Jobstep of job: MAPCOSGN    Stepname: COPY        Program name: IEBGENER   Executed on 16.09.26 from 20.05.46 to 20.05.46 *
+*         elapsed time  00:00:00,09                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,03               Virtual Storage used:     36K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,03   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:    207                                                                           *
+*     DMY.......0 DMY.......0 293.....207 DMY.......0                                                                              *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,05                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPCOSGN BMAP COSGN00
+IEF237I 192  ALLOCATED TO STEPLIB
+IEF237I 190  ALLOCATED TO SYS00186
+IEF237I JES2 ALLOCATED TO SYSUDUMP
+IEF237I 291  ALLOCATED TO SYSPRINT
+IEF237I 292  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSTERM
+IEF237I 293  ALLOCATED TO SYSIN
+IEF142I MAPCOSGN BMAP COSGN00 - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   JES2.JOB00058.SO0103                         SYSOUT
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.MAPOUT       PASSED        *-------96
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.R0000001     DELETED       *--------0
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   JES2.JOB00058.SO0104                         SYSOUT
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.MAP          PASSED        *------832
+IEF285I   VOL SER NOS= WORK04.
+IEF373I STEP /BMAP    / START 26259.2005
+IEF374I STEP /BMAP    / STOP  26259.2005 CPU    0MIN 00.17SEC SRB    0MIN 00.03SEC VIRT   540K SYS   272K
+************************************************************************************************************************************
+*     2. Jobstep of job: MAPCOSGN    Stepname: BMAP        Program name: KIKMG      Executed on 16.09.26 from 20.05.46 to 20.05.46 *
+*         elapsed time  00:00:00,50                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,20               Virtual Storage used:    540K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,20   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     192.......0 190.......0 DMY.......0 291......96 292.......0 DMY.......0 293.....832                                          *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,33                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPCOSGN ASM COSGN00
+IEF237I 390  ALLOCATED TO SYSLIB
+IEF237I 292  ALLOCATED TO SYSUT1
+IEF237I 293  ALLOCATED TO SYSUT2
+IEF237I 290  ALLOCATED TO SYSUT3
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I DMY  ALLOCATED TO SYSLIN
+IEF237I DMY  ALLOCATED TO SYSGO
+IEF237I 293  ALLOCATED TO SYSPUNCH
+IEF237I 291  ALLOCATED TO SYSIN
+IEF142I MAPCOSGN ASM COSGN00 - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   SYS1.MACLIB                                  KEPT          *--------0
+IEF285I   VOL SER NOS= TK5RES.
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.R0000002     DELETED       *-------10
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.R0000003     DELETED       *--------9
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.R0000004     DELETED       *--------7
+IEF285I   VOL SER NOS= WORK01.
+IEF285I   JES2.JOB00058.SO0105                         SYSOUT
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.OBJSET       PASSED        *-------50
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.MAPOUT       DELETED       *-------97
+IEF285I   VOL SER NOS= WORK02.
+IEF373I STEP /ASM     / START 26259.2005
+IEF374I STEP /ASM     / STOP  26259.2005 CPU    0MIN 00.04SEC SRB    0MIN 00.01SEC VIRT  2124K SYS   272K
+************************************************************************************************************************************
+*     3. Jobstep of job: MAPCOSGN    Stepname: ASM         Program name: IFOX00     Executed on 16.09.26 from 20.05.46 to 20.05.46 *
+*         elapsed time  00:00:00,09                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,05               Virtual Storage used:   2124K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,05   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     390.......0 292......10 293.......9 290.......7 DMY.......0 DMY.......0 DMY.......0 293......50 291......97                  *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,08                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPCOSGN LINKMAP COSGN00
+IEF237I 293  ALLOCATED TO SYSLIN
+IEF237I DMY  ALLOCATED TO SYSIN
+IEF237I 192  ALLOCATED TO SYSLMOD
+IEF237I 190  ALLOCATED TO SYS00188
+IEF237I 291  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF142I MAPCOSGN LINKMAP COSGN00 - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.OBJSET       DELETED       *-------51
+IEF285I   VOL SER NOS= WORK04.
+IEF285I   HERC01.KICKS.V1R5M0.KIKRPL                   KEPT          *-------22
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.R0000005     DELETED       *--------0
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   JES2.JOB00058.SO0106                         SYSOUT
+IEF373I STEP /LINKMAP / START 26259.2005
+IEF374I STEP /LINKMAP / STOP  26259.2005 CPU    0MIN 00.01SEC SRB    0MIN 00.00SEC VIRT   260K SYS   276K
+************************************************************************************************************************************
+*     4. Jobstep of job: MAPCOSGN    Stepname: LINKMAP     Program name: IEWL       Executed on 16.09.26 from 20.05.46 to 20.05.46 *
+*         elapsed time  00:00:00,05                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,01               Virtual Storage used:    260K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,01   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     293......51 DMY.......0 192......22 190.......0 291.......0 DMY.......0                                                      *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,01                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPCOSGN COBMAP COSGN00
+IEF237I 192  ALLOCATED TO STEPLIB
+IEF237I 190  ALLOCATED TO SYS00190
+IEF237I 192  ALLOCATED TO SYSPRINT
+IEF237I 291  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSTERM
+IEF237I 293  ALLOCATED TO SYSIN
+IEF142I MAPCOSGN COBMAP COSGN00 - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   HERC01.KICKS.V1R5M0.COBCOPY                  KEPT          *--------7
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.R0000006     DELETED       *--------5
+IEF285I   VOL SER NOS= WORK02.
+IEF285I   JES2.JOB00058.SO0107                         SYSOUT
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.MAP          PASSED        *------832
+IEF285I   VOL SER NOS= WORK04.
+IEF373I STEP /COBMAP  / START 26259.2005
+IEF374I STEP /COBMAP  / STOP  26259.2005 CPU    0MIN 00.16SEC SRB    0MIN 00.02SEC VIRT   540K SYS   276K
+************************************************************************************************************************************
+*     5. Jobstep of job: MAPCOSGN    Stepname: COBMAP      Program name: KIKMG      Executed on 16.09.26 from 20.05.46 to 20.05.47 *
+*         elapsed time  00:00:00,44                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,18               Virtual Storage used:    540K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,18   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     192.......0 190.......0 192.......7 291.......5 DMY.......0 293.....832                                                      *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,30                                             *
+************************************************************************************************************************************
+IEF236I ALLOC. FOR MAPCOSGN GCCMAP COSGN00
+IEF237I 192  ALLOCATED TO STEPLIB
+IEF237I 190  ALLOCATED TO SYS00192
+IEF237I 192  ALLOCATED TO SYSPRINT
+IEF237I 292  ALLOCATED TO SYSUT1
+IEF237I JES2 ALLOCATED TO SYSTERM
+IEF237I 293  ALLOCATED TO SYSIN
+IEF142I MAPCOSGN GCCMAP COSGN00 - STEP WAS EXECUTED - COND CODE 0000
+IEF285I   HERC01.KICKSSYS.V1R5M0.SKIKLOAD              KEPT          *--------0
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS1.UCAT.TSO                                KEPT          *--------0
+IEF285I   VOL SER NOS= TSO001.
+IEF285I   HERC01.KICKS.V1R5M0.GCCCOPY                  KEPT          *--------5
+IEF285I   VOL SER NOS= TSO003.
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.R0000007     DELETED       *--------7
+IEF285I   VOL SER NOS= WORK03.
+IEF285I   JES2.JOB00058.SO0108                         SYSOUT
+IEF285I   SYS26259.T200546.RA000.MAPCOSGN.MAP          DELETED       *------832
+IEF285I   VOL SER NOS= WORK04.
+IEF373I STEP /GCCMAP  / START 26259.2005
+IEF374I STEP /GCCMAP  / STOP  26259.2005 CPU    0MIN 00.15SEC SRB    0MIN 00.02SEC VIRT   540K SYS   276K
+************************************************************************************************************************************
+*     6. Jobstep of job: MAPCOSGN    Stepname: GCCMAP      Program name: KIKMG      Executed on 16.09.26 from 20.05.47 to 20.05.47 *
+*         elapsed time  00:00:00,42                      CPU-Identifier:  TK5R           Page-in:      0                           *
+*             CPU time  00:00:00,17               Virtual Storage used:    540K         Page-out:      0                           *
+*           corr. CPU:  00:00:00,17   CPU time has been corrected by  1 / 1,0  multiplier                                          *
+*                                                                                                                                  *
+*     I/O Operation                                                                                                                *
+*     Number of records read via DD * or DD DATA:      0                                                                           *
+*     192.......0 190.......0 192.......5 292.......7 DMY.......0 293.....832                                                      *
+*                                                                                                                                  *
+*                                          Charge for step (w/o SYSOUT):          0,28                                             *
+************************************************************************************************************************************
+IEF375I  JOB /MAPCOSGN/ START 26259.2005
+IEF376I  JOB /MAPCOSGN/ STOP  26259.2005 CPU    0MIN 00.55SEC SRB    0MIN 00.09SEC
+DATA SET UTILITY - GENERATE                                                                       PAGE 0001
+
+
+IEB352I WARNING : OUTPUT RECFM/LRECL/BLKSIZE COPIED FROM INPUT
+
+PROCESSING ENDED AT EOD'KICKS for TSO' Map Generator version V1R5M0(0)
+Remark(0) at line 25, ?TIOAPFX=YES default and taken as comments
+Remark(0) at line 25, ?TYPE= overriden by -g=map
+Remark(0) at line 28, ?COLUMN=1 default and taken as comments
+Remark(0) at line 28, ?LINE=1 default and taken as comments
+
+ F64-LEVEL LINKAGE EDITOR OPTIONS SPECIFIED XREF,MAP,LET,NCAL
+          DEFAULT OPTION(S) USED -  SIZE=(231424,55296)
+
+
+
+                                                CROSS REFERENCE TABLE
+
+
+  CONTROL SECTION                       ENTRY
+
+    NAME    ORIGIN  LENGTH                NAME   LOCATION     NAME   LOCATION     NAME   LOCATION     NAME   LOCATION
+  COSGN00       00     5C8
+
+
+
+
+  LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION             LOCATION  REFERS TO SYMBOL  IN CONTROL SECTION
+
+ ENTRY ADDRESS       00
+
+ TOTAL LENGTH       5C8
+****COSGN00   DOES NOT EXIST BUT HAS BEEN ADDED TO DATA SET
+AUTHORIZATION CODE IS         0.
+Remark(0) at line 25, ?LANG= overriden by -l=cobol
+Remark(0) at line 25, ?TIOAPFX=YES default and taken as comments
+Remark(0) at line 25, ?TYPE= overriden by -g=dsect
+Remark(0) at line 28, ?COLUMN=1 default and taken as comments
+Remark(0) at line 28, ?LINE=1 default and taken as comments
+Remark(0) at line 25, ?LANG= overriden by -l=c
+Remark(0) at line 25, ?TIOAPFX=YES default and taken as comments
+Remark(0) at line 25, ?TYPE= overriden by -g=dsect
+Remark(0) at line 28, ?COLUMN=1 default and taken as comments
+Remark(0) at line 28, ?LINE=1 default and taken as comments
+                 MM        MM   AAAAAAAAAA   PPPPPPPPPPP    CCCCCCCCCC   OOOOOOOOOOOO   SSSSSSSSSS    GGGGGGGGGG   NN        NN
+                MMM      MMM  AAAAAAAAAAAA  PPPPPPPPPPPP  CCCCCCCCCCCC  OOOOOOOOOOOO  SSSSSSSSSSSS  GGGGGGGGGGGG  NNN       NN
+               MMMM    MMMM  AA        AA  PP        PP  CC        CC  OO        OO  SS        SS  GG        GG  NNNN      NN
+              MM MM  MM MM  AA        AA  PP        PP  CC            OO        OO  SS            GG            NN NN     NN
+             MM  MMMM  MM  AA        AA  PP        PP  CC            OO        OO  SSS           GG            NN  NN    NN
+            MM   MM   MM  AAAAAAAAAAAA  PPPPPPPPPPPP  CC            OO        OO   SSSSSSSSS    GG            NN   NN   NN
+           MM        MM  AAAAAAAAAAAA  PPPPPPPPPPP   CC            OO        OO    SSSSSSSSS   GG     GGGGG  NN    NN  NN
+          MM        MM  AA        AA  PP            CC            OO        OO           SSS  GG     GGGGG  NN     NN NN
+         MM        MM  AA        AA  PP            CC            OO        OO            SS  GG        GG  NN      NNNN
+        MM        MM  AA        AA  PP            CC        CC  OO        OO  SS        SS  GG        GG  NN       NNN
+       MM        MM  AA        AA  PP            CCCCCCCCCCCC  OOOOOOOOOOOO  SSSSSSSSSSSS  GGGGGGGGGGGG  NN        NN
+      MM        MM  AA        AA  PP             CCCCCCCCCC   OOOOOOOOOOOO   SSSSSSSSSS    GGGGGGGGGG   NN         N
+
+
+
+                    JJJJJJJJJJ  555555555555   8888888888                                              AAAAAAAAAA
+                    JJJJJJJJJJ  555555555555  888888888888                                            AAAAAAAAAAAA
+                        JJ      55            88        88                                            AA        AA
+                        JJ      55            88        88                                            AA        AA
+                        JJ      55             88      88                                             AA        AA
+                        JJ      555555555       88888888                                              AAAAAAAAAAAA
+                        JJ      5555555555      88888888                                              AAAAAAAAAAAA
+                        JJ               55    88      88                                             AA        AA
+                  JJ    JJ                55  88        88                                            AA        AA
+                  JJ    JJ                55  88        88                                            AA        AA
+                  JJJJJJJJ      555555555555  888888888888                                            AA        AA
+                   JJJJJJ       55555555555    8888888888                                             AA        AA
+
+
+****A   END   JOB   58  MAPCOSGN  MAP COSGN00           ROOM        8.05.47 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   58   END   A****
+****A   END   JOB   58  MAPCOSGN  MAP COSGN00           ROOM        8.05.47 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   58   END   A****
+****A   END   JOB   58  MAPCOSGN  MAP COSGN00           ROOM        8.05.47 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   58   END   A****
+****A   END   JOB   58  MAPCOSGN  MAP COSGN00           ROOM        8.05.47 PM 16 SEP 26  PRINTER1  SYS TK5R  JOB   58   END   A****
+

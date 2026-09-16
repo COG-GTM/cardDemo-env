@@ -1,0 +1,24 @@
+ HELO                    CARDDEMO-ENV  KICKS BMS PROBE                      HELO
+                                                                                
+ KICKS TIME 19:57:53  ON MVS38J                                                 
+                                                                                
+ Your name . . . . . . .  MAINFRAME                                             
+                                                                                
+ HELLO, MAINFRAME            - SENT BY A REAL BMS MAP ON KICKS                  
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+ Greeting sent. ENTER again or F3 to exit.                                      
+ ENTER=Greet   F3=Exit                                                          

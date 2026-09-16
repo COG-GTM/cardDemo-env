@@ -1,5 +1,6 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check \
+	mvs-up mvs-install mvs-3270 mvs-kicks mvs-minimal mvs-carddemo mvs-down
 
 up:
 	docker compose up -d --build --wait
@@ -56,3 +57,25 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+mvs-up:
+	docker compose --profile mvs up -d --build mvs
+	docker compose exec -T mvs python3 /opt/kicks/mvs3270.py wait-ipl
+
+mvs-install:
+	docker compose exec -T mvs python3 /opt/kicks/mvs3270.py install-kicks
+
+mvs-3270:
+	c3270 -model 3279-2 localhost:3270 || docker compose exec mvs c3270 -model 3279-2 127.0.0.1:3270
+
+mvs-kicks:
+	docker compose exec -T mvs python3 /opt/kicks/mvs3270.py kicks
+
+mvs-minimal:
+	docker compose exec -T mvs python3 /opt/kicks/mvs3270.py minimal
+
+mvs-carddemo:
+	docker compose exec -T mvs python3 /opt/kicks/mvs3270.py carddemo
+
+mvs-down:
+	docker compose --profile mvs stop mvs

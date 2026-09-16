@@ -1,0 +1,24 @@
+ KSGM for tso user HERC01   at terminal U0C1      TK5R     19:57:47  09/16/26   
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+            KK        KK   IIIIIIIIII    CCCCCCCCCC   KK        KK   SSSSSSSSSS 
+           KK       KK    IIIIIIIIII   CCCCCCCCCCCC  KK       KK   SSSSSSSSSSSS 
+          KK      KK         II       CC        CC  KK      KK    SS        SS  
+         KK     KK          II       CC            KK     KK     SS             
+        KK    KK           II       CC            KK    KK      SSS             
+       KKKKKKK            II       CC            KKKKKKK        SSSSSSSSS       
+      KKKKKKK            II       CC            KKKKKKK         SSSSSSSSS       
+     KK    KK           II       CC            KK    KK               SSS       
+    KK     KK          II       CC            KK     KK               SS        
+   KK      KK         II       CC        CC  KK      KK    SS        SS         
+  KK       KK    IIIIIIIIII   CCCCCCCCCCCC  KK       KK    SSSSSSSSSSSS         
+ KK        KK   IIIIIIIIII    CCCCCCCCCCC  KK        KK    SSSSSSSSSS           
+                                                                      TM        
+                                                                                
+                                                            For TSO             
+                                                                                
+                                                            V1R5M0              
+                                                            September 2014      
+ Press PF1 for help, CLEAR to continue...                   Â© Mike Noel         
