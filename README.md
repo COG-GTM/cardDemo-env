@@ -94,7 +94,7 @@ look-alike. It is a feasibility spike, separate from the batch estate above:
 
 ```sh
 make mvs-up        # build (downloads TK5 + KICKS, SHA256-verified), IPL
-make mvs-install   # one-time KICKS install onto the mvs-dasd volume
+make mvs-install   # install KICKS onto the mvs-dasd volume (re-runnable)
 make mvs-carddemo  # compile + run COSGN00C / COMEN01C, dump screens
 make mvs-3270      # interactive c3270 on localhost:3270
 ```

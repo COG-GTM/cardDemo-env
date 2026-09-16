@@ -89,7 +89,7 @@ KICKS zip (the zip contains oddly-stored entries that `unzip` warns about).
 
 ```sh
 make mvs-up        # build image (downloads ~600 MB), boot MVS, wait for TSO
-make mvs-install   # one-time: RECEIVE the KICKS XMI, run KFIX + load jobs
+make mvs-install   # once per volume: RECEIVE the KICKS XMI, run KFIX + load jobs
 make mvs-kicks     # log on HERC01, start KICKS, dump the KSGM sign-on screen
 make mvs-minimal   # build + run the HELO probe transaction (deliverable 2)
 make mvs-carddemo  # build + run CardDemo CC00 sign-on -> CM00 menu
@@ -98,7 +98,8 @@ make mvs-down      # orderly MVS shutdown (SIGTERM -> TK5 shutdown script)
 ```
 
 The KICKS install and all compiled artifacts live on the `mvs-dasd` volume,
-so `mvs-install` is a one-time step per volume. Every `mvs3270.py` action
+so `mvs-install` only needs to run once per volume; re-running it scratches
+and recreates every KICKS dataset (it is not a no-op). Every `mvs3270.py` action
 writes plain-text `Ascii()` screen captures into `tools/kicks/out/`; the
 captures referenced below are committed as evidence. The Hercules HTTP
 console is on http://localhost:8038 (used by the scripts to read the syslog

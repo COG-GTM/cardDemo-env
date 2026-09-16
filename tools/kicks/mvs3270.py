@@ -150,9 +150,13 @@ class Screen:
             self.proc.kill()
 
 
+def mask(text):
+    """Blank the PASSWORD= operand of job cards before text leaves the driver."""
+    return re.sub(r"(PASSWORD=)[^,\s]+", r"\1********", text)
+
+
 def save(name, text):
-    if PASSWORD:
-        text = text.replace(PASSWORD, "********")
+    text = mask(text)
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, name + ".txt")
     with open(path, "w") as fh:
@@ -253,9 +257,7 @@ def run_job(jcl, timeout=600, ok_codes=("0000",), name=None):
     bad = [c for c in codes if c not in ok_codes]
     if bad or "JCL ERROR" in out or re.search(rf"IEF45[023]I {name}\b|IEF472I {name}\b|COMPLETION CODE - SYSTEM", out):
         save(f"failed-{name}", out)
-        tail = out[-4000:]
-        if PASSWORD:
-            tail = tail.replace(PASSWORD, "********")
+        tail = mask(out[-4000:])
         raise RuntimeError(f"job {name} failed (cond codes {codes}):\n{tail}")
     print(f"job {name} ended, cond codes {codes}", flush=True)
     return out
