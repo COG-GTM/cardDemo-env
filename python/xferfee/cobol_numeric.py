@@ -82,6 +82,18 @@ def packed_encode(value: Decimal, length: int, scale: int) -> bytes:
     return bytes((digits[i] << 4) | digits[i + 1] for i in range(0, len(digits), 2))
 
 
+def fit_picture(value: Decimal, digits: int, scale: int) -> Decimal:
+    """Store an arithmetic result into a ``PIC S9(digits-scale)V9(scale)`` item.
+
+    COBOL without ``ON SIZE ERROR`` keeps the low-order digits and the sign;
+    high-order digits beyond the picture are lost.
+    """
+    units = int(value.scaleb(scale).to_integral_value(rounding="ROUND_DOWN"))
+    negative = units < 0
+    units = abs(units) % (10 ** digits)
+    return scaled(Decimal(-units if negative else units), scale)
+
+
 def rounded_cents(value: Decimal) -> Decimal:
     """``COMPUTE x ROUNDED`` into a ``V99`` picture: half away from zero (BR-8)."""
     return value.quantize(CENT, rounding=ROUND_HALF_UP)

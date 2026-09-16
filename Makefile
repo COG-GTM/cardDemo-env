@@ -1,5 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	run-python parity-python deadcode chain-graph chain-graph-check
+	run-python parity-python test-python deadcode chain-graph chain-graph-check
 
 PYTHON_CASES ?= default under_cap at_cap rate_change zero_amount non_transfer half_cent
 
@@ -57,6 +57,9 @@ parity-python:
 	@rc=0; for c in $(PYTHON_CASES); do \
 		$(MAKE) --no-print-directory run-python CASE=$$c || rc=1; \
 	done; exit $$rc
+
+test-python:
+	docker compose exec -T estate python3 python/xferfee/test_failure_paths.py -v
 
 parity-naive:
 	docker compose exec -T estate sh -c \

@@ -108,3 +108,10 @@ recorder's format after the run.
 `make parity-python` runs the 7 recorded cases (`default`, `under_cap`, `at_cap`,
 `rate_change`, `zero_amount`, `non_transfer`, `half_cent`) and compares
 datasets, table dumps, SYSOUT and RCs with `tools/parity/compare.py`.
+
+All recorded cases end MAXCC=0, so `make test-python` (`test_failure_paths.py`)
+derives failing inputs from the `default` fixture to cover the RC 4 paths
+(unmatched card BR-5, empty fee file BR-17), the RC 8 abends (no fee rule BR-7,
+unknown account BR-11, rule-lookup DB error) with ledger rollback, GDG catalog
+state, `rc.json` and candidate output preservation, and the `S9(09)V99`
+accumulator truncation (`fit_picture`).

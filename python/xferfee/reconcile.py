@@ -9,7 +9,7 @@ from __future__ import annotations
 from decimal import Decimal
 from pathlib import Path
 
-from .cobol_numeric import display_signed, edit_z8_9, edit_z8_9_99_minus
+from .cobol_numeric import display_signed, edit_z8_9, edit_z8_9_99_minus, fit_picture
 from .extract import StepResult
 from .layouts import CVXFR02Y, read_records
 
@@ -43,10 +43,11 @@ def run(xferfee: Path, xferrpt: Path) -> StepResult:
         if not last_book.strip():
             last_book = book
         count += 1
-        book_amt += amount
-        book_fee += fee
-        grand_amt += amount
-        grand_fee += fee
+        # WS-BOOK-*/WS-GRAND-* are S9(09)V99 COMP-3
+        book_amt = fit_picture(book_amt + amount, 11, 2)
+        book_fee = fit_picture(book_fee + fee, 11, 2)
+        grand_amt = fit_picture(grand_amt + amount, 11, 2)
+        grand_fee = fit_picture(grand_fee + fee, 11, 2)
         lines.append(_line(
             f" {xfe.text('XFE-TRAN-ID')} {xfe.text('XFE-TRAN-DT')} {book} "
             f"{edit_z8_9_99_minus(amount)} {edit_z8_9_99_minus(fee)}"

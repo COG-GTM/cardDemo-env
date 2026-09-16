@@ -17,7 +17,7 @@ from pathlib import Path
 
 import psycopg2
 
-from .cobol_numeric import display_signed, rounded_cents
+from .cobol_numeric import display_signed, fit_picture, rounded_cents
 from .extract import StepResult
 from .layouts import CVACT01Y, CVXFR01Y, CVXFR02Y, Record, read_records
 
@@ -67,8 +67,12 @@ def connect():
 
 def select_rule(cursor, book_id: str, tran_dt: str, sysout: list[str]) -> FeeRule:
     """BR-7: singleton SELECT ... INTO; SQLCODE 100 / any error -> abend."""
-    cursor.execute(SQL_SELECT_RULE, {"book_id": book_id, "tran_dt": tran_dt})
-    rows = cursor.fetchall()
+    try:
+        cursor.execute(SQL_SELECT_RULE, {"book_id": book_id, "tran_dt": tran_dt})
+        rows = cursor.fetchall()
+    except psycopg2.Error as error:
+        sysout.append(f"XFERFEE: RULE LOOKUP FAILED {error.pgcode or ''}")
+        raise Abend from error
     if not rows:
         sysout.append(f"XFERFEE: NO FEE RULE FOR BOOK {book_id}")
         raise Abend
@@ -167,7 +171,7 @@ def run(xferextr: Path, acctfile: Path, acctout: Path, xferfee: Path) -> StepRes
                 sysout.append(f"XFERFEE: LEDGER INSERT FAILED {error.pgcode or ''}")
                 raise Abend from error
             transfer_count += 1  # BR-14
-            fee_total += fee
+            fee_total = fit_picture(fee_total + fee, 11, 2)  # WS-FEE-TOTAL S9(09)V99
 
         # 3000-WRITE-MASTER then COMMIT (BR-14)
         acctout.parent.mkdir(parents=True, exist_ok=True)

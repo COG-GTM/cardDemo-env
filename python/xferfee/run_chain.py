@@ -152,12 +152,15 @@ def run_job(datasets: Path, joblog: Path, log) -> tuple[dict[str, int], int, lis
         log(f"IEF142I XFRDAILY {step} - STEP WAS EXECUTED - COND CODE {result.rc:04d}")
         results[step] = result.rc
         maxcc = max(maxcc, result.rc)
+        # Like runjcl's manifest, every DISP=NEW allocation is a candidate output;
+        # only the GDG catalog advance is success-only.
+        for base, generation in new_generations:
+            outputs.append({"dsn": f"{base}.G{generation:04d}V00",
+                            "path": str(catalog.generation_path(base, generation))})
         if result.rc != 0:
             return False
         for base, generation in new_generations:
             catalog.catalog(base, generation)
-            outputs.append({"dsn": f"{base}.G{generation:04d}V00",
-                            "path": str(catalog.generation_path(base, generation))})
             log(f"IEF285I   {base}.G{generation:04d}V00   CATALOGED")
         return True
 
