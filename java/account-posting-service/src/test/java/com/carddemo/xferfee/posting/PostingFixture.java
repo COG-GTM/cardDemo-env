@@ -61,6 +61,10 @@ final class PostingFixture implements AutoCloseable {
     final TransferPostingRunner runner;
 
     PostingFixture(PostingMode mode) {
+        this(mode, SCHEDULE);
+    }
+
+    PostingFixture(PostingMode mode, FeeSchedule schedule) {
         dataSource = new SingleConnectionDataSource(
                 "jdbc:h2:mem:test-" + UUID.randomUUID() + ";MODE=PostgreSQL;DATABASE_TO_UPPER=TRUE", "sa", "", true);
         new AccountPostingSchemaMigrator(dataSource).afterPropertiesSet();
@@ -70,7 +74,7 @@ final class PostingFixture implements AutoCloseable {
         ledger = new FeeLedgerRepository(jdbc);
         outbox = new OutboxRepository(jdbc);
         master = new AccountMasterService(accounts, new CardXrefRepository(jdbc), ledger, tx);
-        service = new TransferPostingService(SCHEDULE, POLICY, accounts, ledger, outbox);
+        service = new TransferPostingService(schedule, POLICY, accounts, ledger, outbox);
         runner = new TransferPostingRunner(service, outbox, tx, mode);
     }
 

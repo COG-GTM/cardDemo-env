@@ -5,12 +5,15 @@ import static com.carddemo.xferfee.posting.PostingFixture.transfer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.carddemo.xferfee.contracts.Account;
+import com.carddemo.xferfee.contracts.FeeRule;
+import com.carddemo.xferfee.contracts.FeeSchedule;
 import com.carddemo.xferfee.contracts.LedgerEntry;
 import com.carddemo.xferfee.contracts.RejectReason;
 import com.carddemo.xferfee.contracts.TransferPosted;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class TransferPostingRunnerTest {
@@ -153,6 +156,35 @@ class TransferPostingRunnerTest {
 
             assertThat(result.returnCode()).isEqualTo(8);
             assertThat(result.abendMessage()).isEqualTo("XFERFEE: NO FEE RULE FOR BOOK PROMO     ");
+        }
+    }
+
+    @Test
+    void batchAtomicAbendsWhenTheRuleLookupFails() {
+        FeeSchedule ambiguous = new FeeSchedule() {
+            @Override
+            public void seed(List<FeeRule> rules) {
+            }
+
+            @Override
+            public Optional<FeeRule> effectiveRule(String bookId, LocalDate businessDate) {
+                throw new IllegalStateException("2 CTL_XFER_PARM rows match book RETAIL");
+            }
+
+            @Override
+            public List<FeeRule> rules() {
+                return List.of();
+            }
+        };
+        try (PostingFixture db = new PostingFixture(PostingMode.BATCH_ATOMIC, ambiguous)) {
+            db.load(MASTER, List.of());
+
+            PostingRunResult result = db.runner.run(List.of(transfer("T1", 1, 2, "RETAIL", "100.00")));
+
+            assertThat(result.returnCode()).isEqualTo(8);
+            assertThat(result.abendMessage()).startsWith("XFERFEE: RULE LOOKUP FAILED 2 CTL_XFER_PARM rows");
+            assertThat(db.master.rewrittenMaster()).isEqualTo(MASTER);
+            assertThat(db.ledger.findAll()).isEmpty();
         }
     }
 

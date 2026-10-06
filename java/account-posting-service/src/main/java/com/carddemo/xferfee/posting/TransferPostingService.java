@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -39,8 +40,18 @@ public class TransferPostingService {
         this.outbox = outbox;
     }
 
+    /** A failing lookup (e.g. an ambiguous rule) aborts like XFERFEE's RULE LOOKUP FAILED. */
+    private Optional<FeeRule> lookupRule(TransferRequested transfer) {
+        try {
+            return feeSchedule.effectiveRule(transfer.bookId(), transfer.tranDate());
+        } catch (RuntimeException e) {
+            throw new PostingException(transfer.tranId(), RejectReason.POSTING_ERROR,
+                    "XFERFEE: RULE LOOKUP FAILED " + e.getMessage(), e);
+        }
+    }
+
     public TransferPosted post(TransferRequested transfer) {
-        FeeRule rule = feeSchedule.effectiveRule(transfer.bookId(), transfer.tranDate())
+        FeeRule rule = lookupRule(transfer)
                 .orElseThrow(() -> new PostingException(transfer.tranId(), RejectReason.NO_FEE_RULE,
                         "XFERFEE: NO FEE RULE FOR BOOK " + LegacyText.pad(transfer.bookId(), 10)));
         FeeResult fee = feePolicy.apply(transfer.amount(), rule);
