@@ -64,6 +64,28 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Java event-mode parity
+
+The `java` Compose profile runs the Spring Boot 3 / Java 21 rewrite of the
+transfer-fee chain as real processes on Kafka and PostgreSQL:
+`transfer-intake-service` (CBXFR01C), `fee-schedule-service`,
+`account-posting-service` (XFERFEE), `outbox-relay`, and
+`reconciliation-service` (CBXFR03C). `parity-replay --mode=events` publishes
+each fixture's DALYTRAN records to Kafka, waits for the services, and writes a
+candidate that `tools/parity/compare.py` checks against the COBOL recording:
+
+```sh
+make java-up
+make parity-java                 # every case under fixtures/xferfee
+make parity-java CASE=half_cent  # one case
+make java-down
+```
+
+Reports are written to `work/parity-java/<case>/report.md` and the summary to
+`work/parity-java/summary.md`. Without registry access, pass locally cached
+images, for example `KAFKA_IMAGE=... JAVA_BASE_IMAGE=... make java-up`. See
+[Java event mode](docs/JAVA-EVENT-MODE.md) for the topology and posting modes.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:

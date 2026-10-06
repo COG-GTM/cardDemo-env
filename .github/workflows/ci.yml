@@ -44,3 +44,32 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  parity-java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Configure compose user
+        run: |
+          echo "UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "GID=$(id -g)" >> "$GITHUB_ENV"
+      - name: Build and unit-test Java workspace
+        run: make java-build
+      - name: Start Kafka, Postgres, and services
+        run: make java-up
+      - name: Run event-mode parity
+        run: make parity-java
+      - name: Service logs
+        if: failure()
+        run: docker compose --profile java logs --no-color
+      - name: Upload Java parity reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-java
+          path: work/parity-java/
