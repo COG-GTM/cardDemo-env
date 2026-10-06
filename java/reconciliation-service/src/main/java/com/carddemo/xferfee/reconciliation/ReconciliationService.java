@@ -20,7 +20,7 @@ public class ReconciliationService {
     private final Map<LocalDate, BusinessDay> days = new ConcurrentHashMap<>();
 
     public void onPosted(LocalDate businessDate, TransferPosted posted) {
-        day(businessDate).addPosted(FeeLine.of(posted));
+        day(businessDate).addPosted(posted);
     }
 
     public void onRejected(LocalDate businessDate, TransferRejected rejected) {

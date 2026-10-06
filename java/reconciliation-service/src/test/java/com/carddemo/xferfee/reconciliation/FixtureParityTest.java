@@ -2,11 +2,14 @@ package com.carddemo.xferfee.reconciliation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.carddemo.xferfee.contracts.TransferPosted;
 import com.carddemo.xferfee.contracts.port.ReconciliationReport;
+import com.carddemo.xferfee.reconciliation.legacy.LegacyReport;
 import com.carddemo.xferfee.reconciliation.parity.Cvxfr02yReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +36,26 @@ class FixtureParityTest {
         assertThat(report.lines()).containsExactlyElementsOf(lines(expected.resolve("datasets").resolve(RPT)));
         assertThat(report.report().sysout()).containsExactlyElementsOf(lines(expected.resolve("sysout/STEP030.txt")));
         assertThat(report.report().returnCode()).isEqualTo(stepRc(rc, "STEP030"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"default", "under_cap", "at_cap", "rate_change", "zero_amount", "non_transfer", "half_cent"})
+    void eventDrivenServiceMatchesCobolRecording(String caseName) throws IOException {
+        Path expected = ROOT.resolve("fixtures/xferfee").resolve(caseName).resolve("expected");
+        String rc = Files.readString(expected.resolve("rc.json"));
+        LocalDate businessDate = LocalDate.of(2024, 6, 30);
+        ReconciliationService service = new ReconciliationService();
+        for (TransferPosted fee : Cvxfr02yReader.read(expected.resolve("datasets").resolve(FEES))) {
+            service.onPosted(businessDate, fee);
+            service.onPosted(businessDate, fee);
+        }
+        service.close(businessDate, stepRc(rc, "STEP020"));
+
+        LegacyReport report = service.legacyReport(businessDate).orElseThrow();
+        assertThat(report.records()).map(String::stripTrailing)
+                .containsExactlyElementsOf(lines(expected.resolve("datasets").resolve(RPT)));
+        assertThat(report.sysout()).containsExactlyElementsOf(lines(expected.resolve("sysout/STEP030.txt")));
+        assertThat(report.returnCode()).isEqualTo(stepRc(rc, "STEP030"));
     }
 
     private static List<String> lines(Path file) throws IOException {

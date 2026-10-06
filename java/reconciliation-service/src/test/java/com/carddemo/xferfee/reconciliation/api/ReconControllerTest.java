@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -70,5 +72,13 @@ class ReconControllerTest {
                 .andExpect(jsonPath("$.status").value("SKIPPED"));
         mvc.perform(get("/recon/2024-07-01/report")).andExpect(status().isNotFound());
         mvc.perform(get("/recon/2099-01-01")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void csvCellsCannotCarrySpreadsheetFormulas() {
+        assertThat(ReconController.csvCell("RETAIL")).isEqualTo("RETAIL");
+        assertThat(ReconController.csvCell("=HYPERLINK(1)")).isEqualTo("'=HYPERLINK(1)");
+        assertThat(ReconController.csvCell("@SUM(A1)")).isEqualTo("'@SUM(A1)");
+        assertThat(ReconController.csvCell("A,\"B")).isEqualTo("\"A,\"\"B\"");
     }
 }

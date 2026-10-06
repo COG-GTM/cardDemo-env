@@ -46,7 +46,7 @@ public class ReconController {
         DailyReconciliation day = get(businessDate);
         StringBuilder csv = new StringBuilder("book_id,count,amount,fee\n");
         for (BookTotal book : day.books()) {
-            csv.append(book.bookId()).append(',').append(book.count()).append(',')
+            csv.append(csvCell(book.bookId())).append(',').append(book.count()).append(',')
                     .append(book.amount().toPlainString()).append(',').append(book.fee().toPlainString()).append('\n');
         }
         return ResponseEntity.ok().contentType(CSV).body(csv.toString());
@@ -100,5 +100,11 @@ public class ReconController {
 
     private static ReconciliationException unknown(LocalDate businessDate) {
         return new ReconciliationException(Kind.UNKNOWN_DAY, "no reconciliation for " + businessDate);
+    }
+
+    /** Neutralises spreadsheet formula prefixes and quotes cells that need it (RFC 4180). */
+    static String csvCell(String value) {
+        String cell = !value.isEmpty() && "=+-@\t\r".indexOf(value.charAt(0)) >= 0 ? "'" + value : value;
+        return cell.matches("(?s).*[\",\r\n].*") ? '"' + cell.replace("\"", "\"\"") + '"' : cell;
     }
 }

@@ -81,4 +81,40 @@ class ReconciliationServiceTest {
                 .extracting(e -> ((ReconciliationException) e).kind())
                 .isEqualTo(ReconciliationException.Kind.DAY_CLOSED);
     }
+
+    @Test
+    void duplicateWithDifferentAccountsIsAConflict() {
+        service.onPosted(DAY, posted("T1", "RETAIL", "100.00", "1.50"));
+        TransferPosted moved = new TransferPosted("T1", LocalDate.of(2024, 6, 20), 3L, 4L, "RETAIL",
+                new BigDecimal("100.00"), new BigDecimal("0.015000"), new BigDecimal("1.50"), false,
+                LocalDate.of(2024, 6, 15));
+        assertThatThrownBy(() -> service.onPosted(DAY, moved))
+                .extracting(e -> ((ReconciliationException) e).kind())
+                .isEqualTo(ReconciliationException.Kind.CONFLICTING_DUPLICATE);
+    }
+
+    @Test
+    void identicalRedeliveryAfterCloseIsAcknowledged() {
+        TransferRejected reject = new TransferRejected("T9", "STEP010", TransferRejected.Reason.CARD_NOT_FOUND, "x");
+        service.onPosted(DAY, posted("T1", "RETAIL", "100.00", "1.50"));
+        service.onRejected(DAY, reject);
+        service.close(DAY, 0);
+
+        service.onPosted(DAY, posted("T1", "RETAIL", "100.0", "1.5"));
+        service.onRejected(DAY, reject);
+
+        assertThat(service.find(DAY).orElseThrow().grandTotal().count()).isEqualTo(1);
+        assertThatThrownBy(() -> service.onPosted(DAY, posted("T1", "RETAIL", "100.00", "9.99")))
+                .extracting(e -> ((ReconciliationException) e).kind())
+                .isEqualTo(ReconciliationException.Kind.CONFLICTING_DUPLICATE);
+    }
+
+    @Test
+    void conflictingRejectionIsNotSilentlyDropped() {
+        service.onRejected(DAY, new TransferRejected("T9", "STEP010", TransferRejected.Reason.CARD_NOT_FOUND, "x"));
+        assertThatThrownBy(() -> service.onRejected(DAY,
+                new TransferRejected("T9", "STEP020", TransferRejected.Reason.ACCOUNT_NOT_FOUND, "y")))
+                .extracting(e -> ((ReconciliationException) e).kind())
+                .isEqualTo(ReconciliationException.Kind.CONFLICTING_DUPLICATE);
+    }
 }
