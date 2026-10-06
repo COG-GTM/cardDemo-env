@@ -25,6 +25,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "duplicate_tran_id",
 )
 
 
@@ -70,6 +71,11 @@ def keyed_records(
     for index in range(0, len(data), length):
         values = decode_record(copybook, data[index:index + length])
         key = tuple(scalar(values[name]) for name in keys)
+        occurrence = 2
+        base = key
+        while key in records:
+            key = base[:-1] + (f"{base[-1]}#{occurrence}",)
+            occurrence += 1
         records[key] = values
     return records
 
