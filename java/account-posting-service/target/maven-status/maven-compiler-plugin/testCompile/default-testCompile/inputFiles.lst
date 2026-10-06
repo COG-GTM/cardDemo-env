@@ -1,0 +1,5 @@
+/home/ubuntu/repos/cardDemo-env/java/account-posting-service/src/test/java/com/carddemo/posting/PostingFixtures.java
+/home/ubuntu/repos/cardDemo-env/java/account-posting-service/src/test/java/com/carddemo/posting/FlywaySchemaTest.java
+/home/ubuntu/repos/cardDemo-env/java/account-posting-service/src/test/java/com/carddemo/posting/PostingServiceTest.java
+/home/ubuntu/repos/cardDemo-env/java/account-posting-service/src/test/java/com/carddemo/posting/PostingTestApplication.java
+/home/ubuntu/repos/cardDemo-env/java/account-posting-service/src/test/java/com/carddemo/posting/BatchAtomicPostingTest.java

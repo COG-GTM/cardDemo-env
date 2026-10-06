@@ -178,12 +178,18 @@ def append_db_diffs(
 
 
 def append_sysout_diffs(
-    lines: list[str], expected_root: Path, actual_root: Path
+    lines: list[str],
+    expected_root: Path,
+    actual_root: Path,
+    only: set[str] | None = None,
 ) -> tuple[int, int]:
     field_diffs = 0
     record_diffs = 0
     expected_files = {path.name for path in expected_root.glob("*.txt")}
     actual_files = {path.name for path in actual_root.glob("*.txt")}
+    if only:
+        expected_files = {name for name in expected_files if name[:-4] in only}
+        actual_files = {name for name in actual_files if name[:-4] in only}
     for name in sorted(expected_files | actual_files):
         expected = expected_root / name
         actual = actual_root / name
@@ -216,7 +222,10 @@ def append_sysout_diffs(
     return field_diffs, record_diffs
 
 
-def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
+def compare_case(
+    case: str, candidate: Path | None = None, only: set[str] | None = None
+) -> tuple[str, int]:
+    """Compare one case; ``only`` limits it to the named DSNs, tables and SYSOUT steps."""
     expected_root = CHAIN_ROOT / case / "expected"
     if candidate is None:
         candidate = ROOT / "work" / "parity" / case / "candidate"
@@ -245,6 +254,13 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     ]
     field_diffs = 0
     record_diffs = 0
+    if only:
+        metadata["outputs"] = [
+            output for output in metadata["outputs"] if output["dsn"] in only
+        ]
+        metadata["db2"] = [
+            table for table in metadata["db2"] if table["table"] in only
+        ]
     for output in metadata["outputs"]:
         expected = dataset_file(expected_root / "datasets", output["dsn"])
         actual = dataset_file(candidate / "datasets", output["dsn"])
@@ -274,13 +290,20 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         field_diffs += fields
         record_diffs += records
     fields, records = append_sysout_diffs(
-        lines, expected_root / "sysout", candidate / "sysout"
+        lines, expected_root / "sysout", candidate / "sysout", only
     )
     field_diffs += fields
     record_diffs += records
 
     expected_rc = json.loads((expected_root / "rc.json").read_text())
     actual_rc = json.loads((candidate / "rc.json").read_text())
+    if only:
+        expected_rc = {
+            step: rc for step, rc in expected_rc["steps"].items() if step in only
+        }
+        actual_rc = {
+            step: rc for step, rc in actual_rc["steps"].items() if step in only
+        }
     if expected_rc != actual_rc:
         lines.append(
             f"- RC: expected `{json.dumps(expected_rc, sort_keys=True)}`, "
@@ -328,7 +351,13 @@ def main() -> int:
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--report", type=Path)
+    parser.add_argument(
+        "--only",
+        default="",
+        help="comma-separated DSNs, tables and SYSOUT steps to compare",
+    )
     args = parser.parse_args()
+    only = {item for item in args.only.split(",") if item} or None
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
     cases = CASES if args.all else (args.case,)
@@ -338,7 +367,7 @@ def main() -> int:
     overall = 0
     for case in cases:
         candidate = args.candidate if len(cases) == 1 else None
-        report, rc = compare_case(case, candidate)
+        report, rc = compare_case(case, candidate, only)
         aggregate.append(report)
         overall = max(overall, rc)
     if args.all:

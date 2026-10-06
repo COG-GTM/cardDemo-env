@@ -1,0 +1,8 @@
+/home/ubuntu/repos/cardDemo-env/java/contracts/src/main/java/com/carddemo/contracts/FeePolicy.java
+/home/ubuntu/repos/cardDemo-env/java/contracts/src/main/java/com/carddemo/contracts/TransferRequested.java
+/home/ubuntu/repos/cardDemo-env/java/contracts/src/main/java/com/carddemo/contracts/FeeResult.java
+/home/ubuntu/repos/cardDemo-env/java/contracts/src/main/java/com/carddemo/contracts/Account.java
+/home/ubuntu/repos/cardDemo-env/java/contracts/src/main/java/com/carddemo/contracts/FeeSchedule.java
+/home/ubuntu/repos/cardDemo-env/java/contracts/src/main/java/com/carddemo/contracts/TransferPosted.java
+/home/ubuntu/repos/cardDemo-env/java/contracts/src/main/java/com/carddemo/contracts/FeeRule.java
+/home/ubuntu/repos/cardDemo-env/java/contracts/src/main/java/com/carddemo/contracts/TransferRejected.java

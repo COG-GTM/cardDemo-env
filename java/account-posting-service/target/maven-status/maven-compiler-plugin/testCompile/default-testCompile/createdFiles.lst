@@ -1,0 +1,5 @@
+com/carddemo/posting/BatchAtomicPostingTest.class
+com/carddemo/posting/PostingFixtures.class
+com/carddemo/posting/PostingTestApplication.class
+com/carddemo/posting/PostingServiceTest.class
+com/carddemo/posting/FlywaySchemaTest.class

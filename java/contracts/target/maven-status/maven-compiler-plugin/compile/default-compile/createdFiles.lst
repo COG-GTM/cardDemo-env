@@ -1,0 +1,8 @@
+com/carddemo/contracts/FeePolicy.class
+com/carddemo/contracts/Account.class
+com/carddemo/contracts/FeeRule.class
+com/carddemo/contracts/FeeResult.class
+com/carddemo/contracts/TransferRequested.class
+com/carddemo/contracts/TransferPosted.class
+com/carddemo/contracts/FeeSchedule.class
+com/carddemo/contracts/TransferRejected.class
