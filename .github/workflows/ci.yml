@@ -30,6 +30,14 @@ jobs:
             echo "half_cent naive parity unexpectedly passed"
             exit 1
           fi
+      - name: Shadow-run synthetic day (COBOL self-shadow)
+        run: make shadow COUNT=200 DATE=2024-06-30 CANDIDATE=legacy
+      - name: Verify shadow run flags naive drift
+        run: |
+          if make shadow COUNT=200 DATE=2024-07-01 CANDIDATE=naive; then
+            echo "naive shadow run unexpectedly matched COBOL"
+            exit 1
+          fi
       - name: Run dead-code split
         run: make deadcode
       - name: Check chain graph

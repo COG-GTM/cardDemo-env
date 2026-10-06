@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from typing import Callable
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -67,10 +68,23 @@ def load_inputs(case: str, datasets: Path) -> None:
         "--case",
         case,
     ])
-    source = CHAIN_ROOT / case / "input"
+    copy_inputs(CHAIN_ROOT / case / "input", datasets)
+
+
+def copy_inputs(source: Path, datasets: Path) -> None:
     datasets.mkdir(parents=True, exist_ok=True)
     for filename, dsn in INPUT_DSNS.items():
         shutil.copyfile(source / filename, datasets / dsn)
+
+
+def load_rules(snapshot: Path) -> None:
+    """Replace CTL_XFER_PARM with a rule snapshot CSV (header row required)."""
+    columns, _ = TABLES["CTL_XFER_PARM"]
+    escaped = str(snapshot.resolve()).replace("'", "''")
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c",
+         "TRUNCATE TABLE CTL_XFER_PARM"])
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c",
+         f"\\copy CTL_XFER_PARM ({columns}) FROM '{escaped}' CSV HEADER"])
 
 
 def parse_rc(joblog: Path) -> dict[str, object]:
@@ -94,13 +108,36 @@ def record_case(case: str, output: Path | None = None) -> Path:
     if case not in CASES:
         raise ValueError(f"unsupported case: {case}")
     expected = output or CHAIN_ROOT / case / "expected"
-    if expected.exists():
-        shutil.rmtree(expected)
-    expected.mkdir(parents=True)
     if output is None:
         run_root = ROOT / "work" / "record" / case
     else:
         run_root = output.parent
+    return record_run(
+        expected, run_root, lambda datasets: load_inputs(case, datasets)
+    )
+
+
+def record_inputs(
+    input_dir: Path, output: Path, rules: Path | None = None
+) -> Path:
+    """Run the chain on an arbitrary daily input directory."""
+    return record_run(
+        output,
+        output.parent,
+        lambda datasets: copy_inputs(input_dir, datasets),
+        rules,
+    )
+
+
+def record_run(
+    expected: Path,
+    run_root: Path,
+    stage_inputs: Callable[[Path], None],
+    rules: Path | None = None,
+) -> Path:
+    if expected.exists():
+        shutil.rmtree(expected)
+    expected.mkdir(parents=True)
     datasets = run_root / "datasets"
     joblog = run_root / "joblog"
     manifest = run_root / "manifest.json"
@@ -110,11 +147,13 @@ def record_case(case: str, output: Path | None = None) -> Path:
         shutil.rmtree(joblog)
     manifest.unlink(missing_ok=True)
 
-    load_inputs(case, datasets)
+    stage_inputs(datasets)
     before = expected.parent / "db2_before"
     if before.exists():
         shutil.rmtree(before)
     runjcl_reset_db()
+    if rules is not None:
+        load_rules(rules)
     for table in TABLES:
         dump_table(table, before / f"{table}.csv")
 
@@ -157,9 +196,18 @@ def main() -> int:
     parser.add_argument("--case", default=None)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--input-dir", type=Path,
+                        help="record an arbitrary daily input directory")
+    parser.add_argument("--rules", type=Path,
+                        help="CTL_XFER_PARM snapshot CSV (with --input-dir)")
     args = parser.parse_args()
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
+    if args.input_dir is not None:
+        if args.out is None:
+            parser.error("--out is required with --input-dir")
+        record_inputs(args.input_dir, args.out, args.rules)
+        return 0
     cases = CASES if args.all else (args.case,)
     if cases[0] is None:
         parser.error("--case is required unless --all is used")

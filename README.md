@@ -64,6 +64,40 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Shadow run (legacy vs candidate)
+
+`make shadow` feeds one daily input (`DALYTRAN.PS`, `CARDXREF.PS`,
+`ACCTDATA.PS`) plus a `CTL_XFER_PARM` rule snapshot to the COBOL chain and to a
+candidate implementation, then diffs the outputs with `compare.py`:
+
+```sh
+make shadow                                 # synthetic day, 250 txns, Java candidate
+make shadow COUNT=200 CANDIDATE=legacy      # COBOL self-shadow (must PASS)
+make shadow CASE=half_cent CANDIDATE=naive  # half-even drift (must FAIL)
+make shadow DATE=2024-06-30 SEED=7 SHADOW_ARGS="--rules rules.csv"
+```
+
+Both sides read the same staged copy under `work/shadow/<date>/input/` and
+`db2_before/`; input and rule sha256 digests are recorded and re-checked after
+the run. Each run writes `report.md`, `report.json` (per-transfer fee, account
+balances, `XFER_FEE_LEDGER`, reconciliation report totals) and the full
+`compare.md` field diff to `work/shadow/<date>/`. The exit code is 0 for no
+differences, 1 for any difference, and 2 when a side fails to run.
+
+Candidates: `java` runs `java/parity-replay/target/parity-replay.jar` (from the
+Java workspace, COG-1234); `legacy` re-runs the COBOL chain; `naive` runs
+`tools/parity/naive_ref.py`; `cmd` runs any `--candidate-cmd` template, e.g. a
+client for live services. Templates can use `{day}`, `{input}`, `{db2_before}`,
+`{rules}`, `{candidate}` and `{date}`. The candidate must write
+`datasets/`, `db2_after/`, `sysout/` and `rc.json` under `{candidate}`.
+`--legacy-dir` diffs against pre-recorded COBOL outputs instead of re-running
+the chain.
+
+Synthetic days come from `tools/fixtures/gen_fixtures.py --synthetic COUNT
+--date YYYY-MM-DD --seed N --out DIR`. The seed defaults to the date, so a day
+always regenerates the same way. `.github/workflows/shadow-nightly.yml` runs a
+250-transaction synthetic day every night and publishes the report.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:

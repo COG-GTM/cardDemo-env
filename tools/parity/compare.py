@@ -237,6 +237,20 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     metadata = json.loads(
         (CHAIN_ROOT / case / "case.json").read_text()
     )
+    report, rc = compare_dirs(case, expected_root, candidate, metadata)
+    report_path = candidate.parent / "report.md"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(report)
+    return report, rc
+
+
+def compare_dirs(
+    case: str,
+    expected_root: Path,
+    candidate: Path,
+    metadata: dict[str, Any],
+) -> tuple[str, int]:
+    """Diff two recorded output roots (datasets/, db2_after/, sysout/, rc.json)."""
     lines = [
         f"# Parity: xferfee / {case}",
         "",
@@ -314,11 +328,7 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     lines.extend(["", "## RC differences"])
     lines.extend(rc_lines or ["(none)"])
     lines.extend(["", verdict])
-    report = "\n".join(lines) + "\n"
-    report_path = candidate.parent / "report.md"
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(report)
-    return report, rc
+    return "\n".join(lines) + "\n", rc
 
 
 def main() -> int:
@@ -326,11 +336,30 @@ def main() -> int:
     parser.add_argument("--chain", default="xferfee")
     parser.add_argument("--case", default=None)
     parser.add_argument("--candidate", type=Path)
+    parser.add_argument("--expected", type=Path,
+                        help="expected output root instead of the fixture's")
+    parser.add_argument("--metadata", type=Path,
+                        help="case.json describing outputs (with --expected)")
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
+    if args.expected is not None:
+        if args.candidate is None:
+            parser.error("--candidate is required with --expected")
+        metadata_path = args.metadata or args.expected.parent / "case.json"
+        report, rc = compare_dirs(
+            args.case or args.expected.parent.name,
+            args.expected,
+            args.candidate,
+            json.loads(metadata_path.read_text()),
+        )
+        if args.report:
+            args.report.parent.mkdir(parents=True, exist_ok=True)
+            args.report.write_text(report)
+        print(report, end="")
+        return rc
     cases = CASES if args.all else (args.case,)
     if cases[0] is None:
         parser.error("--case is required unless --all is used")
