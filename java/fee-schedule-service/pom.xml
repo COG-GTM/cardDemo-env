@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.carddemo.xferfee</groupId>
+    <artifactId>xferfee-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>fee-schedule-service</artifactId>
+  <name>fee-schedule-service</name>
+  <description>Effective-dated fee rules migrated from CTL_XFER_PARM (BR-06). Owned by COG-1236.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.carddemo.xferfee</groupId>
+      <artifactId>contracts</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+  </dependencies>
+</project>

@@ -5,7 +5,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnucobol3 libpq-dev postgresql-client make python3 git build-essential \
     autoconf automake libtool bison flex ca-certificates pkg-config \
+    openjdk-21-jdk-headless maven \
+    && ln -s "/usr/lib/jvm/java-21-openjdk-$(dpkg --print-architecture)" /usr/lib/jvm/java-21 \
     && rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME=/usr/lib/jvm/java-21
+ENV PATH=${JAVA_HOME}/bin:${PATH}
 
 RUN git clone --depth 1 --branch v1.4 \
       https://github.com/opensourcecobol/Open-COBOL-ESQL.git /tmp/ocesql \
