@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CardDemo xferfee · Live Parity Console</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div>
+    <h1>Live Parity Console</h1>
+    <p class="sub">CardDemo daily transfer fees &mdash; every transaction through the real GnuCOBOL
+      <code>XFRDAILY</code> chain (<code>CBXFR01C</code> &rarr; <code>XFERFEE</code> &rarr; <code>CBXFR03C</code>)
+      and the running Spring Boot implementation, compared field by field.</p>
+  </div>
+</header>
+
+<section class="controls">
+  <label>Case
+    <select id="case"></select>
+  </label>
+  <label>Pace
+    <select id="delay">
+      <option value="0">as fast as COBOL runs</option>
+      <option value="400" selected>400 ms between txns</option>
+      <option value="1200">1.2 s between txns</option>
+    </select>
+  </label>
+  <label class="toggle" title="Switch the Java side to BigDecimal HALF_EVEN rounding">
+    <input type="checkbox" id="breakIt">
+    <span class="slider"></span>
+    <span>Break it: Java <code>HALF_EVEN</code></span>
+  </label>
+  <button id="run">Run feed</button>
+  <span id="status" class="status">idle</span>
+</section>
+
+<section class="engines">
+  <div class="engine cobol"><span class="tag">LEGACY</span> <span id="cobolEngine">GnuCOBOL</span></div>
+  <div class="engine java"><span class="tag">JAVA</span> Spring Boot &middot; rounding <code id="javaRounding">HALF_UP (COBOL ROUNDED)</code></div>
+</section>
+
+<section class="totals">
+  <div class="tile"><span class="label">Transactions</span><span id="tCount" class="value">0</span><span class="hint" id="tFeed"></span></div>
+  <div class="tile ok"><span class="label">MATCH</span><span id="tMatch" class="value">0</span></div>
+  <div class="tile bad"><span class="label">DIFF</span><span id="tDiff" class="value">0</span></div>
+  <div class="tile"><span class="label">COBOL fees</span><span id="tCobol" class="value">0.00</span></div>
+  <div class="tile"><span class="label">Java fees</span><span id="tJava" class="value">0.00</span><span class="hint" id="tDelta"></span></div>
+  <div class="tile verdict" id="tVerdict"><span class="label">Run verdict</span><span class="value">&mdash;</span></div>
+</section>
+
+<table id="feed">
+  <thead>
+  <tr>
+    <th rowspan="2">#</th>
+    <th rowspan="2">Transaction</th>
+    <th rowspan="2">Amount</th>
+    <th colspan="2">Fee</th>
+    <th colspan="2">Cap</th>
+    <th colspan="2">Rule used</th>
+    <th colspan="2">Source bal after</th>
+    <th colspan="2">Target bal after</th>
+    <th rowspan="2">Ledger row</th>
+    <th rowspan="2">Verdict</th>
+  </tr>
+  <tr class="sides">
+    <th>COBOL</th><th>Java</th>
+    <th>COBOL</th><th>Java</th>
+    <th>COBOL</th><th>Java</th>
+    <th>COBOL</th><th>Java</th>
+    <th>COBOL</th><th>Java</th>
+  </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<p class="empty" id="empty">Pick a case and press <b>Run feed</b>. Click any row for the ledger rows, SYSOUT and return codes.</p>
+
+<script src="app.js"></script>
+</body>
+</html>

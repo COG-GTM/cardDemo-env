@@ -1,4 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
+	parity-java parity-console-build parity-console \
 	deadcode chain-graph chain-graph-check
 
 up:
@@ -56,3 +57,23 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+# --- parity-console (COG-1250): Java candidate + live console -------------------
+JAVA_HOME ?= /usr/lib/jvm/java-21-openjdk-amd64
+PARITY_JAR := parity-console/target/parity-console.jar
+JAVA_CASES ?= default half_cent rate_change at_cap under_cap zero_amount non_transfer
+
+parity-console-build:
+	JAVA_HOME=$(JAVA_HOME) mvn -q -f parity-console/pom.xml package -DskipTests
+
+parity-java: parity-console-build
+	@set -e; rc=0; for c in $(if $(CASE),$(CASE),$(JAVA_CASES)); do \
+		$(JAVA_HOME)/bin/java -jar $(PARITY_JAR) --candidate --case $$c \
+			--out work/parity/$$c/java $(if $(BREAK),--break-it,); \
+		docker compose exec -T estate python3 tools/parity/compare.py \
+			--chain xferfee --case $$c --candidate work/parity/$$c/java \
+			--report work/parity/$$c/java-report.md || rc=1; \
+	done; exit $$rc
+
+parity-console: parity-console-build
+	$(JAVA_HOME)/bin/java -jar $(PARITY_JAR)
