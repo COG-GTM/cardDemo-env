@@ -65,6 +65,8 @@ jobs:
         run: make build
       - name: Run COBOL self parity
         run: make parity
+      - name: Build Java workspace and replay candidates
+        run: make java-candidate
       # Diffs are expected until the convergence ticket lands.
       - name: Run Java parity
         id: parity_java

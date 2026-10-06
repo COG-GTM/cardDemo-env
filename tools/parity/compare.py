@@ -228,6 +228,17 @@ def append_sysout_diffs(
     return field_diffs, record_diffs
 
 
+def known_selectors(cases: tuple[str, ...]) -> set[str]:
+    names = {"RC", "SYSOUT"}
+    for case in cases:
+        metadata = json.loads((CHAIN_ROOT / case / "case.json").read_text())
+        names.update(output["dsn"].upper() for output in metadata["outputs"])
+        names.update(table["table"].upper() for table in metadata["db2"])
+        sysout = CHAIN_ROOT / case / "expected" / "sysout"
+        names.update(path.stem.upper() for path in sysout.glob("*.txt"))
+    return names
+
+
 def selected(name: str, only: set[str] | None) -> bool:
     return only is None or name.upper() in only
 
@@ -375,6 +386,12 @@ def main() -> int:
         {name.strip().upper() for name in args.only.split(",") if name.strip()}
         if args.only else None
     )
+    if args.only is not None:
+        if not only:
+            parser.error("--only needs at least one selector")
+        unknown = sorted(only - known_selectors(cases))
+        if unknown:
+            parser.error(f"unknown --only selector(s): {', '.join(unknown)}")
     aggregate: list[str] = []
     summary: list[str] = []
     overall = 0
