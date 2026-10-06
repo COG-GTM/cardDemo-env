@@ -26,6 +26,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "unmatched_card",
 )
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",
@@ -118,18 +119,27 @@ def record_case(case: str, output: Path | None = None) -> Path:
     for table in TABLES:
         dump_table(table, before / f"{table}.csv")
 
-    run([
-        sys.executable,
-        str(ROOT / "tools" / "runjcl" / "runjcl.py"),
-        "--chain",
-        "xferfee",
-        "--datasets",
-        str(datasets),
-        "--joblog-dir",
-        str(joblog),
-        "--manifest",
-        str(manifest),
-    ])
+    # RC <= 4 is a recorded warning outcome (rc.json). Higher RCs stay errors
+    # until the manifest can tell cataloged outputs from allocated ones.
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "tools" / "runjcl" / "runjcl.py"),
+            "--chain",
+            "xferfee",
+            "--datasets",
+            str(datasets),
+            "--joblog-dir",
+            str(joblog),
+            "--manifest",
+            str(manifest),
+        ],
+        cwd=ROOT,
+        check=False,
+    )
+    if result.returncode > 4 or not manifest.exists():
+        raise SystemExit(
+            f"chain run failed (RC {result.returncode}); not recording {case}")
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"

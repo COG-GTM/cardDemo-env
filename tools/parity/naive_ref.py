@@ -54,7 +54,9 @@ def load_transfers(case: str) -> list[dict[str, object]]:
         fields = decode_record("CVTRA05Y", raw)
         if fields["TRAN-TYPE-CD"] != "08":
             continue
-        source = xrefs[fields["TRAN-CARD-NUM"]]
+        source = xrefs.get(fields["TRAN-CARD-NUM"])
+        if source is None:
+            continue
         target = int(fields["TRAN-DESC"][13:24])
         transfers.append({
             "id": fields["TRAN-ID"],
@@ -74,6 +76,8 @@ def record(case: str, out: Path) -> None:
     extracts = []
     fees = []
     for transfer in load_transfers(case):
+        if transfer["source"] not in accounts:
+            continue
         book = str(accounts[transfer["source"]]["ACCT-GROUP-ID"]).strip()
         pct, cap = fee_rule(book, transfer["date"])
         amount = transfer["amount"]
