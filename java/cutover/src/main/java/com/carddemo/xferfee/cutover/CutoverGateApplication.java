@@ -18,6 +18,7 @@ import java.util.List;
  *     [--rollback work/cutover/rollback/rollback.json] [--required-days 20] [--calendar DAILY|WEEKDAYS]
  *     [--no-rate-change] [--cases a,b,...] [--out work/cutover] [--as-of YYYY-MM-DD]
  *     [--rehearsal-max-age-days 7] [--release-commit SHA] [--allow-fixture-rehearsal]
+ *     [--accept-explicit-rehearsal]
  * </pre>
  *
  * Exit code 0 = GO, 1 = NO-GO, 2 = usage error.
@@ -48,6 +49,7 @@ public final class CutoverGateApplication {
         int rehearsalMaxAgeDays = 7;
         Optional<String> releaseCommit = Optional.empty();
         boolean allowFixtureRehearsal = false;
+        boolean acceptExplicitRehearsal = false;
         try {
             for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
@@ -64,6 +66,7 @@ public final class CutoverGateApplication {
                     case "--rehearsal-max-age-days" -> rehearsalMaxAgeDays = Integer.parseInt(args[++i]);
                     case "--release-commit" -> releaseCommit = Optional.of(args[++i].trim()).filter(c -> !c.isEmpty());
                     case "--allow-fixture-rehearsal" -> allowFixtureRehearsal = true;
+                    case "--accept-explicit-rehearsal" -> acceptExplicitRehearsal = true;
                     default -> throw new IllegalArgumentException("unknown argument " + args[i]);
                 }
             }
@@ -83,7 +86,8 @@ public final class CutoverGateApplication {
                                 asOf != null ? asOf : calendar.previous(LocalDate.now())),
                 ParityReports.finalReplay(parityRoot, cases),
                 RollbackRehearsal.load(rollback, new RollbackRehearsal.Policy(Instant.now(),
-                        Duration.ofDays(rehearsalMaxAgeDays), releaseCommit, allowFixtureRehearsal)));
+                        Duration.ofDays(rehearsalMaxAgeDays), releaseCommit, allowFixtureRehearsal,
+                        acceptExplicitRehearsal)));
         Files.createDirectories(out);
         String markdown = readiness.toMarkdown(cases);
         Files.writeString(out.resolve("readiness.md"), markdown);

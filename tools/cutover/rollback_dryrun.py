@@ -101,18 +101,18 @@ class DryRun:
         return proc.returncode
 
     def recon(self, label: str, acct_before: Path, acct_after: Path, fees: Path,
-              incoming: Path, window: tuple[dt.date, dt.date]) -> dict[str, tuple[str, str, bool]]:
+              incoming: Path, ledger_before: Path) -> dict[str, tuple[str, str, bool]]:
         self.log(f"$ psql -f ops/cutover/ledger_recon.sql   ({label})")
         load = self.staging / "load.sql"
         load.write_text("".join(
             f"\\copy {table} FROM '{path}' CSV HEADER\n"
             for table, path in (("rb_acct_before", acct_before), ("rb_acct_after", acct_after),
-                                ("rb_fees", fees), ("rb_incoming", incoming))
+                                ("rb_fees", fees), ("rb_incoming", incoming),
+                                ("rb_ledger_before", ledger_before))
         ))
         proc = subprocess.run(
             ["psql", "-X", "-q", "-v", "ON_ERROR_STOP=1", "-At", "-F", "|",
-             "-v", f"load={load}", "-v", f"run_from={window[0]}", "-v", f"run_to={window[1]}",
-             "-f", str(RECON_SQL)],
+             "-v", f"load={load}", "-f", str(RECON_SQL)],
             cwd=ROOT, capture_output=True, text=True, check=False,
         )
         if proc.returncode:
@@ -164,11 +164,10 @@ def transfer_ids(dalytran: Path) -> list[str]:
     return [r["TRAN-ID"] for r in records(dalytran, "CVTRA05Y") if r["TRAN-TYPE-CD"] == "08"]
 
 
-def run_window(dalytran: Path, business_date: dt.date) -> tuple[dt.date, dt.date]:
-    """Transaction-date range of the run's type-08 records (the business date if none)."""
-    dates = [dt.date.fromisoformat(str(r["TRAN-ORIG-TS"])[:10])
-             for r in records(dalytran, "CVTRA05Y") if r["TRAN-TYPE-CD"] == "08"]
-    return (min(dates), max(dates)) if dates else (business_date, business_date)
+def ledger_keys(destination: Path) -> Path:
+    """Snapshot of XFER_FEE_LEDGER keys, taken before a run posts."""
+    keys = [k for k in psql("SELECT TRAN_ID FROM XFER_FEE_LEDGER ORDER BY 1").splitlines() if k]
+    return write_csv(destination, ["tran_id"], [[k] for k in keys])
 
 
 def release_commit() -> str | None:
@@ -185,11 +184,13 @@ def psql(sql: str) -> str:
 def choose_source(case: str, explicit: Path | None) -> tuple[Path, str, str]:
     """Generation to roll back from, its label, and its kind (java / explicit / fixture).
 
-    Only java and explicit (operator-supplied adapter output) rehearsals satisfy cut-over
-    gate G3; the fixture stand-in exercises the procedure before the Java stages exist.
+    By default only java rehearsals satisfy cut-over gate G3. explicit (an operator-supplied
+    directory outside fixtures/) needs --accept-explicit-rehearsal at the gate, because the
+    path itself proves nothing about who produced it. fixture never counts for production.
     """
     if explicit:
-        return explicit, f"--source {explicit}", "explicit"
+        kind = "fixture" if explicit.is_relative_to(ROOT / "fixtures") else "explicit"
+        return explicit, f"--source {explicit}", kind
     for java, report in (
         (ROOT / "work" / "parity-java" / case / "candidate",
          ROOT / "work" / "parity-java" / case / "report.md"),
@@ -251,6 +252,7 @@ def dry_run(args: argparse.Namespace) -> int:
             run.set_catalog(base, 1)
             run.log(f"  legacy-adapter catalogued {base}(+1) -> G0001V00")
         psql("TRUNCATE TABLE XFER_FEE_LEDGER")
+        java_before = ledger_keys(run.staging / "ledger_before_java_day.csv")
         ledger_src = source / "db2_after" / "XFER_FEE_LEDGER.csv"
         psql(f"\\copy XFER_FEE_LEDGER (TRAN_ID, TRAN_DT, SRC_ACCT_ID, TGT_ACCT_ID, BOOK_ID, "
              f"TRAN_AMT, FEE_AMT, CAP_APPLIED) FROM '{ledger_src}' CSV HEADER")
@@ -277,9 +279,7 @@ def dry_run(args: argparse.Namespace) -> int:
         before_csv = accounts_csv(frozen_master, run.staging / "acct_frozen.csv")
         gen_csv = accounts_csv(generation, run.staging / "acct_gen.csv")
         gen_fees = fees_csv(run.gdg_path(FEES_GDG, run.catalog(FEES_GDG)), run.staging / "fees_gen.csv")
-        java_window = run_window(case_dir / "input" / "DALYTRAN.PS", run_date)
-        run.log(f"  Java-day transaction window {java_window[0]} .. {java_window[1]}")
-        rows = run.recon("pre-flight", before_csv, gen_csv, gen_fees, incoming, java_window)
+        rows = run.recon("pre-flight", before_csv, gen_csv, gen_fees, incoming, java_before)
         for name, (expected, actual, ok) in rows.items():
             run.check(f"preflight.{name}", ok, f"expected {expected} actual {actual}")
 
@@ -288,7 +288,7 @@ def dry_run(args: argparse.Namespace) -> int:
         replay = write_csv(run.staging / "incoming_replay.csv", ["tran_id"],
                            [[t] for t in transfer_ids(case_dir / "input" / "DALYTRAN.PS")])
         rows = run.recon("drill: re-run of the Java day's DALYTRAN", before_csv, gen_csv,
-                         gen_fees, replay, java_window)
+                         gen_fees, replay, java_before)
         _, actual, ok = rows["incoming_already_in_ledger"]
         run.check("drill.duplicate_post_detected", not ok and int(actual) == java_rows,
                   f"{actual} TRAN_IDs already posted would be rejected")
@@ -298,16 +298,16 @@ def dry_run(args: argparse.Namespace) -> int:
 
         tampered = accounts_csv(generation, run.staging / "acct_gen_tampered.csv", nudge)
         rows = run.recon("drill: generation off by 0.01 on one account", before_csv, tampered,
-                         gen_fees, incoming, java_window)
+                         gen_fees, incoming, java_before)
         run.check("drill.balance_drift_detected", not rows["accounts_not_explained_by_ledger"][2],
                   f"{rows['accounts_not_explained_by_ledger'][1]} account(s) not explained")
 
         no_fees = write_csv(run.staging / "fees_empty.csv", LEDGER_HEADER, [])
         rows = run.recon("drill: partial day (ledger rows, empty XFER.FEES)", before_csv, before_csv,
-                         no_fees, incoming, java_window)
+                         no_fees, incoming, java_before)
         _, actual, ok = rows["ledger_rows_not_in_fees_file"]
         run.check("drill.partial_day_detected", not ok and int(actual) == java_rows,
-                  f"{actual} ledger rows in the run window not explained by an empty fees file")
+                  f"{actual} ledger rows posted by the run not explained by an empty fees file")
 
         preflight_ok = all(c["ok"] for c in run.checks)
         if not preflight_ok:
@@ -324,6 +324,7 @@ def dry_run(args: argparse.Namespace) -> int:
         run.log("")
         run.log(f"STEP 4  re-enable XFRDAILY for {run_date + dt.timedelta(days=1)}")
         shutil.copyfile(tomorrow, run.datasets / f"{HLQ}.DALYTRAN.PS")
+        legacy_before = ledger_keys(run.staging / "ledger_before_legacy_day.csv")
         rc = run.run_job(DAILY_JCL)
         run.check("XFRDAILY_maxcc_0", rc == 0, f"MAXCC={rc:04d}")
 
@@ -336,8 +337,7 @@ def dry_run(args: argparse.Namespace) -> int:
         after_csv = accounts_csv(new_gen, run.staging / "acct_after.csv")
         day_fees = fees_csv(new_fees, run.staging / "fees_day1.csv")
         empty = write_csv(run.staging / "incoming_none.csv", ["tran_id"], [])
-        next_window = run_window(tomorrow, run_date + dt.timedelta(days=1))
-        rows = run.recon("post-run", restored_csv, after_csv, day_fees, empty, next_window)
+        rows = run.recon("post-run", restored_csv, after_csv, day_fees, empty, legacy_before)
         for name, (expected, actual, ok) in rows.items():
             run.check(f"postrun.{name}", ok, f"expected {expected} actual {actual}")
         fee_total = sum((Decimal(r[6]) for r in csv.reader(day_fees.open()) if r[0] != "tran_id"),

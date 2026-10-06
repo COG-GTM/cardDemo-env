@@ -49,13 +49,14 @@ check (`check|expected|actual|ok`). The dry-run builds the CSVs from the dataset
 equivalent unloads.
 
 ```sh
-psql -v ON_ERROR_STOP=1 -At -F'|' -v load=load.sql \
-     -v run_from=2024-06-20 -v run_to=2024-06-21 -f ops/cutover/ledger_recon.sql
+psql -v ON_ERROR_STOP=1 -At -F'|' -v load=load.sql -f ops/cutover/ledger_recon.sql
 ```
 
-`run_from` / `run_to` are the transaction-date range of the run's type-08 DALYTRAN records
-and are required. They are deliberately not derived from the fees file, so a partial day
-(ledger rows written, empty or missing `XFER.FEES`) still fails `ledger_rows_not_in_fees_file`.
+`load.sql` also loads `rb_ledger_before`: the `XFER_FEE_LEDGER` keys captured before the run
+posted (`SELECT TRAN_ID FROM XFER_FEE_LEDGER`). The run's postings are the ledger rows that are not in
+that set. So a partial day (ledger rows written, empty or missing `XFER.FEES`) still fails
+`ledger_rows_not_in_fees_file`, and earlier runs' rows with the same `TRAN_DT` are not
+counted against this run.
 
 `load.sql` holds four `\copy` lines (psql does not expand variables inside `\copy`); see the
 header of `ledger_recon.sql`. Checks:
@@ -64,7 +65,7 @@ header of `ledger_recon.sql`. Checks:
 |---|---|
 | `fees_rows_in_ledger` | every `XFER.FEES` record has a ledger row |
 | `fees_fields_match_ledger` | date, accounts, book, amount, fee and cap flag agree |
-| `ledger_rows_not_in_fees_file` | no ledger rows in `run_from..run_to` that the fees file does not explain |
+| `ledger_rows_not_in_fees_file` | no ledger rows posted by the run (not in `rb_ledger_before`) that the fees file does not explain |
 | `fee_total` | fee totals agree |
 | `account_set_unchanged` | generation has exactly the accounts of the previous master |
 | `ledger_legs_unknown_account` | every ledger leg hits a known account |

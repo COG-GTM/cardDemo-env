@@ -6,14 +6,14 @@
 --   check | expected | actual | ok
 -- and the run is clean only if every row has ok = t.
 --
--- psql -v ON_ERROR_STOP=1 -At -F'|' -v load=<load.sql> \
---      -v run_from=<YYYY-MM-DD> -v run_to=<YYYY-MM-DD> -f ops/cutover/ledger_recon.sql
+-- psql -v ON_ERROR_STOP=1 -At -F'|' -v load=<load.sql> -f ops/cutover/ledger_recon.sql
 --
--- run_from / run_to bound the transaction dates of the run being checked (the type-08
--- records of that run's DALYTRAN). They are required and independent of the fees file, so
--- ledger rows of a partial run are caught even when its XFER.FEES generation is empty.
+-- The rows "posted by the run" are the ledger TRAN_IDs that are not in rb_ledger_before (the
+-- ledger key set captured before the run started). That is independent of both the fees
+-- file and transaction dates: a partial run with an empty XFER.FEES is still caught, and
+-- earlier runs' postings with the same TRAN_DT are not mistaken for this run's.
 --
--- psql does not interpolate variables inside \copy, so <load.sql> holds the four loads
+-- psql does not interpolate variables inside \copy, so <load.sql> holds the five loads
 -- (tools/cutover/rollback_dryrun.py writes it; operators can hand-write it):
 --   \copy rb_acct_before FROM '<csv>' CSV HEADER   acct_id,curr_bal,cyc_credit,cyc_debit
 --                                                  master the run started from
@@ -24,6 +24,8 @@
 --                                                  (XFER.FEES generation of the same run)
 --   \copy rb_incoming FROM '<csv>' CSV HEADER      tran_id (type-08 TRAN_IDs of the next
 --                                                  DALYTRAN; header-only = none)
+--   \copy rb_ledger_before FROM '<csv>' CSV HEADER tran_id (XFER_FEE_LEDGER keys captured
+--                                                  before the run posted)
 \set ON_ERROR_STOP on
 
 CREATE TEMP TABLE rb_acct_before (
@@ -44,6 +46,7 @@ CREATE TEMP TABLE rb_fees (
     cap_applied CHAR(1) NOT NULL
 );
 CREATE TEMP TABLE rb_incoming (tran_id CHAR(16) NOT NULL);
+CREATE TEMP TABLE rb_ledger_before (tran_id CHAR(16) PRIMARY KEY);
 
 \i :load
 
@@ -53,10 +56,10 @@ run_ledger AS (
     FROM XFER_FEE_LEDGER l
     JOIN rb_fees f ON f.tran_id = l.TRAN_ID
 ),
-window_ledger AS (
+posted_ledger AS (
     SELECT l.*
     FROM XFER_FEE_LEDGER l
-    WHERE l.TRAN_DT BETWEEN :'run_from'::DATE AND :'run_to'::DATE
+    WHERE NOT EXISTS (SELECT 1 FROM rb_ledger_before b WHERE b.tran_id = l.TRAN_ID)
 ),
 movement AS (
     SELECT acct_id, SUM(credit) AS credit, SUM(debit) AS debit
@@ -92,7 +95,7 @@ checks AS (
            )::TEXT
     UNION ALL
     SELECT 3, 'ledger_rows_not_in_fees_file', '0',
-           (SELECT COUNT(*) FROM window_ledger w
+           (SELECT COUNT(*) FROM posted_ledger w
             WHERE NOT EXISTS (SELECT 1 FROM rb_fees f WHERE f.tran_id = w.TRAN_ID))::TEXT
     UNION ALL
     SELECT 4, 'fee_total', COALESCE((SELECT SUM(fee_amt) FROM rb_fees), 0)::TEXT,

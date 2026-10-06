@@ -27,9 +27,6 @@ public record RollbackRehearsal(
         List<String> failedChecks,
         List<String> problems) {
 
-    public static final Policy DEFAULT_POLICY =
-            new Policy(Instant.now(), Duration.ofDays(7), Optional.empty(), false);
-
     private static final ObjectMapper JSON = new ObjectMapper();
 
     /**
@@ -37,8 +34,14 @@ public record RollbackRehearsal(
      * @param maxAge              oldest acceptable rehearsal (runbook: 5 business days, default 7 calendar days)
      * @param releaseCommit       when present, the rehearsal must have run on this commit
      * @param allowFixtureSource  accept a rehearsal whose generation came from the COBOL fixture stand-in
+     * @param acceptExplicitSource accept an operator-supplied {@code --source} (operator attests it is adapter egress)
      */
-    public record Policy(Instant now, Duration maxAge, Optional<String> releaseCommit, boolean allowFixtureSource) {
+    public record Policy(Instant now, Duration maxAge, Optional<String> releaseCommit, boolean allowFixtureSource,
+            boolean acceptExplicitSource) {
+
+        public static Policy defaults() {
+            return new Policy(Instant.now(), Duration.ofDays(7), Optional.empty(), false, false);
+        }
     }
 
     public RollbackRehearsal {
@@ -47,7 +50,7 @@ public record RollbackRehearsal(
     }
 
     public static RollbackRehearsal load(Path rollbackJson) {
-        return load(rollbackJson, DEFAULT_POLICY);
+        return load(rollbackJson, Policy.defaults());
     }
 
     public static RollbackRehearsal load(Path rollbackJson, Policy policy) {
@@ -85,9 +88,13 @@ public record RollbackRehearsal(
         if (!failed.isEmpty()) {
             problems.add("rehearsal failed " + failed);
         }
-        if (!policy.allowFixtureSource() && !"java".equals(sourceKind) && !"explicit".equals(sourceKind)) {
+        boolean sourceOk = "java".equals(sourceKind)
+                || ("explicit".equals(sourceKind) && policy.acceptExplicitSource())
+                || ("fixture".equals(sourceKind) && policy.allowFixtureSource());
+        if (!sourceOk) {
             problems.add("rehearsal generation came from " + (sourceKind == null ? "an unknown source" : sourceKind)
-                    + ", not legacy-adapter egress");
+                    + ", not legacy-adapter egress"
+                    + ("explicit".equals(sourceKind) ? " (pass --accept-explicit-rehearsal to attest it)" : ""));
         }
         try {
             Instant finished = finishedAt == null ? null : Instant.parse(finishedAt.replace("+00:00", "Z"));

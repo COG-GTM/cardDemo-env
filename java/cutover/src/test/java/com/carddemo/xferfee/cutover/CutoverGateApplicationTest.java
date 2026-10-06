@@ -186,4 +186,15 @@ class CutoverGateApplicationTest {
         assertEquals(1, gate("--as-of", "2024-07-30"));
         assertTrue(readiness().contains("missing shadow run for 2024-07-30"), readiness());
     }
+
+    @Test
+    void explicitSourceNeedsOperatorAttestation() throws IOException {
+        allGreenExceptRollback();
+        rollbackJson("{\"status\": \"PASS\", \"finished_at\": \"" + java.time.Instant.now() + "\", "
+                + "\"source_kind\": \"explicit\", \"checks\": [{\"name\": \"a\", \"ok\": true}]}");
+        assertEquals(1, gate());
+        assertTrue(readiness().contains("--accept-explicit-rehearsal"), readiness());
+        assertEquals(0, gate("--accept-explicit-rehearsal"));
+        assertEquals(1, gate("--allow-fixture-rehearsal"));
+    }
 }

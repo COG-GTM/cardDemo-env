@@ -88,8 +88,9 @@ make cutover-rollback-dryrun   # work/cutover/rollback/{rollback.log,rollback.js
 ```
 
 Met only when `rollback.json` is `PASS` with a non-empty list of checks that all passed, was
-rehearsed from a Java / legacy-adapter generation (`source_kind` `java`, or `explicit` for an
-operator-supplied `--source`; the COBOL fixture stand-in does not count), finished within
+rehearsed from a Java / legacy-adapter generation (`source_kind` `java`; an operator-supplied
+`--source` outside `fixtures/` is `explicit` and counts only with `--accept-explicit-rehearsal`;
+the COBOL fixture stand-in, including `--source fixtures/...`, never counts), finished within
 `--rehearsal-max-age-days` (default 7 calendar days ≈ the runbook's 5 business days), and ran on
 the release commit (`make cutover-gate` passes `--release-commit $(git rev-parse HEAD)`).
 `--allow-fixture-rehearsal` exists for development only. The committed rehearsal log is
