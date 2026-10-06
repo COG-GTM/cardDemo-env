@@ -144,6 +144,15 @@ def case_transactions(case: str, cards: list[str]) -> list[bytes]:
             transfer("TRN0000000000004", 100.00, 1, 2, cards[0],
                      "2024-06-05"),
         ]
+    if case == "empty_run":
+        return [
+            transaction("TRN0000000000001", "01", 42.00, cards[2],
+                        "2024-06-05", "POS purchase"),
+            transaction("TRN0000000000002", "02", 10.00, cards[3],
+                        "2024-06-12", "PAYMENT"),
+            transaction("TRN0000000000003", "05", 15.00, cards[6],
+                        "2024-06-20", "CASH ADVANCE"),
+        ]
     if case == "half_cent":
         rows = [
             (Decimal("2.00"), 1, 2, "2024-06-05", Decimal("0.0125")),
@@ -191,6 +200,7 @@ CASES = {
     "zero_amount": "Zero-amount transfer preserves fee and ledger records",
     "non_transfer": "Non-transfer transactions are ignored by the extract",
     "half_cent": "Half-cent fee rounding cases for both books",
+    "empty_run": "No transfers: empty extract, header-only recon, RC 4",
 }
 
 

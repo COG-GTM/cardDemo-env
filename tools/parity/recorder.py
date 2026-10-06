@@ -26,7 +26,9 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "empty_run",
 )
+CHAIN_STEPS = ("STEP010", "STEP020", "STEP030")
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",
     "CARDXREF.PS": "AWS.M2.CARDDEMO.CARDXREF.PS",
@@ -45,8 +47,11 @@ TABLES = {
 }
 
 
-def run(command: list[str]) -> None:
-    subprocess.run(command, cwd=ROOT, check=True)
+def run(command: list[str], max_rc: int = 0) -> int:
+    process = subprocess.run(command, cwd=ROOT)
+    if not 0 <= process.returncode <= max_rc:
+        raise subprocess.CalledProcessError(process.returncode, command)
+    return process.returncode
 
 
 def dump_table(table: str, destination: Path) -> None:
@@ -90,13 +95,20 @@ def parse_rc(joblog: Path) -> dict[str, object]:
     return {"steps": steps, "maxcc": maxcc}
 
 
+def ran_to_completion(rc: dict[str, object]) -> bool:
+    """runjcl stops at the first non-zero step, so only a final-step warning
+    leaves a complete set of outputs."""
+    steps = rc["steps"]
+    return (
+        tuple(steps) == CHAIN_STEPS
+        and all(steps[step] == 0 for step in CHAIN_STEPS[:-1])
+    )
+
+
 def record_case(case: str, output: Path | None = None) -> Path:
     if case not in CASES:
         raise ValueError(f"unsupported case: {case}")
     expected = output or CHAIN_ROOT / case / "expected"
-    if expected.exists():
-        shutil.rmtree(expected)
-    expected.mkdir(parents=True)
     if output is None:
         run_root = ROOT / "work" / "record" / case
     else:
@@ -118,7 +130,7 @@ def record_case(case: str, output: Path | None = None) -> Path:
     for table in TABLES:
         dump_table(table, before / f"{table}.csv")
 
-    run([
+    chain_rc = run([
         sys.executable,
         str(ROOT / "tools" / "runjcl" / "runjcl.py"),
         "--chain",
@@ -129,8 +141,17 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], max_rc=4)
+    rc = parse_rc(joblog / "XFRDAILY.log")
+    if chain_rc and not ran_to_completion(rc):
+        raise RuntimeError(
+            f"{case}: chain stopped early with RC {chain_rc} "
+            f"(steps {rc['steps']}); {expected} left unchanged"
+        )
 
+    if expected.exists():
+        shutil.rmtree(expected)
+    expected.mkdir(parents=True)
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
     dataset_dir.mkdir(parents=True)
@@ -139,11 +160,10 @@ def record_case(case: str, output: Path | None = None) -> Path:
 
     sysout_dir = expected / "sysout"
     sysout_dir.mkdir(parents=True)
-    for step in ("STEP010", "STEP020", "STEP030"):
+    for step in CHAIN_STEPS:
         source = joblog / "XFRDAILY" / f"{step}.SYSOUT"
         if source.exists():
             shutil.copyfile(source, sysout_dir / f"{step}.txt")
-    rc = parse_rc(joblog / "XFRDAILY.log")
     (expected / "rc.json").write_text(json.dumps(rc, indent=2) + "\n")
     after = expected / "db2_after"
     for table in TABLES:
