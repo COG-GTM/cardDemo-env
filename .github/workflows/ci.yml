@@ -22,6 +22,11 @@ jobs:
           set -o pipefail
           make run CHAIN=xferfee 2>&1 | tee work/ci-chain.log
           grep -q 'MAXCC=0000' work/ci-chain.log
+      - name: TEMP record unmatched_card
+        run: |
+          make record CASE=unmatched_card
+          tar -C fixtures/xferfee -cz unmatched_card/db2_before unmatched_card/expected | base64 -w0 > work/unmatched_card.b64
+          echo "BEGIN_B64"; cat work/unmatched_card.b64; echo; echo "END_B64"
       - name: Run self parity
         run: make parity
       - name: Verify naive parity is intentionally different
