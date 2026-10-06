@@ -1,5 +1,12 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check java-build java-test parity-java
+
+MVN ?= mvn
+JAVA ?= java
+# Outputs owned by the Java services implemented so far (account-posting-service).
+# ONLY=all compares every output of the chain.
+JAVA_SCOPE ?= AWS.M2.CARDDEMO.XFER.FEES,AWS.M2.CARDDEMO.ACCTDATA.XFER,XFER_FEE_LEDGER,CTL_XFER_PARM,STEP020
+ONLY ?= $(JAVA_SCOPE)
 
 up:
 	docker compose up -d --build --wait
@@ -56,3 +63,14 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+java-build:
+	cd java && $(MVN) -q -B test-compile dependency:build-classpath \
+		-Dmdep.includeScope=runtime -Dmdep.outputFile=target/cp.txt
+
+java-test:
+	cd java && $(MVN) -B verify
+
+parity-java: java-build
+	python3 tools/parity/java_candidate.py --java $(JAVA) --only "$(ONLY)" \
+		$(if $(CASE),--case $(CASE),--all)

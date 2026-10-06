@@ -64,6 +64,26 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Java services and Java parity
+
+The Java 21 / Spring Boot workspace lives in `java/` (`contracts`,
+`account-posting-service`, `parity-replay`). It runs on the host and needs a JDK
+21 and Maven; no estate container is required.
+
+```sh
+make java-test                    # unit tests
+make parity-java                  # all cases
+make parity-java CASE=half_cent   # one case
+make parity-java ONLY=all         # every chain output, including ones not ported yet
+```
+
+`tools/parity/java_candidate.py` decodes the fixture inputs to JSON-lines, runs
+`parity-replay` (H2, Flyway, `posting.mode=batch-atomic`), encodes the outputs
+back to fixed-width datasets and calls `compare.py --only`. By default `ONLY`
+limits the comparison to the outputs the ported services own:
+`XFER.FEES`, `ACCTDATA.XFER`, `XFER_FEE_LEDGER`, `CTL_XFER_PARM` and `STEP020`.
+Until transfer-intake is ported, posting reads the recorded `XFER.EXTRACT`.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:

@@ -1,0 +1,12 @@
+com/carddemo/posting/OutboxRepository.class
+com/carddemo/posting/FeeLedgerRepository.class
+com/carddemo/posting/PostingException$Reason.class
+com/carddemo/posting/CardXrefRepository.class
+com/carddemo/posting/PostingConfiguration.class
+com/carddemo/posting/PostingMode.class
+com/carddemo/posting/PostingRunner.class
+com/carddemo/posting/PostingProperties.class
+com/carddemo/posting/AccountRepository.class
+com/carddemo/posting/PostingException.class
+com/carddemo/posting/RunResult.class
+com/carddemo/posting/PostingService.class
