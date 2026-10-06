@@ -38,8 +38,9 @@ button:disabled { opacity: .5; cursor: progress; }
 .tile.verdict.pass .value { color: var(--ok); }
 .tile.verdict.fail { border-color: var(--bad); }
 .tile.verdict.fail .value { color: var(--bad); }
-table { width: calc(100% - 56px); margin: 0 28px 40px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-th, td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: right; white-space: nowrap; }
+.table-wrap { overflow-x: auto; margin: 0 28px 40px; }
+table { width: 100%; margin: 0; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 6px; text-align: right; white-space: nowrap; }
 th { color: var(--muted); font-weight: 600; font-size: 12px; background: var(--panel); position: sticky; top: 0; }
 tr.sides th:nth-child(odd) { color: var(--cobol); }
 tr.sides th:nth-child(even) { color: var(--java); }
@@ -61,8 +62,9 @@ tr.pending td { color: var(--muted); font-style: italic; }
 .tranid { font-family: ui-monospace, Menlo, monospace; }
 .desc { display: block; color: var(--muted); font-size: 11px; }
 tr.detail td { text-align: left; background: #121a21; white-space: normal; }
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.detail-grid pre { margin: 4px 0 0; padding: 8px; background: #0b0f13; border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; font-size: 12px; }
+.detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.detail-grid > * { min-width: 0; }
+.detail-grid pre { margin: 4px 0 0; padding: 8px; background: #0b0f13; border: 1px solid var(--line); border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
 .detail-grid h4 { margin: 0; font-size: 12px; color: var(--muted); }
 .empty { color: var(--muted); padding: 0 28px; }
 .error { color: var(--bad); }
