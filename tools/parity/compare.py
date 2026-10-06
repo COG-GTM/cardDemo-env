@@ -26,6 +26,13 @@ CASES = (
     "non_transfer",
     "half_cent",
 )
+# Outputs owned by each XFERFEEP step, for comparing a partial (per-step) candidate.
+STEP_OUTPUTS = {
+    "STEP010": {
+        "datasets": ("AWS.M2.CARDDEMO.XFER.EXTRACT",),
+        "db2": (),
+    },
+}
 
 
 def scalar(value: Any, scale: int | None = None) -> str:
@@ -178,12 +185,18 @@ def append_db_diffs(
 
 
 def append_sysout_diffs(
-    lines: list[str], expected_root: Path, actual_root: Path
+    lines: list[str],
+    expected_root: Path,
+    actual_root: Path,
+    names: set[str] | None = None,
 ) -> tuple[int, int]:
     field_diffs = 0
     record_diffs = 0
     expected_files = {path.name for path in expected_root.glob("*.txt")}
     actual_files = {path.name for path in actual_root.glob("*.txt")}
+    if names is not None:
+        expected_files &= names
+        actual_files &= names
     for name in sorted(expected_files | actual_files):
         expected = expected_root / name
         actual = actual_root / name
@@ -216,7 +229,11 @@ def append_sysout_diffs(
     return field_diffs, record_diffs
 
 
-def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
+def compare_case(
+    case: str,
+    candidate: Path | None = None,
+    only: tuple[str, ...] | None = None,
+) -> tuple[str, int]:
     expected_root = CHAIN_ROOT / case / "expected"
     if candidate is None:
         candidate = ROOT / "work" / "parity" / case / "candidate"
@@ -237,6 +254,15 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     metadata = json.loads(
         (CHAIN_ROOT / case / "case.json").read_text()
     )
+    if only:
+        dsns = {d for step in only for d in STEP_OUTPUTS[step]["datasets"]}
+        tables = {t for step in only for t in STEP_OUTPUTS[step]["db2"]}
+        metadata["outputs"] = [
+            output for output in metadata["outputs"] if output["dsn"] in dsns
+        ]
+        metadata["db2"] = [
+            table for table in metadata["db2"] if table["table"] in tables
+        ]
     lines = [
         f"# Parity: xferfee / {case}",
         "",
@@ -274,13 +300,19 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         field_diffs += fields
         record_diffs += records
     fields, records = append_sysout_diffs(
-        lines, expected_root / "sysout", candidate / "sysout"
+        lines,
+        expected_root / "sysout",
+        candidate / "sysout",
+        {f"{step}.txt" for step in only} if only else None,
     )
     field_diffs += fields
     record_diffs += records
 
     expected_rc = json.loads((expected_root / "rc.json").read_text())
     actual_rc = json.loads((candidate / "rc.json").read_text())
+    if only:
+        expected_rc = {step: expected_rc["steps"].get(step) for step in only}
+        actual_rc = {step: actual_rc["steps"].get(step) for step in only}
     if expected_rc != actual_rc:
         lines.append(
             f"- RC: expected `{json.dumps(expected_rc, sort_keys=True)}`, "
@@ -328,7 +360,17 @@ def main() -> int:
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--report", type=Path)
+    parser.add_argument(
+        "--only",
+        help="comma-separated steps to compare, e.g. STEP010 "
+        f"(supported: {', '.join(STEP_OUTPUTS)})",
+    )
     args = parser.parse_args()
+    only = tuple(args.only.split(",")) if args.only else None
+    if only:
+        unknown = [step for step in only if step not in STEP_OUTPUTS]
+        if unknown:
+            parser.error(f"--only: unsupported step(s) {', '.join(unknown)}")
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
     cases = CASES if args.all else (args.case,)
@@ -338,7 +380,7 @@ def main() -> int:
     overall = 0
     for case in cases:
         candidate = args.candidate if len(cases) == 1 else None
-        report, rc = compare_case(case, candidate)
+        report, rc = compare_case(case, candidate, only)
         aggregate.append(report)
         overall = max(overall, rc)
     if args.all:
