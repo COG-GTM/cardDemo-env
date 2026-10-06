@@ -26,6 +26,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "synthetic_day",
 )
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",
@@ -117,8 +118,19 @@ def record_case(case: str, output: Path | None = None) -> Path:
     runjcl_reset_db()
     for table in TABLES:
         dump_table(table, before / f"{table}.csv")
+    run_chain(datasets, joblog, manifest, expected)
+    return expected
 
-    run([
+
+def run_chain(
+    datasets: Path, joblog: Path, manifest: Path, expected: Path
+) -> None:
+    """Run XFRDAILY on staged datasets and collect its outputs into expected.
+
+    A non-zero MAXCC (RC 4/8) is a legitimate chain outcome; only a missing
+    manifest or job log means the runner itself failed.
+    """
+    subprocess.run([
         sys.executable,
         str(ROOT / "tools" / "runjcl" / "runjcl.py"),
         "--chain",
@@ -129,7 +141,9 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], cwd=ROOT, check=False)
+    if not manifest.exists() or not (joblog / "XFRDAILY.log").exists():
+        raise RuntimeError(f"runjcl did not finish: no {manifest} / joblog")
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
@@ -148,7 +162,63 @@ def record_case(case: str, output: Path | None = None) -> Path:
     after = expected / "db2_after"
     for table in TABLES:
         dump_table(table, after / f"{table}.csv")
-    return expected
+
+
+def save_table(table: str, destination: Path) -> None:
+    """Every column (incl. POSTED_TS), physical order, for an exact restore."""
+    escaped = str(destination).replace("'", "''")
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c", f"\\copy {table} TO '{escaped}' CSV HEADER"])
+
+
+def restore_table(table: str, source: Path) -> None:
+    escaped = str(source).replace("'", "''")
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c", f"TRUNCATE TABLE {table}"])
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c", f"\\copy {table} FROM '{escaped}' CSV HEADER"])
+
+
+def load_table(table: str, source: Path) -> None:
+    columns, _ = TABLES[table]
+    escaped = str(source).replace("'", "''")
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c", f"TRUNCATE TABLE {table}"])
+    run([
+        "psql", "-v", "ON_ERROR_STOP=1", "-c",
+        f"\\copy {table} ({columns}) FROM '{escaped}' CSV HEADER",
+    ])
+
+
+def record_inputs(
+    input_dir: Path, output: Path, rules: Path, ledger: Path | None = None
+) -> Path:
+    """Run the chain on an arbitrary day (shadow mode) under a frozen rule snapshot.
+
+    CTL_XFER_PARM and XFER_FEE_LEDGER are replaced by ``rules`` / ``ledger``
+    (empty when omitted) for the run and restored afterwards, even on failure.
+    """
+    run_root = output.parent / f"{output.name}-run"
+    if run_root.exists():
+        shutil.rmtree(run_root)
+    if output.exists():
+        shutil.rmtree(output)
+    output.mkdir(parents=True)
+    datasets = run_root / "datasets"
+    datasets.mkdir(parents=True)
+    for filename, dsn in INPUT_DSNS.items():
+        shutil.copyfile(input_dir / filename, datasets / dsn)
+    saved = {table: run_root / f"{table}.saved.csv" for table in TABLES}
+    for table, path in saved.items():
+        save_table(table, path)
+    try:
+        load_table("CTL_XFER_PARM", rules)
+        runjcl_reset_db()
+        if ledger is not None:
+            load_table("XFER_FEE_LEDGER", ledger)
+        run_chain(
+            datasets, run_root / "joblog", run_root / "manifest.json", output
+        )
+    finally:
+        for table, path in saved.items():
+            restore_table(table, path)
+    return output
 
 
 def main() -> int:
@@ -157,9 +227,25 @@ def main() -> int:
     parser.add_argument("--case", default=None)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--input-dir", type=Path,
+                        help="record an arbitrary staged day (needs --rules, --out)")
+    parser.add_argument("--rules", type=Path,
+                        help="CTL_XFER_PARM CSV snapshot for --input-dir")
+    parser.add_argument("--ledger", type=Path,
+                        help="XFER_FEE_LEDGER rows before the run (--input-dir)")
+    parser.add_argument("--dump-rules", type=Path,
+                        help="write the live CTL_XFER_PARM snapshot to this CSV")
     args = parser.parse_args()
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
+    if args.dump_rules:
+        dump_table("CTL_XFER_PARM", args.dump_rules)
+        return 0
+    if args.input_dir:
+        if not args.rules or not args.out:
+            parser.error("--input-dir needs --rules and --out")
+        record_inputs(args.input_dir, args.out, args.rules, args.ledger)
+        return 0
     cases = CASES if args.all else (args.case,)
     if cases[0] is None:
         parser.error("--case is required unless --all is used")

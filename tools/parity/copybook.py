@@ -98,6 +98,9 @@ def _decode_display(raw: bytes, scale: int, signed: bool) -> Decimal:
     last = text[-1]
     if last in OVERPUNCH_DIGITS:
         text = text[:-1] + OVERPUNCH_DIGITS[last]
+    elif signed and "p" <= last <= "y":
+        text = text[:-1] + chr(ord(last) - ord("p") + ord("0"))
+        sign = -1
     elif signed and last.islower():
         text = text[:-1] + "0"
         sign = -1

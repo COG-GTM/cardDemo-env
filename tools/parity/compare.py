@@ -25,6 +25,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "synthetic_day",
 )
 
 
@@ -70,6 +71,11 @@ def keyed_records(
     for index in range(0, len(data), length):
         values = decode_record(copybook, data[index:index + length])
         key = tuple(scalar(values[name]) for name in keys)
+        occurrence = 2
+        base = key
+        while key in records:
+            key = (*base, f"#{occurrence}")
+            occurrence += 1
         records[key] = values
     return records
 
@@ -237,8 +243,22 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     metadata = json.loads(
         (CHAIN_ROOT / case / "case.json").read_text()
     )
+    report, rc, _, _ = compare_dirs(
+        case, metadata, expected_root, candidate, candidate.parent / "report.md"
+    )
+    return report, rc
+
+
+def compare_dirs(
+    label: str,
+    metadata: dict[str, Any],
+    expected_root: Path,
+    candidate: Path,
+    report_path: Path,
+) -> tuple[str, int, int, int]:
+    """Diff two output dirs on the case.json keys; returns report, rc, field and record diffs."""
     lines = [
-        f"# Parity: xferfee / {case}",
+        f"# Parity: xferfee / {label}",
         "",
         "| Dataset/Table | Record key | Field | Expected | Actual |",
         "|---|---|---|---|---|",
@@ -303,7 +323,7 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     ]
     rc_lines = [line for line in details if line.startswith("- RC:")]
     lines = [
-        f"# Parity: xferfee / {case} — {'FAIL' if rc else 'PASS'}",
+        f"# Parity: xferfee / {label} — {'FAIL' if rc else 'PASS'}",
         "",
         "| Dataset/Table | Record key | Field | Expected | Actual |",
         "|---|---|---|---|---|",
@@ -315,10 +335,9 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     lines.extend(rc_lines or ["(none)"])
     lines.extend(["", verdict])
     report = "\n".join(lines) + "\n"
-    report_path = candidate.parent / "report.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(report)
-    return report, rc
+    return report, rc, field_diffs, record_diffs
 
 
 def main() -> int:
