@@ -1,5 +1,6 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check \
+	fee-schedule-test parity-fee-schedule
 
 up:
 	docker compose up -d --build --wait
@@ -46,6 +47,14 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+# fee-schedule-service (COG-1236). Runs on the host: needs JDK 21, Maven, Docker.
+fee-schedule-test:
+	mvn -f java/pom.xml -pl fee-schedule-service -am verify
+
+parity-fee-schedule:
+	python3 tools/parity/fee_schedule_parity.py --rebuild \
+		$(if $(CASE),--case $(CASE),--all)
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py

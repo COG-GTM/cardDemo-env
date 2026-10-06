@@ -64,6 +64,23 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## fee-schedule-service (Java)
+
+`java/fee-schedule-service` is the Spring Boot owner of the effective-dated
+fee rules (BR-06), migrated from `CTL_XFER_PARM` into `fee_rule` via Flyway.
+It needs JDK 21, Maven, and Docker on the host:
+
+```sh
+make fee-schedule-test                    # unit + Testcontainers PostgreSQL tests
+make parity-fee-schedule CASE=rate_change # one case; omit CASE for all seven
+```
+
+`GET /fee-rules/effective?book=RETAIL&date=2024-06-15` returns the single
+rule with `eff_dt <= date < exp_dt` (404 when none, 409 when legacy data
+overlaps). `GET /fee-rules` with `Accept: text/csv` returns the table in the
+fixture `db2_after/CTL_XFER_PARM.csv` layout. Set `fee-schedule.seed-csv` to
+a fixture's `db2_before/CTL_XFER_PARM.csv` to replace all rules at startup.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:

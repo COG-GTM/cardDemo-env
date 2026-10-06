@@ -44,3 +44,17 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  fee-schedule-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Unit and Testcontainers tests
+        run: make fee-schedule-test
+      - name: Fee-schedule parity against COBOL fixtures
+        run: make parity-fee-schedule
