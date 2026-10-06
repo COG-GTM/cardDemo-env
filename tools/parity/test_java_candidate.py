@@ -72,6 +72,13 @@ class JavaCandidateRoundTrip(unittest.TestCase):
         _, rc = compare_case("default", candidate, {"AWS.M2.CARDDEMO.XFER.FEES"})
         self.assertEqual(rc, 0)
 
+    def test_only_rejects_unknown_or_empty_selection(self) -> None:
+        candidate = self.work / "default" / "candidate"
+        candidate.mkdir(parents=True)
+        for only in ({"AWS.M2.CARDDEMO.XFER.FEE"}, {"AWS.M2.CARDDEMO.XFER.FEES", "TYPO"}, set()):
+            with self.subTest(only=only), self.assertRaises(ValueError):
+                compare_case("default", candidate, only)
+
     def test_stage_inputs_decodes_fixture_inputs_as_strings(self) -> None:
         java_candidate.stage_inputs("default", self.work / "input")
         rows = java_candidate.read_jsonl(self.work / "input" / "DALYTRAN.jsonl")

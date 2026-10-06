@@ -118,6 +118,40 @@ class ReplayEngineTest {
                 FIXTURES.resolve("default").resolve("db2_before").resolve("XFER_FEE_LEDGER.csv"));
     }
 
+    @Test
+    void nonZeroIntakeRcStopsJobBeforePosting() throws IOException {
+        TransferIntake intake = (daily, xrefs, accounts) -> new TransferIntake.IntakeResult(
+                List.of(requested()), List.of(), new StepReport("STEP010", 8, List.of("ABEND")));
+        AccountPosting posting = (transfers, accounts, ledger) -> {
+            throw new AssertionError("STEP020 must not run after STEP010 RC 8");
+        };
+        Reconciliation recon = posted -> {
+            throw new AssertionError("STEP030 must not run after STEP010 RC 8");
+        };
+
+        Map<String, Integer> steps = engine(intake, posting, recon).run(options);
+
+        Path out = work.resolve("out");
+        assertThat(steps).containsExactly(Map.entry("STEP010", 8));
+        assertThat(out.resolve("datasets")).doesNotExist();
+        assertThat(out.resolve("db2_after").resolve("XFER_FEE_LEDGER.csv")).hasSameTextualContentAs(
+                FIXTURES.resolve("default").resolve("db2_before").resolve("XFER_FEE_LEDGER.csv"));
+    }
+
+    @Test
+    void rcFourAlsoStopsJobLikeRunjcl() throws IOException {
+        TransferIntake intake = (daily, xrefs, accounts) -> new TransferIntake.IntakeResult(
+                List.of(), List.of(), new StepReport("STEP010", 4, List.of("NO TRANSFERS")));
+        Reconciliation recon = posted -> {
+            throw new AssertionError("STEP030 must not run after STEP010 RC 4");
+        };
+
+        Map<String, Integer> steps = engine(intake, null, recon).run(options);
+
+        assertThat(steps).containsExactly(Map.entry("STEP010", 4));
+        assertThat(work.resolve("out").resolve("datasets")).doesNotExist();
+    }
+
     private static ReplayEngine engine(TransferIntake intake, AccountPosting posting, Reconciliation recon) {
         return new ReplayEngine(Optional.empty(), Optional.ofNullable(intake), Optional.ofNullable(posting),
                 Optional.ofNullable(recon));

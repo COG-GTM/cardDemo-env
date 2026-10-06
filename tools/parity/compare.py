@@ -248,6 +248,16 @@ def compare_case(
     metadata = json.loads(
         (CHAIN_ROOT / case / "case.json").read_text()
     )
+    if only is not None:
+        known = {output["dsn"].upper() for output in metadata["outputs"]}
+        known |= {table["table"].upper() for table in metadata["db2"]}
+        known |= {"SYSOUT", "RC"}
+        unknown = sorted(only - known)
+        if not only or unknown:
+            raise ValueError(
+                f"--only must name outputs of case {case}: unknown "
+                f"{', '.join(unknown) or '(empty)'}; known {', '.join(sorted(known))}"
+            )
     lines = [
         f"# Parity: xferfee / {case}",
         "",
@@ -355,7 +365,7 @@ def main() -> int:
     args = parser.parse_args()
     only = (
         {name.strip().upper() for name in args.only.split(",") if name.strip()}
-        if args.only else None
+        if args.only is not None else None
     )
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
@@ -366,7 +376,10 @@ def main() -> int:
     overall = 0
     for case in cases:
         candidate = args.candidate if len(cases) == 1 else None
-        report, rc = compare_case(case, candidate, only)
+        try:
+            report, rc = compare_case(case, candidate, only)
+        except ValueError as exc:
+            parser.error(str(exc))
         aggregate.append(report)
         overall = max(overall, rc)
     if args.all:

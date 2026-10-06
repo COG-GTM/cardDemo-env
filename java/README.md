@@ -37,6 +37,8 @@ Spring Boot auto-configuration:
    and provide an in-memory variant for replay.
 
 If a contract bean is absent, its step is skipped and writes nothing (diffs are expected).
+Step sequencing mirrors `tools/runjcl/runjcl.py`, which recorded the fixtures: the job stops at
+the first step with a non-zero RC, and that step's datasets are dropped.
 To let downstream steps be exercised before upstream ones land, a missing `TransferIntake`
 is stubbed with the recorded `XFER.EXTRACT` and a missing `AccountPosting` with the recorded
 `XFER.FEES` (inputs only; the stubbed step's own outputs stay missing). Disable with

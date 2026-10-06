@@ -124,7 +124,7 @@ def run(args: argparse.Namespace) -> int:
     cases = CASES if args.all or not args.case else (args.case,)
     only = (
         {name.strip().upper() for name in args.only.split(",") if name.strip()}
-        if args.only else None
+        if args.only is not None else None
     )
     reports: list[str] = []
     summary: list[tuple[str, str]] = []

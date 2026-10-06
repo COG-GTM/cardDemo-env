@@ -74,7 +74,7 @@ final class Db2Csv {
         lines.add(LEDGER_HEADER);
         for (LedgerEntry entry : ledger) {
             lines.add(String.join(",",
-                    entry.tranId(),
+                    quote(entry.tranId()),
                     entry.tranDate().toString(),
                     Long.toString(entry.sourceAccountId()),
                     Long.toString(entry.targetAccountId()),
@@ -87,28 +87,76 @@ final class Db2Csv {
     }
 
     private static List<Map<String, String>> rows(Path csv) throws IOException {
-        List<String> lines = Files.readAllLines(csv);
+        List<List<String>> records = parse(Files.readString(csv));
         List<Map<String, String>> rows = new ArrayList<>();
-        if (lines.isEmpty()) {
+        if (records.isEmpty()) {
             return rows;
         }
-        String[] header = lines.get(0).split(",", -1);
-        for (String line : lines.subList(1, lines.size())) {
-            if (line.isEmpty()) {
+        List<String> header = records.get(0);
+        for (List<String> cells : records.subList(1, records.size())) {
+            if (cells.size() == 1 && cells.get(0).isEmpty()) {
                 continue;
             }
-            String[] cells = line.split(",", -1);
             Map<String, String> row = new LinkedHashMap<>();
-            for (int i = 0; i < header.length; i++) {
-                row.put(header[i].toLowerCase(Locale.ROOT), i < cells.length ? cells[i] : "");
+            for (int i = 0; i < header.size(); i++) {
+                row.put(header.get(i).toLowerCase(Locale.ROOT), i < cells.size() ? cells.get(i) : "");
             }
             rows.add(row);
         }
         return rows;
     }
 
+    /** RFC 4180 parser matching psql CSV output: quoted fields, doubled quotes, embedded newlines. */
+    static List<List<String>> parse(String text) {
+        List<List<String>> records = new ArrayList<>();
+        List<String> record = new ArrayList<>();
+        StringBuilder cell = new StringBuilder();
+        boolean quoted = false;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (quoted) {
+                if (c == '"' && i + 1 < text.length() && text.charAt(i + 1) == '"') {
+                    cell.append('"');
+                    i++;
+                } else if (c == '"') {
+                    quoted = false;
+                } else {
+                    cell.append(c);
+                }
+            } else if (c == '"') {
+                quoted = true;
+            } else if (c == ',') {
+                record.add(cell.toString());
+                cell.setLength(0);
+            } else if (c == '\n' || c == '\r') {
+                if (c == '\r' && i + 1 < text.length() && text.charAt(i + 1) == '\n') {
+                    i++;
+                }
+                record.add(cell.toString());
+                cell.setLength(0);
+                records.add(record);
+                record = new ArrayList<>();
+            } else {
+                cell.append(c);
+            }
+        }
+        if (cell.length() > 0 || !record.isEmpty()) {
+            record.add(cell.toString());
+            records.add(record);
+        }
+        return records;
+    }
+
+    static String quote(String value) {
+        if (value.indexOf(',') < 0 && value.indexOf('"') < 0 && value.indexOf('\n') < 0
+                && value.indexOf('\r') < 0) {
+            return value;
+        }
+        return '"' + value.replace("\"", "\"\"") + '"';
+    }
+
     private static String book(String bookId) {
-        return String.format("%-" + BOOK_WIDTH + "s", bookId);
+        return quote(String.format("%-" + BOOK_WIDTH + "s", bookId));
     }
 
     /** Pads to the column scale for byte-equal dumps; never rounds (a wider scale is written as-is). */
