@@ -27,6 +27,7 @@
     <module>reconciliation-service</module>
     <module>legacy-adapter</module>
     <module>event-support</module>
+    <module>event-services</module>
     <module>outbox-relay</module>
     <module>parity-replay</module>
   </modules>

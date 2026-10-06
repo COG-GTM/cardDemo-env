@@ -44,3 +44,42 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  parity-java:
+    # COG-1251: Java port parity-gated against the COBOL recordings, in-process and as real
+    # Kafka + Postgres services. Must pass (no continue-on-error); mark as a required check.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Configure compose user
+        run: |
+          echo "UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "GID=$(id -g)" >> "$GITHUB_ENV"
+      - name: Java unit tests
+        run: make java-test
+      - name: Parity (in-process, batch-atomic)
+        run: make parity-java PARITY_JAVA_RUNNER=host
+      - name: Parity (in-process, per-transfer)
+        run: make parity-java PARITY_JAVA_RUNNER=host POSTING_MODE=per-transfer
+      - name: Start event-mode stack (Kafka, Postgres, services, outbox relay)
+        run: make up-java
+      - name: Parity (events, batch-atomic)
+        run: make parity-java JAVA_MODE=events
+      - name: Parity (events, per-transfer)
+        run: make parity-java JAVA_MODE=events POSTING_MODE=per-transfer
+      - name: Service logs
+        if: always()
+        run: docker compose --profile java logs --no-color > work/java-services.log 2>&1 || true
+      - name: Upload Java parity artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-java
+          path: |
+            work/parity-java/
+            work/java-services.log

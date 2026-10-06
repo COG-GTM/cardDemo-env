@@ -29,7 +29,7 @@ def discover() -> list[str]:
 
 def replay_command(runner: str, args: list[str]) -> list[str]:
     if runner == "docker":
-        return ["docker", "compose", "--profile", "java", "run", "--rm", "-T", "parity-replay", *args]
+        return ["docker", "compose", "run", "--rm", "--no-deps", "-T", "parity-replay", *args]
     java_home = os.environ.get("JAVA_HOME")
     java = str(Path(java_home) / "bin" / "java") if java_home else "java"
     return [java, "-jar", str(JAR), *args]
