@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: fee-schedule-service
+  datasource:
+    url: ${FEE_SCHEDULE_DB_URL:jdbc:postgresql://localhost:5432/feeschedule}
+    username: ${FEE_SCHEDULE_DB_USER:feeschedule}
+    password: ${FEE_SCHEDULE_DB_PASSWORD:feeschedule}
+  mvc:
+    problemdetails:
+      enabled: true
+
+server:
+  port: ${PORT:8080}
+
+fee-schedule:
+  # Optional CTL_XFER_PARM.csv (db2_before format) that replaces all rules at startup.
+  seed-csv: ${FEE_SCHEDULE_SEED_CSV:}
