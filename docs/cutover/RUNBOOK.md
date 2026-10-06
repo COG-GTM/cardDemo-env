@@ -32,6 +32,10 @@ make cutover-gate CUTOVER_DAYS=20 CUTOVER_ARGS="--as-of <last completed business
 # GO = exit 0, writes work/cutover/readiness.{md,json}
 ```
 
+The gate CLI exits 0 = GO, 1 = NO-GO, 2 = usage error; through `make` any non-zero becomes
+make's own exit 2, so automation should read `work/cutover/readiness.json` (`verdict`) rather
+than make's exit code.
+
 `make cutover-gate` and `make cutover-test` run in a `maven:3.9-eclipse-temurin-21` container,
 so they do not depend on the estate image having a JDK.
 
