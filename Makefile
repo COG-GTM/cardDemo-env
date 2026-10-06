@@ -1,5 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	parity-java deadcode chain-graph chain-graph-check
 
 up:
 	docker compose up -d --build --wait
@@ -46,6 +46,18 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+JAVA_CASE = $(or $(CASE),default)
+MVN = mvn -B -q -Dmaven.repo.local=/estate/work/m2
+
+parity-java:
+	docker compose exec -T estate sh -c \
+		'$(MVN) -f java/pom.xml package && \
+		python3 tools/parity/java_candidate.py --case $(JAVA_CASE) \
+		--out work/parity/$(JAVA_CASE)/java && \
+		python3 tools/parity/compare.py --chain xferfee --case $(JAVA_CASE) \
+		--candidate work/parity/$(JAVA_CASE)/java/candidate \
+		--report work/parity/$(JAVA_CASE)/java-report.md'
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py
