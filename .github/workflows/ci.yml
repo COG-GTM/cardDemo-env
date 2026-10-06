@@ -30,6 +30,26 @@ jobs:
             echo "half_cent naive parity unexpectedly passed"
             exit 1
           fi
+      - name: Run Java parity (expected to fail until stages land)
+        id: parity_java
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          make parity-java CASE=default 2>&1 | tee work/java-parity.log
+      - name: Publish Java parity report
+        if: always()
+        run: |
+          {
+            echo "## Java parity: xferfee / default"
+            echo
+            echo "Outcome: \`${{ steps.parity_java.outcome }}\` (allowed to fail)"
+            echo
+            if [ -f work/parity/default/java-report.md ]; then
+              cat work/parity/default/java-report.md
+            else
+              echo "No report produced; see the step log."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Run dead-code split
         run: make deadcode
       - name: Check chain graph

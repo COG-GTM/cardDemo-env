@@ -64,6 +64,23 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Java parity
+
+The Spring Boot rewrite lives in `java/` (Java 21, Maven multi-module). Frozen
+events, records and stage ports are in `java/contracts`; each service module
+implements one port. Replay a case through whichever stages exist and compare
+it to the COBOL recording:
+
+```sh
+make parity-java CASE=default
+```
+
+`tools/parity/java_candidate.py` decodes the fixture inputs to JSON-lines, runs
+`parity-replay`, and encodes its output into the candidate layout. A stage with
+no bean stops the chain, so an unfinished rewrite reports missing records and
+RC differences rather than crashing. CI runs this job allowed-to-fail and
+publishes the report to the job summary.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:
