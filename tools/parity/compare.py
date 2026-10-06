@@ -25,6 +25,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "duplicate_tran_id",
 )
 
 
@@ -70,6 +71,11 @@ def keyed_records(
     for index in range(0, len(data), length):
         values = decode_record(copybook, data[index:index + length])
         key = tuple(scalar(values[name]) for name in keys)
+        occurrence = 2
+        base = key
+        while key in records:
+            key = base[:-1] + (f"{base[-1]}#{occurrence}",)
+            occurrence += 1
         records[key] = values
     return records
 
@@ -128,6 +134,16 @@ def append_dataset_diffs(
                     f"{scalar(right.get(field), scales.get(field))} |"
                 )
                 field_diffs += 1
+    if (
+        set(expected_rows) == set(actual_rows)
+        and list(expected_rows) != list(actual_rows)
+    ):
+        lines.append(
+            f"- {label}: record order differs: expected "
+            f"`{' | '.join(', '.join(k) for k in expected_rows)}`, actual "
+            f"`{' | '.join(', '.join(k) for k in actual_rows)}`"
+        )
+        record_diffs += 1
     return field_diffs, record_diffs
 
 

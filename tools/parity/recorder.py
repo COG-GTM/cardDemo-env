@@ -26,7 +26,9 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "duplicate_tran_id",
 )
+EXPECTED_MAXCC = {"duplicate_tran_id": 8}
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",
     "CARDXREF.PS": "AWS.M2.CARDDEMO.CARDXREF.PS",
@@ -45,8 +47,8 @@ TABLES = {
 }
 
 
-def run(command: list[str]) -> None:
-    subprocess.run(command, cwd=ROOT, check=True)
+def run(command: list[str], check: bool = True) -> int:
+    return subprocess.run(command, cwd=ROOT, check=check).returncode
 
 
 def dump_table(table: str, destination: Path) -> None:
@@ -94,9 +96,6 @@ def record_case(case: str, output: Path | None = None) -> Path:
     if case not in CASES:
         raise ValueError(f"unsupported case: {case}")
     expected = output or CHAIN_ROOT / case / "expected"
-    if expected.exists():
-        shutil.rmtree(expected)
-    expected.mkdir(parents=True)
     if output is None:
         run_root = ROOT / "work" / "record" / case
     else:
@@ -118,7 +117,9 @@ def record_case(case: str, output: Path | None = None) -> Path:
     for table in TABLES:
         dump_table(table, before / f"{table}.csv")
 
-    run([
+    # A non-zero MAXCC is recordable only when the case declares it
+    # (e.g. BR-14 RC 8); anything else leaves the old baseline in place.
+    chain_rc = run([
         sys.executable,
         str(ROOT / "tools" / "runjcl" / "runjcl.py"),
         "--chain",
@@ -129,7 +130,18 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], check=False)
+    expected_rc = EXPECTED_MAXCC.get(case, 0)
+    if chain_rc != expected_rc:
+        raise SystemExit(
+            f"{case}: chain rc={chain_rc}, expected {expected_rc}; "
+            "baseline not replaced"
+        )
+    if not manifest.exists() or not (joblog / "XFRDAILY.log").exists():
+        raise SystemExit(f"chain failed without a joblog (rc={chain_rc})")
+    if expected.exists():
+        shutil.rmtree(expected)
+    expected.mkdir(parents=True)
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"

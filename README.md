@@ -36,7 +36,7 @@ The joblog is written under `work/joblog/`.
 
 ## Record fixtures
 
-Record one case or all seven deterministic cases:
+Record one case or all eight deterministic cases:
 
 ```sh
 make record CASE=half_cent
