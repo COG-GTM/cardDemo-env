@@ -44,3 +44,15 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  java-recon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Build, test and recon parity (STEP030)
+        run: make parity-java-recon

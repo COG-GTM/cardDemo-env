@@ -64,6 +64,22 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Java reconciliation-service (STEP030 / CBXFR03C)
+
+`java/reconciliation-service` replaces `CBXFR03C`. The legacy renderer writes
+`XFER.RECON.RPT` byte-for-byte (FBA 133, subtotal on every contiguous book
+change, grand total, RC 4 + `NO FEE RECORDS` on empty input, skipped when
+STEP020 RC > 4). True per-book totals are served at `GET /recon/{businessDate}`.
+
+Recon-slice parity feeds each case's recorded STEP020 `XFER.FEES` and STEP020
+RC to the Java replay and diffs `XFER.RECON.RPT`, `SYSOUT/STEP030.txt` and the
+STEP030 RC against the recording (`compare.py --only`):
+
+```sh
+make parity-java-recon            # all cases (needs JDK 21 + Maven)
+make parity-java-recon CASE=half_cent
+```
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:
