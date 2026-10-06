@@ -69,9 +69,13 @@ public final class CobolChain implements AutoCloseable {
 
     private String exitCode() {
         try {
+            process.waitFor(2, java.util.concurrent.TimeUnit.SECONDS);
             return process.isAlive() ? "running" : Integer.toString(process.exitValue());
         } catch (IllegalThreadStateException e) {
             return "unknown";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return "interrupted";
         }
     }
 
