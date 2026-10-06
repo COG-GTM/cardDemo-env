@@ -104,7 +104,9 @@ public class ReconController {
 
     /** Neutralises spreadsheet formula prefixes and quotes cells that need it (RFC 4180). */
     static String csvCell(String value) {
-        String cell = !value.isEmpty() && "=+-@\t\r".indexOf(value.charAt(0)) >= 0 ? "'" + value : value;
+        String lead = value.replaceFirst("^[\\p{Cntrl}\\s]+", "");
+        boolean formula = !lead.equals(value) || !lead.isEmpty() && "=+-@".indexOf(lead.charAt(0)) >= 0;
+        String cell = formula ? "'" + value : value;
         return cell.matches("(?s).*[\",\r\n].*") ? '"' + cell.replace("\"", "\"\"") + '"' : cell;
     }
 }

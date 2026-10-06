@@ -79,6 +79,8 @@ class ReconControllerTest {
         assertThat(ReconController.csvCell("RETAIL")).isEqualTo("RETAIL");
         assertThat(ReconController.csvCell("=HYPERLINK(1)")).isEqualTo("'=HYPERLINK(1)");
         assertThat(ReconController.csvCell("@SUM(A1)")).isEqualTo("'@SUM(A1)");
+        assertThat(ReconController.csvCell("\n=HYPERLINK(1)")).isEqualTo("\"'\n=HYPERLINK(1)\"");
+        assertThat(ReconController.csvCell(" \t=1+1")).isEqualTo("' \t=1+1");
         assertThat(ReconController.csvCell("A,\"B")).isEqualTo("\"A,\"\"B\"");
     }
 }
