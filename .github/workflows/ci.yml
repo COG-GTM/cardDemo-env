@@ -44,3 +44,45 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  parity-java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure compose user
+        run: |
+          echo "UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "GID=$(id -g)" >> "$GITHUB_ENV"
+      - name: Cache Maven repository
+        uses: actions/cache@v4
+        with:
+          path: work/.m2
+          key: m2-${{ hashFiles('java/**/pom.xml') }}
+          restore-keys: m2-
+      - name: Start estate
+        run: docker compose up -d --build --wait
+      - name: Build COBOL estate
+        run: make build
+      - name: Run COBOL self parity
+        run: make parity
+      # Diffs are expected until the convergence ticket lands.
+      - name: Run Java parity
+        id: parity_java
+        continue-on-error: true
+        run: make parity-java
+      - name: Report parity summary
+        if: always()
+        run: |
+          {
+            echo "## COBOL self parity"
+            tail -n 12 work/parity/report.md 2>/dev/null || echo "(no report)"
+            echo
+            echo "## Java parity (outcome: ${{ steps.parity_java.outcome }})"
+            sed -n '/^# Parity summary/,$p' work/parity-java/report.md 2>/dev/null || echo "(no report)"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload Java parity artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-java
+          path: work/parity-java/

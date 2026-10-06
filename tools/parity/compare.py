@@ -146,8 +146,13 @@ def append_db_diffs(
     metadata: dict[str, Any],
 ) -> tuple[int, int]:
     table = metadata["table"]
-    expected_rows = csv_rows(expected_root / f"{table}.csv")
-    actual_rows = csv_rows(actual_root / f"{table}.csv")
+    expected_path = expected_root / f"{table}.csv"
+    actual_path = actual_root / f"{table}.csv"
+    if not actual_path.exists():
+        lines.append(f"- {table}: missing table")
+        return 0, 1
+    expected_rows = csv_rows(expected_path)
+    actual_rows = csv_rows(actual_path)
     keys = metadata["key"]
     expected_map = {
         tuple(normalized(row[key]) for key in keys): row for row in expected_rows
@@ -178,12 +183,19 @@ def append_db_diffs(
 
 
 def append_sysout_diffs(
-    lines: list[str], expected_root: Path, actual_root: Path
+    lines: list[str],
+    expected_root: Path,
+    actual_root: Path,
+    only: set[str] | None = None,
 ) -> tuple[int, int]:
     field_diffs = 0
     record_diffs = 0
     expected_files = {path.name for path in expected_root.glob("*.txt")}
     actual_files = {path.name for path in actual_root.glob("*.txt")}
+    if only is not None and "SYSOUT" not in only:
+        wanted = {f"{name}.txt" for name in only}
+        expected_files &= wanted
+        actual_files &= wanted
     for name in sorted(expected_files | actual_files):
         expected = expected_root / name
         actual = actual_root / name
@@ -216,7 +228,15 @@ def append_sysout_diffs(
     return field_diffs, record_diffs
 
 
-def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
+def selected(name: str, only: set[str] | None) -> bool:
+    return only is None or name.upper() in only
+
+
+def compare_case(
+    case: str,
+    candidate: Path | None = None,
+    only: set[str] | None = None,
+) -> tuple[str, int]:
     expected_root = CHAIN_ROOT / case / "expected"
     if candidate is None:
         candidate = ROOT / "work" / "parity" / case / "candidate"
@@ -246,6 +266,8 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     field_diffs = 0
     record_diffs = 0
     for output in metadata["outputs"]:
+        if not selected(output["dsn"], only):
+            continue
         expected = dataset_file(expected_root / "datasets", output["dsn"])
         actual = dataset_file(candidate / "datasets", output["dsn"])
         if expected is None and actual is None:
@@ -265,6 +287,8 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         record_diffs += records
 
     for table in metadata["db2"]:
+        if not selected(table["table"], only):
+            continue
         fields, records = append_db_diffs(
             lines,
             expected_root / "db2_after",
@@ -274,14 +298,18 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         field_diffs += fields
         record_diffs += records
     fields, records = append_sysout_diffs(
-        lines, expected_root / "sysout", candidate / "sysout"
+        lines, expected_root / "sysout", candidate / "sysout", only
     )
     field_diffs += fields
     record_diffs += records
 
     expected_rc = json.loads((expected_root / "rc.json").read_text())
-    actual_rc = json.loads((candidate / "rc.json").read_text())
-    if expected_rc != actual_rc:
+    actual_rc_path = candidate / "rc.json"
+    actual_rc = (
+        json.loads(actual_rc_path.read_text())
+        if actual_rc_path.exists() else "missing rc.json"
+    )
+    if selected("RC", only) and expected_rc != actual_rc:
         lines.append(
             f"- RC: expected `{json.dumps(expected_rc, sort_keys=True)}`, "
             f"actual `{json.dumps(actual_rc, sort_keys=True)}`"
@@ -326,6 +354,15 @@ def main() -> int:
     parser.add_argument("--chain", default="xferfee")
     parser.add_argument("--case", default=None)
     parser.add_argument("--candidate", type=Path)
+    parser.add_argument(
+        "--candidate-root",
+        type=Path,
+        help="with --all, diff <root>/<case>/candidate for every case",
+    )
+    parser.add_argument(
+        "--only",
+        help="comma-separated DSNs, DB2 tables, step names, SYSOUT or RC",
+    )
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
@@ -334,14 +371,27 @@ def main() -> int:
     cases = CASES if args.all else (args.case,)
     if cases[0] is None:
         parser.error("--case is required unless --all is used")
+    only = (
+        {name.strip().upper() for name in args.only.split(",") if name.strip()}
+        if args.only else None
+    )
     aggregate: list[str] = []
+    summary: list[str] = []
     overall = 0
     for case in cases:
-        candidate = args.candidate if len(cases) == 1 else None
-        report, rc = compare_case(case, candidate)
+        if args.candidate_root is not None:
+            candidate = args.candidate_root / case / "candidate"
+        else:
+            candidate = args.candidate if len(cases) == 1 else None
+        report, rc = compare_case(case, candidate, only)
         aggregate.append(report)
+        summary.append(f"| {case} | {report.strip().splitlines()[-1]} |")
         overall = max(overall, rc)
     if args.all:
+        aggregate.append(
+            "\n".join(["# Parity summary", "", "| Case | Verdict |",
+                       "|---|---|", *summary]) + "\n"
+        )
         destination = args.report or ROOT / "work" / "parity" / "report.md"
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text("\n".join(aggregate))
