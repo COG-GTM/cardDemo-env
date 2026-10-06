@@ -30,6 +30,12 @@ jobs:
             echo "half_cent naive parity unexpectedly passed"
             exit 1
           fi
+      - name: Java unit tests
+        run: make java-test
+      - name: Java parity, legacy-adapter codec (all cases)
+        run: make parity-java CODEC=java
+      - name: Java parity, python vs java codec candidates identical
+        run: make parity-java-codecs
       - name: Run dead-code split
         run: make deadcode
       - name: Check chain graph

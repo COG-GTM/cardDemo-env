@@ -4,6 +4,7 @@ FROM ${BASE_IMAGE}
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnucobol3 libpq-dev postgresql-client make python3 git build-essential \
+    openjdk-21-jdk-headless maven \
     autoconf automake libtool bison flex ca-certificates pkg-config \
     && rm -rf /var/lib/apt/lists/*
 

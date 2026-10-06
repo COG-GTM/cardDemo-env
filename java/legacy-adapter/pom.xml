@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.carddemo.xferfee</groupId>
+    <artifactId>xferfee-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>legacy-adapter</artifactId>
+  <name>legacy-adapter</name>
+  <description>Native Java copybook codec and file ingress/egress for coexistence. Owned by COG-1240.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.carddemo.xferfee</groupId>
+      <artifactId>contracts</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <!-- Record layouts come straight from the legacy copybooks (single source of truth). -->
+      <resource>
+        <directory>${project.basedir}/../../copybook</directory>
+        <targetPath>copybook</targetPath>
+        <includes>
+          <include>CVTRA06Y.cpy</include>
+          <include>CVACT03Y.cpy</include>
+          <include>CVACT01Y.cpy</include>
+          <include>CVXFR01Y.cpy</include>
+          <include>CVXFR02Y.cpy</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <carddemo.fixtures>${project.basedir}/../../fixtures</carddemo.fixtures>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
