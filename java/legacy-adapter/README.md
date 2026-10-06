@@ -6,7 +6,7 @@ Java services and the mainframe still exchange the `XFRDAILY` datasets.
 | Package | What |
 |---|---|
 | `codec` | `CopybookLayout` parses `copybook/*.cpy` (packaged from the repo root, never copied); `CopybookCodec` decodes/encodes `PIC X`, zoned `9`/`S9` (overpunch `{A-I}`/`}J-R` and GnuCOBOL native `p-y` negatives), `COMP-3` and implied decimals. `DecodedRecord` keeps filler bytes and each field's sign style, so decode → encode is byte-for-byte. |
-| `io` | `FixedLengthFile`, `LineSequentialFile`, `GenerationDataGroup` (`<DSN>.G0001V00`, written to a temp file and moved into place, so a failed write catalogs nothing). |
+| `io` | `FixedLengthFile`, `LineSequentialFile`, `GenerationDataGroup` (`<DSN>.G0001V00`, cataloged in `<DSN>.gdg` exactly like `tools/runjcl` so JCL `(0)` resolves to it; the data is written to a temp file, linked in only if that generation is new, and the catalog is advanced last, so a failed write catalogs nothing). |
 | `ingress` | `LegacyFileIngress` reads `DALYTRAN.PS` / `CARDXREF.PS` / `ACCTDATA.PS`, publishes every transaction to `card.transactions` (key = card number, file order) and loads accounts + xrefs into caller-supplied stores. |
 | `egress` | `LegacyEgress` writes `XFER.EXTRACT`, `XFER.FEES`, `ACCTDATA.XFER` (+1) and `XFER.RECON.RPT` the way the GnuCOBOL programs do: LOW-VALUE fillers on fresh records, native signs on recomputed balances, source bytes on fields that were only MOVEd. |
 | `config` | Spring Boot auto-configuration; `carddemo.legacy-adapter.encoding=ASCII` (GnuCOBOL estate, default) or `EBCDIC` (IBM037, z/OS). Kafka publisher when a `KafkaTemplate` exists, in-memory otherwise. |

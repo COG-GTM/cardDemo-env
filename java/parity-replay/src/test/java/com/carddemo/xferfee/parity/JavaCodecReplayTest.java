@@ -44,7 +44,7 @@ class JavaCodecReplayTest {
                         .as("%s/%s", dir, file.getFileName()).hasSameBinaryContentAs(file);
             }
             try (Stream<Path> list = Files.list(candidate.resolve(dir))) {
-                assertThat(list.count()).as("%s file count", dir).isEqualTo(files.size());
+                assertThat(list.filter(p -> !p.toString().endsWith(".gdg")).count()).as("%s file count", dir).isEqualTo(files.size());
             }
         }
         for (String table : List.of(Db2Tables.CTL_XFER_PARM, Db2Tables.XFER_FEE_LEDGER)) {

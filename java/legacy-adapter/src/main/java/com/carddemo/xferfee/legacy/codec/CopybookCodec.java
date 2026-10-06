@@ -45,6 +45,7 @@ public final class CopybookCodec {
         Map<String, Object> values = new LinkedHashMap<>();
         Map<String, SignStyle> styles = new LinkedHashMap<>();
         Map<String, byte[]> fillers = new LinkedHashMap<>();
+        Set<String> negativeZeros = new HashSet<>();
         for (FieldSpec field : layout.fields()) {
             if (field.isFiller()) {
                 fillers.put(field.name(), Arrays.copyOfRange(record, field.offset(), field.end()));
@@ -56,15 +57,21 @@ public final class CopybookCodec {
                     ZonedDecimal.Decoded decoded = ZonedDecimal.decode(text(record, field), field);
                     values.put(field.name(), decoded.value());
                     styles.put(field.name(), decoded.style());
+                    if (decoded.negativeZero()) {
+                        negativeZeros.add(field.name());
+                    }
                 }
                 case PACKED -> {
                     PackedDecimal.Decoded decoded = PackedDecimal.decode(record, field.offset(), field);
                     values.put(field.name(), decoded.value());
                     styles.put(field.name(), decoded.style());
+                    if (decoded.negativeZero()) {
+                        negativeZeros.add(field.name());
+                    }
                 }
             }
         }
-        return new DecodedRecord(layout, values, styles, fillers);
+        return new DecodedRecord(layout, values, styles, fillers, negativeZeros);
     }
 
     /** Splits a dataset image into records and decodes each one. */
@@ -83,7 +90,7 @@ public final class CopybookCodec {
 
     /** Re-encodes a decoded record exactly as it was read. */
     public byte[] encode(DecodedRecord record) {
-        return encode(record.values(), record.signStyles(), record.fillers());
+        return encode(record.values(), record.signStyles(), record.fillers(), record.negativeZeros());
     }
 
     /** Encodes a fresh record using this codec's defaults for signs and FILLER. */
@@ -97,6 +104,15 @@ public final class CopybookCodec {
      * filled with the codec's filler byte.
      */
     public byte[] encode(Map<String, ?> values, Map<String, SignStyle> signStyles, Map<String, byte[]> fillers) {
+        return encode(values, signStyles, fillers, Set.of());
+    }
+
+    /**
+     * As {@link #encode(Map, Map, Map)}; fields named in {@code negativeZeros} keep a negative sign
+     * while their value is zero (see {@link DecodedRecord#negativeZeros()}).
+     */
+    public byte[] encode(Map<String, ?> values, Map<String, SignStyle> signStyles, Map<String, byte[]> fillers,
+            Set<String> negativeZeros) {
         Set<String> unknown = new HashSet<>(values.keySet());
         byte[] record = new byte[layout.recordLength()];
         for (FieldSpec field : layout.fields()) {
@@ -122,10 +138,11 @@ public final class CopybookCodec {
                     BigDecimal decimal = Numbers.toDecimal(value, field);
                     SignStyle style = signStyles.getOrDefault(field.name(),
                             field.signed() ? options.zonedSignStyle() : SignStyle.UNSIGNED);
-                    putText(record, field, ZonedDecimal.encode(decimal, field, style));
+                    putText(record, field, ZonedDecimal.encode(decimal, field, style,
+                            negativeZeros.contains(field.name())));
                 }
                 case PACKED -> PackedDecimal.encode(Numbers.toDecimal(value, field), field,
-                        signStyles.get(field.name()), record, field.offset());
+                        signStyles.get(field.name()), negativeZeros.contains(field.name()), record, field.offset());
             }
         }
         if (!unknown.isEmpty()) {

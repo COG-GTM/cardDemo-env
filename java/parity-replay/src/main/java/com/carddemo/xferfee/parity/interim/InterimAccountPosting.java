@@ -30,7 +30,7 @@ class InterimAccountPosting implements AccountPosting {
 
     @Override
     public PostingResult post(List<TransferRequested> transfers, List<Account> accountMaster, List<LedgerEntry> ledgerBefore) {
-        List<Account> master = new ArrayList<>(accountMaster);
+        List<Account> master = new ArrayList<>(Cobol.table(accountMaster));
         List<LedgerEntry> ledger = new ArrayList<>(ledgerBefore);
         List<TransferPosted> posted = new ArrayList<>();
         List<String> sysout = new ArrayList<>();

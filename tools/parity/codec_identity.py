@@ -28,7 +28,8 @@ def decoded(path: Path, copybook: str) -> list[dict]:
 
 
 def files(root: Path) -> set[str]:
-    return {str(p.relative_to(root)) for p in root.rglob("*") if p.is_file()}
+    # .gdg catalogs are runjcl bookkeeping the Java egress maintains; not a dataset
+    return {str(p.relative_to(root)) for p in root.rglob("*") if p.is_file() and p.suffix != ".gdg"}
 
 
 def check(case: str) -> int:
@@ -55,7 +56,7 @@ def check(case: str) -> int:
         elif left.read_bytes() != right.read_bytes():
             diffs.append(f"{name}: content differs")
     byte_identical = []
-    for dataset in sorted(p for p in java_root.glob("datasets/*")):
+    for dataset in sorted(p for p in java_root.glob("datasets/*") if p.suffix != ".gdg"):
         expected = expected_root / dataset.name
         same = expected.exists() and expected.read_bytes() == dataset.read_bytes()
         byte_identical.append(f"  {dataset.name}: {'byte-identical' if same else 'BYTES DIFFER'} to recording")

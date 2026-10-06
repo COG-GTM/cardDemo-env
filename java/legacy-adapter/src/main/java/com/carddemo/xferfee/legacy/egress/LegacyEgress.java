@@ -1,6 +1,7 @@
 package com.carddemo.xferfee.legacy.egress;
 
 import com.carddemo.xferfee.contracts.Account;
+import com.carddemo.xferfee.contracts.DailyTransaction;
 import com.carddemo.xferfee.contracts.TransferPosted;
 import com.carddemo.xferfee.contracts.TransferRequested;
 import com.carddemo.xferfee.legacy.codec.CodecOptions;
@@ -30,6 +31,9 @@ import java.util.Set;
  */
 public final class LegacyEgress {
 
+    private static final String XFR_AMT = "XFR-TRAN-AMT";
+    private static final String DALYTRAN_AMT = "DALYTRAN-AMT";
+
     private static final String BAL = "ACCT-CURR-BAL";
     private static final String CYC_CREDIT = "ACCT-CURR-CYC-CREDIT";
     private static final String CYC_DEBIT = "ACCT-CURR-CYC-DEBIT";
@@ -51,15 +55,38 @@ public final class LegacyEgress {
      * amount keeps the DALYTRAN sign representation.
      */
     public List<byte[]> extractRecords(List<TransferRequested> transfers, IngressBatch source) {
+        List<DailyTransaction> daily = source.transactions();
         List<byte[]> records = new ArrayList<>(transfers.size());
+        int cursor = 0;
         for (TransferRequested transfer : transfers) {
-            Map<String, SignStyle> styles = new HashMap<>();
-            source.transactionImage(transfer.tranId())
-                    .map(image -> image.signStyle("DALYTRAN-AMT"))
-                    .ifPresent(style -> styles.put("XFR-TRAN-AMT", style));
-            records.add(extract.encode(LegacyRecords.transferExtractFields(transfer), styles, Map.of()));
+            Map<String, Object> fields = LegacyRecords.transferExtractFields(transfer);
+            int match = sourceRecord(daily, cursor, transfer);
+            if (match < 0) {
+                records.add(extract.encode(fields));
+                continue;
+            }
+            // transfers come out in DALYTRAN order, so each one is the next matching input record
+            cursor = match + 1;
+            DecodedRecord image = source.transactionImages().get(match);
+            records.add(extract.encode(fields,
+                    Map.of(XFR_AMT, image.signStyle(DALYTRAN_AMT)),
+                    Map.of(),
+                    image.negativeZeros().contains(DALYTRAN_AMT) ? Set.of(XFR_AMT) : Set.of()));
         }
         return records;
+    }
+
+    private static int sourceRecord(List<DailyTransaction> daily, int from, TransferRequested transfer) {
+        for (int i = from; i < daily.size(); i++) {
+            DailyTransaction t = daily.get(i);
+            if ("08".equals(t.typeCode())
+                    && t.tranId().equals(transfer.tranId())
+                    && t.cardNumber().equals(transfer.cardNumber())
+                    && t.amount().compareTo(transfer.amount()) == 0) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /** XFER.FEES (CVXFR02Y). */
@@ -70,27 +97,28 @@ public final class LegacyEgress {
     /**
      * ACCTDATA.XFER (CVACT01Y): one record per master entry, in master order (BR-16).
      *
-     * @param updated positional account list (same size and order as {@code master})
+     * @param updated positional account list, in master order; XFERFEE loads at most 500 entries and
+     *     writes back only those, so it may be a prefix of {@code master}
      * @param postings postings applied, used to know which balances XFERFEE recomputed
      */
     public List<byte[]> accountMasterRecords(AccountMasterSnapshot master, List<Account> updated,
             List<TransferPosted> postings) {
-        if (updated.size() != master.size()) {
+        if (updated.size() > master.size()) {
             throw new IllegalArgumentException("updated master has " + updated.size()
                     + " accounts, input master has " + master.size());
         }
         Map<Integer, Set<String>> computed = new HashMap<>();
         for (TransferPosted posting : postings) {
-            int source = master.postingIndex(posting.sourceAccountId());
-            int target = master.postingIndex(posting.targetAccountId());
+            int source = master.postingIndex(posting.sourceAccountId(), updated.size());
+            int target = master.postingIndex(posting.targetAccountId(), updated.size());
             if (source < 0 || target < 0) {
                 throw new IllegalArgumentException("posting " + posting.tranId() + " references an account not on the master");
             }
             computed.computeIfAbsent(source, k -> new HashSet<>()).addAll(List.of(BAL, CYC_DEBIT));
             computed.computeIfAbsent(target, k -> new HashSet<>()).addAll(List.of(BAL, CYC_CREDIT));
         }
-        List<byte[]> records = new ArrayList<>(master.size());
-        for (int i = 0; i < master.size(); i++) {
+        List<byte[]> records = new ArrayList<>(updated.size());
+        for (int i = 0; i < updated.size(); i++) {
             DecodedRecord original = master.images().get(i);
             Account account = updated.get(i);
             if (account.accountId() != master.accounts().get(i).accountId()) {
@@ -105,7 +133,9 @@ public final class LegacyEgress {
                     styles.put(field, style);
                 }
             });
-            records.add(accounts.encode(fields, styles, Map.of()));
+            Set<String> negativeZeros = new HashSet<>(original.negativeZeros());
+            negativeZeros.retainAll(styles.keySet());
+            records.add(accounts.encode(fields, styles, Map.of(), negativeZeros));
         }
         return records;
     }

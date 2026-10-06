@@ -86,7 +86,9 @@ class LegacyEgressTest {
     @Test
     void failedWriteCatalogsNothing(@TempDir Path dir) {
         IngressBatch batch = readDefault();
-        assertThatThrownBy(() -> egress.writeAccountMasterGeneration(dir, batch.accounts(), List.of(), List.of()))
+        List<Account> tooMany = new java.util.ArrayList<>(batch.accounts().accounts());
+        tooMany.add(tooMany.get(0));
+        assertThatThrownBy(() -> egress.writeAccountMasterGeneration(dir, batch.accounts(), tooMany, List.of()))
                 .isInstanceOf(IllegalArgumentException.class);
         assertThat(dir.toFile().list()).isEmpty();
     }

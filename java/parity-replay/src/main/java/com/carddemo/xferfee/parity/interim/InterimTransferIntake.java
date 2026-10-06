@@ -21,18 +21,20 @@ class InterimTransferIntake implements TransferIntake {
         List<TransferRequested> requested = new ArrayList<>();
         List<TransferRejected> rejected = new ArrayList<>();
         List<String> sysout = new ArrayList<>();
+        List<CardXref> xrefTable = Cobol.table(cardXrefs);
+        List<Account> accountTable = Cobol.table(accounts);
         for (DailyTransaction t : dailyTransactions) {
             if (!"08".equals(t.typeCode())) {
                 continue;
             }
-            Optional<CardXref> xref = cardXrefs.stream().filter(x -> x.cardNumber().equals(t.cardNumber())).findFirst();
+            Optional<CardXref> xref = xrefTable.stream().filter(x -> x.cardNumber().equals(t.cardNumber())).findFirst();
             if (xref.isEmpty()) {
                 sysout.add("CBXFR01C: CARD NOT FOUND " + Cobol.pic(t.cardNumber(), 16));
                 rejected.add(new TransferRejected(t.tranId(), t.cardNumber(), RejectReason.UNMATCHED_CARD, "card not in CARDXREF"));
                 continue;
             }
             long source = xref.get().accountId();
-            Optional<Account> account = accounts.stream().filter(a -> a.accountId() == source).findFirst();
+            Optional<Account> account = accountTable.stream().filter(a -> a.accountId() == source).findFirst();
             if (account.isEmpty()) {
                 sysout.add("CBXFR01C: ACCOUNT NOT FOUND " + Cobol.unsigned(source, 11));
                 rejected.add(new TransferRejected(t.tranId(), t.cardNumber(), RejectReason.UNKNOWN_SOURCE_ACCOUNT,

@@ -6,7 +6,14 @@ import java.math.RoundingMode;
 /** DISPLAY and edited-picture formatting used by the chain's SYSOUT and report lines. */
 final class Cobol {
 
+    /** {@code OCCURS 500} on the xref/account tables of CBXFR01C and XFERFEE; later rows are ignored. */
+    static final int TABLE_SIZE = 500;
+
     private Cobol() {
+    }
+
+    static <T> java.util.List<T> table(java.util.List<T> rows) {
+        return rows.size() > TABLE_SIZE ? rows.subList(0, TABLE_SIZE) : rows;
     }
 
     /** DISPLAY of an unsigned {@code PIC 9(n)}. */

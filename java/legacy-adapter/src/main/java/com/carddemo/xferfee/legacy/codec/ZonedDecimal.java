@@ -12,7 +12,8 @@ public final class ZonedDecimal {
     private ZonedDecimal() {
     }
 
-    public record Decoded(BigDecimal value, SignStyle style) {
+    /** {@code negativeZero}: a zero carrying a negative sign, which BigDecimal cannot hold. */
+    public record Decoded(BigDecimal value, SignStyle style, boolean negativeZero) {
     }
 
     public static Decoded decode(String text, FieldSpec field) {
@@ -52,12 +53,17 @@ public final class ZonedDecimal {
         }
         BigInteger unscaled = new BigInteger(body + digit);
         BigDecimal value = new BigDecimal(negative ? unscaled.negate() : unscaled, field.scale());
-        return new Decoded(value, style);
+        return new Decoded(value, style, negative && unscaled.signum() == 0);
     }
 
     public static String encode(BigDecimal value, FieldSpec field, SignStyle style) {
+        return encode(value, field, style, false);
+    }
+
+    /** {@code negativeZero} re-emits a negative sign when {@code value} is zero. */
+    public static String encode(BigDecimal value, FieldSpec field, SignStyle style, boolean negativeZero) {
         String digits = Numbers.digits(value, field);
-        boolean negative = value.signum() < 0;
+        boolean negative = value.signum() < 0 || (negativeZero && value.signum() == 0 && field.signed());
         int last = digits.charAt(digits.length() - 1) - '0';
         SignStyle effective = style;
         if (effective == SignStyle.UNSIGNED && field.signed()) {

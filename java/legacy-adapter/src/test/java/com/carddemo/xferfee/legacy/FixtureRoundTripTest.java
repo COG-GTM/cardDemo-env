@@ -63,7 +63,8 @@ class FixtureRoundTripTest {
         for (byte[] record : records) {
             DecodedRecord decoded = codec.decode(record);
             // re-encode from values + sign styles + filler bytes only, not from the raw record
-            out.write(codec.encode(Map.copyOf(decoded.values()), decoded.signStyles(), decoded.fillers()));
+            out.write(codec.encode(Map.copyOf(decoded.values()), decoded.signStyles(), decoded.fillers(),
+                    decoded.negativeZeros()));
         }
         assertThat(out.toByteArray()).isEqualTo(original);
     }

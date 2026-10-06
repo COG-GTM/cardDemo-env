@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Field values of one record plus everything needed to re-encode it byte for byte: the sign style
@@ -16,9 +17,11 @@ public final class DecodedRecord {
     private final Map<String, Object> values;
     private final Map<String, SignStyle> signStyles;
     private final Map<String, byte[]> fillers;
+    private final Set<String> negativeZeros;
 
     DecodedRecord(CopybookLayout layout, Map<String, Object> values, Map<String, SignStyle> signStyles,
-            Map<String, byte[]> fillers) {
+            Map<String, byte[]> fillers, Set<String> negativeZeros) {
+        this.negativeZeros = Set.copyOf(negativeZeros);
         this.layout = layout;
         this.values = Collections.unmodifiableMap(new LinkedHashMap<>(values));
         this.signStyles = Collections.unmodifiableMap(new LinkedHashMap<>(signStyles));
@@ -40,6 +43,11 @@ public final class DecodedRecord {
 
     public Map<String, byte[]> fillers() {
         return fillers;
+    }
+
+    /** Numeric fields holding a negatively signed zero (e.g. {@code 000}} or a {@code D} nibble). */
+    public Set<String> negativeZeros() {
+        return negativeZeros;
     }
 
     /** Raw PIC X content including trailing spaces. */

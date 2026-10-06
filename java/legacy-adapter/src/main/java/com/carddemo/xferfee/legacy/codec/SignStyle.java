@@ -22,5 +22,11 @@ public enum SignStyle {
     /** COMP-3 with {@code C} (positive) / {@code D} (negative) sign nibble. */
     PACKED_C,
     /** COMP-3 with {@code F} (unsigned) sign nibble. */
-    PACKED_F
+    PACKED_F,
+    /** COMP-3 with the alternate positive nibble {@code A}. */
+    PACKED_A,
+    /** COMP-3 with the alternate positive nibble {@code E}. */
+    PACKED_E,
+    /** COMP-3 with the alternate negative nibble {@code B}. */
+    PACKED_B
 }

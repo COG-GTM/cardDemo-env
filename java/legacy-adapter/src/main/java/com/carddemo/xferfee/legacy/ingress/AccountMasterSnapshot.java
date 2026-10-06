@@ -41,7 +41,12 @@ public final class AccountMasterSnapshot {
 
     /** Position of the last entry with this id: the entry XFERFEE posts to (2200-FIND-ACCOUNTS). */
     public int postingIndex(long accountId) {
-        for (int i = accounts.size() - 1; i >= 0; i--) {
+        return postingIndex(accountId, accounts.size());
+    }
+
+    /** As {@link #postingIndex(long)}, within the first {@code limit} entries (XFERFEE's loaded table). */
+    public int postingIndex(long accountId, int limit) {
+        for (int i = Math.min(limit, accounts.size()) - 1; i >= 0; i--) {
             if (accounts.get(i).accountId() == accountId) {
                 return i;
             }

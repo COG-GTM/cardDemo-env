@@ -9,7 +9,8 @@ public final class PackedDecimal {
     private PackedDecimal() {
     }
 
-    public record Decoded(BigDecimal value, SignStyle style) {
+    /** {@code negativeZero}: a zero carrying a negative sign nibble, which BigDecimal cannot hold. */
+    public record Decoded(BigDecimal value, SignStyle style, boolean negativeZero) {
     }
 
     public static Decoded decode(byte[] data, int offset, FieldSpec field) {
@@ -25,17 +26,29 @@ public final class PackedDecimal {
         boolean negative;
         SignStyle style;
         switch (sign) {
-            case 0x0C, 0x0A, 0x0E -> {
+            case 0x0C -> {
                 negative = false;
                 style = SignStyle.PACKED_C;
+            }
+            case 0x0A -> {
+                negative = false;
+                style = SignStyle.PACKED_A;
+            }
+            case 0x0E -> {
+                negative = false;
+                style = SignStyle.PACKED_E;
             }
             case 0x0F -> {
                 negative = false;
                 style = SignStyle.PACKED_F;
             }
-            case 0x0D, 0x0B -> {
+            case 0x0D -> {
                 negative = true;
                 style = SignStyle.PACKED_C;
+            }
+            case 0x0B -> {
+                negative = true;
+                style = SignStyle.PACKED_B;
             }
             default -> throw new CopybookDataException(field.name() + ": invalid packed sign nibble " + Integer.toHexString(sign));
         }
@@ -46,7 +59,8 @@ public final class PackedDecimal {
         if (unscaled.toString().length() > field.digits()) {
             throw new CopybookDataException(field.name() + ": packed value exceeds " + field.digits() + " digits");
         }
-        return new Decoded(new BigDecimal(negative ? unscaled.negate() : unscaled, field.scale()), style);
+        return new Decoded(new BigDecimal(negative ? unscaled.negate() : unscaled, field.scale()), style,
+                negative && unscaled.signum() == 0);
     }
 
     private static char nibble(FieldSpec field, int value, byte[] data, int offset) {
@@ -57,14 +71,25 @@ public final class PackedDecimal {
     }
 
     public static void encode(BigDecimal value, FieldSpec field, SignStyle style, byte[] target, int offset) {
+        encode(value, field, style, false, target, offset);
+    }
+
+    /** {@code negativeZero} re-emits a negative sign nibble when {@code value} is zero. */
+    public static void encode(BigDecimal value, FieldSpec field, SignStyle style, boolean negativeZero,
+            byte[] target, int offset) {
         String digits = Numbers.digits(value, field);
         int nibbles = field.length() * 2 - 1;
         String padded = "0".repeat(nibbles - digits.length()) + digits;
+        boolean negative = value.signum() < 0 || (negativeZero && value.signum() == 0 && field.signed());
         int sign;
-        if (value.signum() < 0) {
-            sign = 0x0D;
+        if (negative) {
+            sign = style == SignStyle.PACKED_B ? 0x0B : 0x0D;
         } else if (style == SignStyle.PACKED_F || (style == null && !field.signed())) {
             sign = 0x0F;
+        } else if (style == SignStyle.PACKED_A) {
+            sign = 0x0A;
+        } else if (style == SignStyle.PACKED_E) {
+            sign = 0x0E;
         } else {
             sign = 0x0C;
         }

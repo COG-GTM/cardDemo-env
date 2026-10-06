@@ -3,6 +3,8 @@ package com.carddemo.xferfee.legacy.io;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -12,10 +14,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * A GDG base materialised as files {@code <dsn>.GnnnnV00} in one directory, the layout used by the
- * local JCL runner and the recorded fixtures.
+ * A GDG base materialised as files {@code <dsn>.GnnnnV00} in one directory, cataloged by
+ * {@code <dsn>.gdg} ({@code {"current": n}}) — the same layout and catalog the local JCL runner
+ * ({@code tools/runjcl/runjcl.py}) resolves relative generations from.
  */
 public final class GenerationDataGroup {
+
+    private static final Pattern CURRENT = Pattern.compile("\"current\"\\s*:\\s*(\\d+)");
 
     private final Path directory;
     private final String baseDsn;
@@ -29,6 +34,11 @@ public final class GenerationDataGroup {
 
     public String baseDsn() {
         return baseDsn;
+    }
+
+    /** The catalog file, {@code <dsn>.gdg}. */
+    public Path catalog() {
+        return directory.resolve(baseDsn + ".gdg");
     }
 
     /** Relative generation (0). */
@@ -47,30 +57,50 @@ public final class GenerationDataGroup {
     }
 
     /**
-     * Writes the (+1) generation atomically. Mirrors {@code DISP=(NEW,CATLG,DELETE)}: if the writer
-     * fails, nothing is cataloged.
+     * Writes and catalogs the (+1) generation. Mirrors {@code DISP=(NEW,CATLG,DELETE)}: the data is
+     * written to a temp file, linked into place only if that generation does not exist yet (so a
+     * competing writer fails instead of overwriting), and the catalog is advanced last. Any failure
+     * leaves neither a new generation nor a moved catalog.
      */
-    public Path writeNext(DatasetWriter writer) {
-        Path target = next();
+    public synchronized Path writeNext(DatasetWriter writer) {
+        int number = currentNumber() + 1;
+        if (number > 9999) {
+            throw new IllegalStateException(baseDsn + ": generation number exhausted");
+        }
+        Path target = path(number);
         Path temp = null;
+        boolean linked = false;
         try {
             Files.createDirectories(directory);
             temp = Files.createTempFile(directory, "." + baseDsn, ".tmp");
             try (OutputStream out = Files.newOutputStream(temp)) {
                 writer.write(out);
             }
-            Files.move(temp, target, StandardCopyOption.ATOMIC_MOVE);
+            Files.createLink(target, temp);
+            linked = true;
+            writeCatalog(number);
             return target;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+        } catch (FileAlreadyExistsException e) {
+            throw new IllegalStateException(target.getFileName() + " already exists but is not cataloged", e);
+        } catch (IOException | RuntimeException e) {
+            if (linked) {
+                deleteQuietly(target);
+            }
+            throw e instanceof IOException io ? new UncheckedIOException(io) : (RuntimeException) e;
         } finally {
             if (temp != null) {
-                try {
-                    Files.deleteIfExists(temp);
-                } catch (IOException ignored) {
-                    // best effort cleanup of an uncataloged generation
-                }
+                deleteQuietly(temp);
             }
+        }
+    }
+
+    private void writeCatalog(int number) throws IOException {
+        Path temp = Files.createTempFile(directory, "." + baseDsn, ".gdg.tmp");
+        try {
+            Files.writeString(temp, "{\"current\": " + number + "}\n", StandardCharsets.UTF_8);
+            Files.move(temp, catalog(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        } finally {
+            deleteQuietly(temp);
         }
     }
 
@@ -78,18 +108,36 @@ public final class GenerationDataGroup {
         return directory.resolve(String.format("%s.G%04dV00", baseDsn, number));
     }
 
+    /** The catalog when present (authoritative, as for runjcl), else the highest generation on disk. */
     private int currentNumber() {
-        if (!Files.isDirectory(directory)) {
-            return 0;
-        }
-        try (Stream<Path> files = Files.list(directory)) {
-            return files.map(file -> generation.matcher(file.getFileName().toString()))
-                    .filter(Matcher::matches)
-                    .mapToInt(matcher -> Integer.parseInt(matcher.group(1)))
-                    .max()
-                    .orElse(0);
+        try {
+            if (Files.exists(catalog())) {
+                Matcher matcher = CURRENT.matcher(Files.readString(catalog(), StandardCharsets.UTF_8));
+                if (!matcher.find()) {
+                    throw new IllegalStateException(catalog() + ": no \"current\" entry");
+                }
+                return Integer.parseInt(matcher.group(1));
+            }
+            if (!Files.isDirectory(directory)) {
+                return 0;
+            }
+            try (Stream<Path> files = Files.list(directory)) {
+                return files.map(file -> generation.matcher(file.getFileName().toString()))
+                        .filter(Matcher::matches)
+                        .mapToInt(matcher -> Integer.parseInt(matcher.group(1)))
+                        .max()
+                        .orElse(0);
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private static void deleteQuietly(Path path) {
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException ignored) {
+            // best effort cleanup of an uncataloged file
         }
     }
 
