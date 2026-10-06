@@ -1,4 +1,4 @@
-.PHONY: up down build run reset shell record record-all parity parity-naive \
+.PHONY: up down build run reset shell record record-all parity parity-naive parity-java \
 	deadcode chain-graph chain-graph-check
 
 up:
@@ -46,6 +46,22 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+PARITY_JAVA_CASES ?= default under_cap at_cap rate_change zero_amount non_transfer half_cent
+PARITY_JAVA_STEPS ?= STEP010
+
+# In-process Java replay of each COBOL-recorded case, compared for the implemented steps.
+parity-java:
+	mvn -q -B -f java/pom.xml package
+	@set -e; failed=0; \
+	for case in $(if $(CASE),$(CASE),$(PARITY_JAVA_CASES)); do \
+		python3 tools/parity/java_candidate.py --case $$case \
+			--out work/parity/$$case/java; \
+		python3 tools/parity/compare.py --chain xferfee --case $$case \
+			--candidate work/parity/$$case/java --only $(PARITY_JAVA_STEPS) \
+			--report work/parity/$$case/java-report.md || failed=1; \
+	done; \
+	exit $$failed
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py
