@@ -147,6 +147,9 @@ def append_db_diffs(
 ) -> tuple[int, int]:
     table = metadata["table"]
     expected_rows = csv_rows(expected_root / f"{table}.csv")
+    if not (actual_root / f"{table}.csv").exists():
+        lines.append(f"- {table}: missing table")
+        return 0, 1
     actual_rows = csv_rows(actual_root / f"{table}.csv")
     keys = metadata["key"]
     expected_map = {
@@ -216,7 +219,15 @@ def append_sysout_diffs(
     return field_diffs, record_diffs
 
 
-def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
+def selected(only: set[str] | None, *names: str) -> bool:
+    if not only:
+        return True
+    return any(name.upper() in only for name in names)
+
+
+def compare_case(
+    case: str, candidate: Path | None = None, only: set[str] | None = None
+) -> tuple[str, int]:
     expected_root = CHAIN_ROOT / case / "expected"
     if candidate is None:
         candidate = ROOT / "work" / "parity" / case / "candidate"
@@ -237,6 +248,16 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     metadata = json.loads(
         (CHAIN_ROOT / case / "case.json").read_text()
     )
+    if only is not None:
+        known = {output["dsn"].upper() for output in metadata["outputs"]}
+        known |= {table["table"].upper() for table in metadata["db2"]}
+        known |= {"SYSOUT", "RC"}
+        unknown = sorted(only - known)
+        if not only or unknown:
+            raise ValueError(
+                f"--only must name outputs of case {case}: unknown "
+                f"{', '.join(unknown) or '(empty)'}; known {', '.join(sorted(known))}"
+            )
     lines = [
         f"# Parity: xferfee / {case}",
         "",
@@ -246,6 +267,8 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     field_diffs = 0
     record_diffs = 0
     for output in metadata["outputs"]:
+        if not selected(only, output["dsn"]):
+            continue
         expected = dataset_file(expected_root / "datasets", output["dsn"])
         actual = dataset_file(candidate / "datasets", output["dsn"])
         if expected is None and actual is None:
@@ -265,6 +288,8 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         record_diffs += records
 
     for table in metadata["db2"]:
+        if not selected(only, table["table"]):
+            continue
         fields, records = append_db_diffs(
             lines,
             expected_root / "db2_after",
@@ -273,15 +298,20 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         )
         field_diffs += fields
         record_diffs += records
-    fields, records = append_sysout_diffs(
-        lines, expected_root / "sysout", candidate / "sysout"
-    )
-    field_diffs += fields
-    record_diffs += records
+    if selected(only, "SYSOUT"):
+        fields, records = append_sysout_diffs(
+            lines, expected_root / "sysout", candidate / "sysout"
+        )
+        field_diffs += fields
+        record_diffs += records
 
     expected_rc = json.loads((expected_root / "rc.json").read_text())
-    actual_rc = json.loads((candidate / "rc.json").read_text())
-    if expected_rc != actual_rc:
+    actual_rc_path = candidate / "rc.json"
+    actual_rc = (
+        json.loads(actual_rc_path.read_text())
+        if actual_rc_path.exists() else None
+    )
+    if selected(only, "RC") and expected_rc != actual_rc:
         lines.append(
             f"- RC: expected `{json.dumps(expected_rc, sort_keys=True)}`, "
             f"actual `{json.dumps(actual_rc, sort_keys=True)}`"
@@ -328,7 +358,15 @@ def main() -> int:
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--report", type=Path)
+    parser.add_argument(
+        "--only",
+        help="comma-separated DSNs/tables to compare (also SYSOUT, RC)",
+    )
     args = parser.parse_args()
+    only = (
+        {name.strip().upper() for name in args.only.split(",") if name.strip()}
+        if args.only is not None else None
+    )
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
     cases = CASES if args.all else (args.case,)
@@ -338,7 +376,10 @@ def main() -> int:
     overall = 0
     for case in cases:
         candidate = args.candidate if len(cases) == 1 else None
-        report, rc = compare_case(case, candidate)
+        try:
+            report, rc = compare_case(case, candidate, only)
+        except ValueError as exc:
+            parser.error(str(exc))
         aggregate.append(report)
         overall = max(overall, rc)
     if args.all:

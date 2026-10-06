@@ -44,3 +44,66 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  java-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Java unit tests
+        run: mvn -B -f java/pom.xml verify
+      - name: java_candidate unit tests
+        working-directory: tools/parity
+        run: python3 -m unittest -v test_java_candidate
+      - name: Configure compose user
+        run: |
+          echo "UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "GID=$(id -g)" >> "$GITHUB_ENV"
+      - name: Start estate
+        run: docker compose up -d --build --wait
+      - name: Build COBOL estate
+        run: make build
+      - name: COBOL parity (make parity)
+        run: |
+          set -o pipefail
+          make parity 2>&1 | tee work/ci-parity-cobol.log
+      - name: Java parity (make parity-java, allowed to fail until convergence)
+        id: parity_java
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mkdir -p work/parity-java
+          cp -r ~/.m2/repository work/m2 2>/dev/null || true
+          make parity-java 2>&1 | tee work/ci-parity-java.log
+      - name: Parity summary
+        if: always()
+        run: |
+          {
+            echo "## COBOL parity (make parity)"
+            echo
+            grep -E '^# Parity: |^PARITY:' work/parity/report.md 2>/dev/null || echo "no COBOL parity report"
+            echo
+            echo "## Java parity (make parity-java) — outcome: ${{ steps.parity_java.outcome }}"
+            echo
+            echo "_Allowed to fail until the convergence ticket lands._"
+            echo
+            if [ -f work/parity-java/report.md ]; then
+              awk '/^# Parity: /{exit} NR>2{print}' work/parity-java/report.md
+            else
+              echo "no Java parity report"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload parity artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-java-reports
+          path: |
+            work/parity/
+            work/parity-java/**/report.md
+            work/parity-java/report.md
+            work/ci-parity-*.log
