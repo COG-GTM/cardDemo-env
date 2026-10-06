@@ -53,6 +53,11 @@ make parity-java CASE=default ONLY=AWS.M2.CARDDEMO.XFER.FEES   # one DSN/table
 make java-test                 # mvn verify
 ```
 
+Maven runs inside the `estate` container with its local repository at `work/m2`
+(override with `MVN_REPO=`). If Maven Central rate-limits the container (HTTP 429), seed it
+from the host (`cp -r ~/.m2/repository work/m2`) or point it at a mirror:
+`make parity-java MVN_ARGS="-s /estate/work/m2-settings.xml"`.
+
 Outputs land in `work/parity-java/<case>/`: `input/` (fixture decoded to JSON-lines),
-`out/` (raw Java output: `datasets/<DSN>.jsonl`, `db2_after/*.csv`, `sysout/*.txt`, `rc.json`),
+`raw/` (raw Java output: `datasets/<DSN>.jsonl`, `db2_after/*.csv`, `sysout/*.txt`, `rc.json`),
 `candidate/` (fixed-width datasets encoded by `tools/parity/java_candidate.py`) and `report.md`.
