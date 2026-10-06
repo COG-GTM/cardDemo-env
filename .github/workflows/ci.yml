@@ -22,13 +22,6 @@ jobs:
           set -o pipefail
           make run CHAIN=xferfee 2>&1 | tee work/ci-chain.log
           grep -q 'MAXCC=0000' work/ci-chain.log
-      - name: Record duplicate_tran_id fixture (temporary)
-        run: |
-          make record CASE=duplicate_tran_id
-          echo "FIXTURE-TAR-BEGIN"
-          tar czf - fixtures/xferfee/duplicate_tran_id | base64 -w 0
-          echo
-          echo "FIXTURE-TAR-END"
       - name: Run self parity
         run: make parity
       - name: Verify naive parity is intentionally different
