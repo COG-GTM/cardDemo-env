@@ -1,5 +1,11 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	parity-java java-build java-test deadcode chain-graph chain-graph-check
+
+MVN ?= mvn
+JAVA_PARITY_CASES := default under_cap at_cap rate_change zero_amount \
+	non_transfer half_cent
+# Datasets the Java port produces so far; widen as services land.
+JAVA_PARITY_ONLY := AWS.M2.CARDDEMO.XFER.FEES
 
 up:
 	docker compose up -d --build --wait
@@ -46,6 +52,20 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+java-build:
+	$(MVN) -B -q -f java/pom.xml -DskipTests package
+
+java-test:
+	$(MVN) -B -f java/pom.xml verify
+
+parity-java: java-build
+	@rc=0; for case in $(if $(CASE),$(CASE),$(JAVA_PARITY_CASES)); do \
+		python3 tools/parity/java_candidate.py --case $$case \
+			--out work/parity-java/$$case/candidate || exit $$?; \
+		python3 tools/parity/compare.py --chain xferfee --case $$case \
+			--candidate work/parity-java/$$case/candidate \
+			--only $(JAVA_PARITY_ONLY) || rc=1; \
+	done; exit $$rc
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py

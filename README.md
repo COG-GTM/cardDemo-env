@@ -64,6 +64,25 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Java port parity
+
+The Java port lives under `java/` (Maven, Java 21). `fee-policy` implements
+the XFERFEE fee arithmetic (BR-07..BR-10: `BigDecimal` half-up to cents,
+round-then-cap, cap only when strictly greater, zero amount is a zero fee) and
+`parity-replay` replays a fixture case in-process. Run it on the host with
+JDK 21, Maven and Python 3:
+
+```sh
+make java-test                    # unit + fixture tests, incl. HALF_EVEN negative test
+make parity-java CASE=half_cent   # one case
+make parity-java                  # every case
+```
+
+`parity-java` writes candidates to `work/parity-java/<case>/candidate` and
+diffs them against the COBOL recordings with
+`compare.py --only AWS.M2.CARDDEMO.XFER.FEES`; outputs the Java side does not
+produce yet are skipped rather than reported missing.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:
