@@ -37,6 +37,8 @@ public class RunArtifactsWriter {
             Files.createDirectories(sysout);
             for (ObservedStep step : report.steps()) {
                 if (!step.executed()) {
+                    Files.deleteIfExists(sysout.resolve(step.step().name() + ".txt"));
+                    Files.deleteIfExists(sysout.resolve(step.step().name() + ".json"));
                     continue;
                 }
                 String text = step.sysout().isEmpty() ? "" : String.join("\n", step.sysout()) + "\n";

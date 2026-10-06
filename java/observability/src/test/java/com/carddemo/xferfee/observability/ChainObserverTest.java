@@ -51,7 +51,7 @@ class ChainObserverTest {
         observer.posting(new AccountPosting.PostingResult(posted, List.of(), List.of(), List.of(),
                 new StepReport("STEP020", 0, List.of())));
         observer.reconciliation(posted, new Reconciliation.ReconResult(List.of(),
-                new StepReport("STEP030", 0, List.of())));
+                new StepReport("STEP030", 0, List.of("CBXFR03C: GRAND TOTAL FEE +00000000650"))));
 
         ChainRunReport report = observer.report();
         assertThat(report.maxcc()).isZero();
@@ -150,6 +150,31 @@ class ChainObserverTest {
         assertThat(ChainObserver.counterLines(observer.report().step(ChainStep.STEP020).orElseThrow()))
                 .containsExactly("XFERFEE: TRANSFERS POSTED 000000000", "XFERFEE: TOTAL FEES +00000000000");
         assertThat(alerts.alerts()).isEmpty();
+    }
+
+    @Test
+    void grandTotalIsWhatReconciliationReportedNotTheInputSum() {
+        TransferRequested request = requested("T1", "100.00");
+        List<TransferPosted> posted = List.of(posted(request, "1.25"));
+        observer.reconciliation(posted, new Reconciliation.ReconResult(List.of(),
+                new StepReport("STEP030", 0, List.of("CBXFR03C: GRAND TOTAL FEE +00000000999"))));
+
+        assertThat(ChainObserver.counterLines(observer.report().step(ChainStep.STEP030).orElseThrow()))
+                .containsExactly("CBXFR03C: GRAND TOTAL FEE +00000000999");
+        assertThat(count(XferMetrics.RECON_GRAND_TOTAL_FEE)).isEqualTo(9.99);
+    }
+
+    @Test
+    void failingAlertPublisherStillDeadLetters() {
+        ChainObserver failing = new ChainObserver(new XferMetrics(registry), alert -> {
+            throw new IllegalStateException("pager down");
+        }, dlq, Clock.systemUTC());
+        failing.startRun("2024-06-30");
+        failing.posting(new AccountPosting.PostingResult(List.of(), List.of(), List.of(), List.of(),
+                new StepReport("STEP020", 8, List.of("XFERFEE: 9999-ABEND-PROGRAM"))));
+
+        assertThat(dlq.entries()).hasSize(1);
+        assertThat(failing.report().maxcc()).isEqualTo(8);
     }
 
     @Test

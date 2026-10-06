@@ -148,7 +148,8 @@ def main() -> int:
     args = parser.parse_args()
     if args.build or not JAR.exists():
         build()
-    return run(args.case, args.work or ROOT / "work" / "parity-java" / args.case)
+    work = (args.work or ROOT / "work" / "parity-java" / args.case).resolve()
+    return run(args.case, work)
 
 
 if __name__ == "__main__":

@@ -29,6 +29,8 @@ class RunArtifactsWriterTest {
         ChainRunReport report = new ChainRunReport("xferfee", "2024-06-30", List.of(step010, step020, step030), 8);
         RunArtifactsWriter writer = new RunArtifactsWriter();
 
+        Files.createDirectories(out.resolve("sysout"));
+        Files.writeString(out.resolve("sysout/STEP030.txt"), "stale from a previous run\n");
         writer.writeSysout(report, out);
         SimpleMeterRegistry registry = new SimpleMeterRegistry();
         new XferMetrics(registry).recordsRead(4);

@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Turns the step results of the {@code contracts} SPIs into the signals operators get from SYSOUT
@@ -26,6 +31,10 @@ import java.util.Map;
  * at least one fee record (otherwise {@code NO FEE RECORDS}, RC 4).
  */
 public class ChainObserver {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ChainObserver.class);
+    private static final Pattern GRAND_TOTAL =
+            Pattern.compile("CBXFR03C: GRAND TOTAL FEE ([+-]?\\d+)\\s*");
 
     public static final String CHAIN = "xferfee";
 
@@ -82,15 +91,26 @@ public class ChainObserver {
     /** STEP030 / CBXFR03C over the fee records XFERFEE wrote. */
     public synchronized void reconciliation(List<TransferPosted> feeRecords, Reconciliation.ReconResult result) {
         List<CounterValue> counters = List.of();
-        if (!feeRecords.isEmpty()) {
-            BigDecimal grand = BigDecimal.ZERO;
-            for (TransferPosted posted : feeRecords) {
-                grand = grand.add(posted.feeAmount());
-            }
-            metrics.reconTotals(feeRecords.size(), grand);
-            counters = List.of(money("GRAND TOTAL FEE", XferMetrics.RECON_GRAND_TOTAL_FEE, grand));
+        Optional<BigDecimal> grand = grandTotal(result.report());
+        if (grand.isPresent()) {
+            metrics.reconTotals(feeRecords.size(), grand.get());
+            counters = List.of(money("GRAND TOTAL FEE", XferMetrics.RECON_GRAND_TOTAL_FEE, grand.get()));
         }
         complete(ChainStep.STEP030, result.report(), counters, List.of());
+    }
+
+    /** The total CBXFR03C itself reported ({@code GRAND TOTAL FEE +nnnnnnnnnnn}), not one recomputed here. */
+    static Optional<BigDecimal> grandTotal(StepReport report) {
+        if (report.sysout() == null) {
+            return Optional.empty();
+        }
+        for (String line : report.sysout()) {
+            Matcher matcher = GRAND_TOTAL.matcher(line);
+            if (matcher.matches()) {
+                return Optional.of(new BigDecimal(matcher.group(1)).movePointLeft(2));
+            }
+        }
+        return Optional.empty();
     }
 
     /** A step not run because of its JCL {@code COND} (STEP030 after STEP020 RC 8+). */
@@ -127,11 +147,16 @@ public class ChainObserver {
                 : step.rejected().get(0).reason().name();
         String summary = step.program() + " abended RC " + step.returnCode()
                 + (step.sysout().isEmpty() ? "" : ": " + step.sysout().get(0));
-        alerts.publish(new ChainAlert(CHAIN, step.step(), step.program(), step.returnCode(), Severity.ALERT,
-                summary, step.sysout(), clock.instant()));
         deadLetters.put(new DeadLetterEntry(CHAIN, runDate, step.step(), step.program(), step.returnCode(),
                 reason, step.rejected(), step.sysout(), clock.instant()));
         metrics.deadLettered(step.step(), step.returnCode());
+        try {
+            alerts.publish(new ChainAlert(CHAIN, step.step(), step.program(), step.returnCode(), Severity.ALERT,
+                    summary, step.sysout(), clock.instant()));
+        } catch (RuntimeException e) {
+            LOG.error("Alert publish failed for {} RC {}; dead-letter entry kept", step.step(),
+                    step.returnCode(), e);
+        }
     }
 
     private int maxcc() {
