@@ -1,0 +1,2 @@
+com.carddemo.xferfee.feeschedule.FeeScheduleAutoConfiguration
+com.carddemo.xferfee.feeschedule.FeeScheduleJdbcAutoConfiguration

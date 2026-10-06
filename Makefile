@@ -1,5 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	java-build java-test parity-java deadcode chain-graph chain-graph-check
 
 up:
 	docker compose up -d --build --wait
@@ -46,6 +46,28 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+JAVA_CASES ?= default under_cap at_cap rate_change zero_amount non_transfer half_cent
+MVN ?= mvn -B -q
+
+java-build:
+	cd java && $(MVN) -DskipTests package
+
+java-test:
+	cd java && $(MVN) verify
+
+# Java candidate per case under work/parity-java/<case>/ (out/, candidate/, report.md).
+# fee_schedule_check.py is the fee-schedule-service (COG-1236) module gate; compare.py is
+# the full-chain gate and stays red until every stage is ported.
+parity-java: java-build
+	@status=0; for case in $(if $(CASE),$(CASE),$(JAVA_CASES)); do \
+		python3 tools/parity/java_candidate.py --case $$case \
+			--out work/parity-java/$$case || exit 1; \
+		python3 tools/parity/fee_schedule_check.py --case $$case \
+			--candidate work/parity-java/$$case/out || status=1; \
+		python3 tools/parity/compare.py --chain xferfee --case $$case \
+			--candidate work/parity-java/$$case/candidate || status=1; \
+	done; exit $$status
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py
