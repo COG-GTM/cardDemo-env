@@ -81,6 +81,12 @@ no bean stops the chain, so an unfinished rewrite reports missing records and
 RC differences rather than crashing. CI runs this job allowed-to-fail and
 publishes the report to the job summary.
 
+Until the upstream stages exist, `make parity-java` stops before STEP030. To
+check reconciliation (`CBXFR03C`) on its own, `make parity-java-recon [CASE=..]`
+feeds each case's recorded STEP020 outputs (`XFER.FEES`, STEP020 RC) to
+`reconciliation-service` and diffs a candidate that is the COBOL recording with
+every STEP030 artifact replaced by Java output.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:
