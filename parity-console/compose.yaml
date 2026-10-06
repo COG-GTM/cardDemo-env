@@ -1,0 +1,76 @@
+# Overlay for the root docker-compose.yml (paths are relative to the repo root).
+#   make parity-console  ->  docker compose -f docker-compose.yml -f parity-console/compose.yaml up -d --build --wait
+# Adds a separate carddemo_live database (COBOL tables in public, Java tables in
+# java_engine), the Spring Boot engine, and the console that drives the real
+# GnuCOBOL chain. The estate's own carddemo database is never touched.
+services:
+  live-db-init:
+    image: postgres:15
+    pull_policy: missing
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGUSER: carddemo
+      PGPASSWORD: carddemo
+    volumes:
+      - ./db2:/db2:ro
+      - ./parity-console/db:/init:ro
+    command: ["sh", "/init/init-live-db.sh"]
+    restart: "no"
+
+  java-live:
+    build:
+      context: ./parity-console/java-live
+      args:
+        MAVEN_MIRROR_URL: ${MAVEN_MIRROR_URL:-}
+    depends_on:
+      live-db-init:
+        condition: service_completed_successfully
+    environment:
+      JAVA_LIVE_JDBC_URL: jdbc:postgresql://db:5432/carddemo_live
+      JAVA_LIVE_DB_USER: carddemo
+      JAVA_LIVE_DB_PASS: carddemo
+    ports:
+      - "${JAVA_LIVE_PORT:-8091}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8080'"]
+      interval: 3s
+      timeout: 3s
+      retries: 60
+
+  parity-console:
+    pull_policy: missing
+    user: "${UID:-1000}:${GID:-1000}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: ${ESTATE_BASE_IMAGE:-ubuntu:22.04}
+    depends_on:
+      live-db-init:
+        condition: service_completed_successfully
+      java-live:
+        condition: service_healthy
+    volumes:
+      - .:/estate
+    environment:
+      OCDB_NAME: carddemo_live
+      OCDB_USER: carddemo
+      OCDB_PASS: carddemo
+      PGHOST: db
+      PGPORT: "5432"
+      PGDATABASE: carddemo_live
+      PGUSER: carddemo
+      PGPASSWORD: carddemo
+      JAVA_LIVE_URL: http://java-live:8080
+      PYTHONUNBUFFERED: "1"
+    ports:
+      - "${PARITY_CONSOLE_PORT:-8090}:8090"
+    command: ["python3", "parity-console/console/server.py", "--host", "0.0.0.0", "--port", "8090"]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/api/health')"]
+      interval: 3s
+      timeout: 3s
+      retries: 60

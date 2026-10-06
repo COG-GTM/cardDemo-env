@@ -1,0 +1,18 @@
+server:
+  port: ${PORT:8080}
+spring:
+  application:
+    name: xferfee-java-live
+  datasource:
+    url: ${JAVA_LIVE_JDBC_URL:jdbc:postgresql://localhost:5432/carddemo_live}
+    username: ${JAVA_LIVE_DB_USER:carddemo}
+    password: ${JAVA_LIVE_DB_PASS:carddemo}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+  jackson:
+    generator:
+      write-bigdecimal-as-plain: true
+xferfee:
+  rounding: ${XFERFEE_ROUNDING:HALF_UP}

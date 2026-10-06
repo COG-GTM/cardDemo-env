@@ -1,5 +1,6 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check parity-console parity-console-check \
+	parity-console-down
 
 up:
 	docker compose up -d --build --wait
@@ -56,3 +57,18 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+CONSOLE_COMPOSE = docker compose -f docker-compose.yml -f parity-console/compose.yaml
+
+parity-console:
+	$(CONSOLE_COMPOSE) up -d --build --wait db java-live parity-console
+	$(CONSOLE_COMPOSE) exec -T parity-console sh -c '[ -f loadlib/XFERFEE.so ] || tools/build.sh'
+	@echo "Parity console: http://localhost:$${PARITY_CONSOLE_PORT:-8090}"
+
+parity-console-check:
+	$(CONSOLE_COMPOSE) exec -T parity-console python3 parity-console/console/headless.py --all
+	$(CONSOLE_COMPOSE) exec -T parity-console python3 parity-console/console/headless.py \
+		--break-java --stream half_cent
+
+parity-console-down:
+	$(CONSOLE_COMPOSE) rm -sf parity-console java-live live-db-init
