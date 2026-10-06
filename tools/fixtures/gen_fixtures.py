@@ -169,6 +169,17 @@ def case_transactions(case: str, cards: list[str]) -> list[bytes]:
         )
         assert_half_cent(Decimal("5.00"), Decimal("0.0050"))
         return transfers
+    if case == "missing_rule":
+        # INSTL's only CTL_XFER_PARM row is effective from 2020-01-01, so
+        # the second transfer has no effective rule on its date (BR-07).
+        return [
+            transfer("TRN0000000000001", 100.00, 1, 2, cards[0],
+                     "2024-06-20"),
+            transfer("TRN0000000000002", 1000.00, 6, 7, cards[5],
+                     "2019-12-31"),
+            transfer("TRN0000000000003", 200.00, 3, 4, cards[2],
+                     "2024-06-21"),
+        ]
     raise ValueError(f"unsupported fixture case: {case}")
 
 
@@ -191,6 +202,8 @@ CASES = {
     "zero_amount": "Zero-amount transfer preserves fee and ledger records",
     "non_transfer": "Non-transfer transactions are ignored by the extract",
     "half_cent": "Half-cent fee rounding cases for both books",
+    "missing_rule": "BR-07 transfer with no effective fee rule stops the "
+                    "run with RC 8",
 }
 
 

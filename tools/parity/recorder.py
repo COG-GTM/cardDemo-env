@@ -26,7 +26,9 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "missing_rule",
 )
+EXPECTED_MAXCC = {"missing_rule": 8}
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",
     "CARDXREF.PS": "AWS.M2.CARDDEMO.CARDXREF.PS",
@@ -45,8 +47,8 @@ TABLES = {
 }
 
 
-def run(command: list[str]) -> None:
-    subprocess.run(command, cwd=ROOT, check=True)
+def run(command: list[str], check: bool = True) -> int:
+    return subprocess.run(command, cwd=ROOT, check=check).returncode
 
 
 def dump_table(table: str, destination: Path) -> None:
@@ -94,9 +96,6 @@ def record_case(case: str, output: Path | None = None) -> Path:
     if case not in CASES:
         raise ValueError(f"unsupported case: {case}")
     expected = output or CHAIN_ROOT / case / "expected"
-    if expected.exists():
-        shutil.rmtree(expected)
-    expected.mkdir(parents=True)
     if output is None:
         run_root = ROOT / "work" / "record" / case
     else:
@@ -110,15 +109,16 @@ def record_case(case: str, output: Path | None = None) -> Path:
         shutil.rmtree(joblog)
     manifest.unlink(missing_ok=True)
 
+    staged_before = run_root / "staging" / "db2_before"
+    if staged_before.exists():
+        shutil.rmtree(staged_before)
+
     load_inputs(case, datasets)
-    before = expected.parent / "db2_before"
-    if before.exists():
-        shutil.rmtree(before)
     runjcl_reset_db()
     for table in TABLES:
-        dump_table(table, before / f"{table}.csv")
+        dump_table(table, staged_before / f"{table}.csv")
 
-    run([
+    maxcc = run([
         sys.executable,
         str(ROOT / "tools" / "runjcl" / "runjcl.py"),
         "--chain",
@@ -129,7 +129,23 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], check=False)
+    expected_maxcc = EXPECTED_MAXCC.get(case, 0)
+    # Parity candidates (--out) keep whatever RC the run produced so that
+    # compare.py can report the mismatch; only baselines are guarded.
+    if output is None and maxcc != expected_maxcc:
+        raise RuntimeError(
+            f"{case}: chain ended with MAXCC {maxcc}, expected "
+            f"{expected_maxcc}; existing baseline left unchanged"
+        )
+
+    before = expected.parent / "db2_before"
+    if before.exists():
+        shutil.rmtree(before)
+    shutil.copytree(staged_before, before)
+    if expected.exists():
+        shutil.rmtree(expected)
+    expected.mkdir(parents=True)
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
