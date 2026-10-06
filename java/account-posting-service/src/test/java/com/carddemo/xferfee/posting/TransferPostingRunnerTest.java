@@ -168,7 +168,7 @@ class TransferPostingRunnerTest {
 
             @Override
             public Optional<FeeRule> effectiveRule(String bookId, LocalDate businessDate) {
-                throw new IllegalStateException("2 CTL_XFER_PARM rows match book RETAIL");
+                throw new RuleLookupException(RuleLookupException.MULTIPLE_ROWS, "2 rows match");
             }
 
             @Override
@@ -182,7 +182,9 @@ class TransferPostingRunnerTest {
             PostingRunResult result = db.runner.run(List.of(transfer("T1", 1, 2, "RETAIL", "100.00")));
 
             assertThat(result.returnCode()).isEqualTo(8);
-            assertThat(result.abendMessage()).startsWith("XFERFEE: RULE LOOKUP FAILED 2 CTL_XFER_PARM rows");
+            assertThat(result.abendMessage()).isEqualTo("XFERFEE: RULE LOOKUP FAILED -000000811");
+            assertThat(PostingStepReport.of(result).sysout())
+                    .contains("XFERFEE: RULE LOOKUP FAILED -000000811");
             assertThat(db.master.rewrittenMaster()).isEqualTo(MASTER);
             assertThat(db.ledger.findAll()).isEmpty();
         }

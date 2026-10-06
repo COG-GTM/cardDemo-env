@@ -2,6 +2,7 @@ package com.carddemo.xferfee.parity.interim;
 
 import com.carddemo.xferfee.contracts.FeeRule;
 import com.carddemo.xferfee.contracts.FeeSchedule;
+import com.carddemo.xferfee.posting.RuleLookupException;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -32,8 +33,8 @@ class InterimFeeSchedule implements FeeSchedule {
                 .toList();
         if (matches.size() > 1) {
             // XFERFEE's single-row SELECT ... INTO fails (SQLCODE -811) instead of picking one.
-            throw new IllegalStateException(matches.size() + " CTL_XFER_PARM rows match book "
-                    + bookId.strip() + " on " + businessDate + " (SQLCODE -811)");
+            throw new RuleLookupException(RuleLookupException.MULTIPLE_ROWS, matches.size()
+                    + " CTL_XFER_PARM rows match book " + bookId.strip() + " on " + businessDate);
         }
         return matches.stream().findFirst();
     }

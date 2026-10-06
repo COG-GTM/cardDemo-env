@@ -25,4 +25,9 @@ public final class LegacyText {
         long units = value.movePointRight(scale).longValueExact();
         return (units < 0 ? "-" : "+") + digits(units, integerDigits + scale);
     }
+
+    /** DISPLAY of SQLCA SQLCODE ({@code PIC S9(9) COMP-5}), e.g. {@code -000000811}. */
+    public static String sqlCode(int sqlCode) {
+        return signed(BigDecimal.valueOf(sqlCode), 9, 0);
+    }
 }

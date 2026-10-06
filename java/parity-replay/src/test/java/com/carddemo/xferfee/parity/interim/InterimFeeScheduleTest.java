@@ -1,9 +1,10 @@
 package com.carddemo.xferfee.parity.interim;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.carddemo.xferfee.contracts.FeeRule;
+import com.carddemo.xferfee.posting.RuleLookupException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,9 +34,10 @@ class InterimFeeScheduleTest {
         schedule.seed(List.of(rule("0.010000", LocalDate.of(2024, 1, 1), LocalDate.of(2025, 1, 1)),
                 rule("0.020000", LocalDate.of(2024, 6, 1), LocalDate.of(2025, 1, 1))));
 
-        assertThatIllegalStateException()
+        assertThatExceptionOfType(RuleLookupException.class)
                 .isThrownBy(() -> schedule.effectiveRule("RETAIL", LocalDate.of(2024, 7, 1)))
-                .withMessage("2 CTL_XFER_PARM rows match book RETAIL on 2024-07-01 (SQLCODE -811)");
+                .withMessage("2 CTL_XFER_PARM rows match book RETAIL on 2024-07-01")
+                .extracting(RuleLookupException::sqlCode).isEqualTo(-811);
         assertThat(schedule.effectiveRule("RETAIL", LocalDate.of(2024, 3, 1))).isPresent();
     }
 }

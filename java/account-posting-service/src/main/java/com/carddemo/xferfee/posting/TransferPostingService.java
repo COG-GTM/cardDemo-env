@@ -44,6 +44,9 @@ public class TransferPostingService {
     private Optional<FeeRule> lookupRule(TransferRequested transfer) {
         try {
             return feeSchedule.effectiveRule(transfer.bookId(), transfer.tranDate());
+        } catch (RuleLookupException e) {
+            throw new PostingException(transfer.tranId(), RejectReason.POSTING_ERROR,
+                    "XFERFEE: RULE LOOKUP FAILED " + LegacyText.sqlCode(e.sqlCode()), e);
         } catch (RuntimeException e) {
             throw new PostingException(transfer.tranId(), RejectReason.POSTING_ERROR,
                     "XFERFEE: RULE LOOKUP FAILED " + e.getMessage(), e);
