@@ -119,8 +119,9 @@ def record_case(case: str, output: Path | None = None) -> Path:
     for table in TABLES:
         dump_table(table, before / f"{table}.csv")
 
-    # A non-zero MAXCC is a recorded outcome (rc.json), not a recorder error.
-    subprocess.run(
+    # RC <= 4 is a recorded warning outcome (rc.json). Higher RCs stay errors
+    # until the manifest can tell cataloged outputs from allocated ones.
+    result = subprocess.run(
         [
             sys.executable,
             str(ROOT / "tools" / "runjcl" / "runjcl.py"),
@@ -136,8 +137,9 @@ def record_case(case: str, output: Path | None = None) -> Path:
         cwd=ROOT,
         check=False,
     )
-    if not manifest.exists():
-        raise SystemExit(f"chain run produced no manifest: {manifest}")
+    if result.returncode > 4 or not manifest.exists():
+        raise SystemExit(
+            f"chain run failed (RC {result.returncode}); not recording {case}")
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
