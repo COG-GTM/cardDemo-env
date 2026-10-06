@@ -46,8 +46,14 @@ TABLES = {
 }
 
 
-def run(command: list[str]) -> None:
-    subprocess.run(command, cwd=ROOT, check=True)
+MAX_ACCEPTED_RC = 4
+
+
+def run(command: list[str], max_rc: int = 0) -> int:
+    returncode = subprocess.run(command, cwd=ROOT).returncode
+    if not 0 <= returncode <= max_rc:
+        raise subprocess.CalledProcessError(returncode, command)
+    return returncode
 
 
 def dump_table(table: str, destination: Path) -> None:
@@ -130,7 +136,7 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], max_rc=MAX_ACCEPTED_RC)
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
