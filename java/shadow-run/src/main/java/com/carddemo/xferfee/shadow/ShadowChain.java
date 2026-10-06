@@ -13,9 +13,12 @@ import com.carddemo.xferfee.contracts.Reconciliation.ReconResult;
 import com.carddemo.xferfee.contracts.StepReport;
 import com.carddemo.xferfee.contracts.TransferIntake;
 import com.carddemo.xferfee.contracts.TransferIntake.IntakeResult;
+import com.carddemo.xferfee.contracts.TransferRequested;
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * XFRDAILY driven through the frozen step SPIs: STEP010 intake, STEP020 posting, STEP030 reconciliation, stopping
@@ -38,9 +41,14 @@ public final class ShadowChain {
 
     /** The legacy-faithful implementation of every step. */
     public static ShadowChain legacy() {
+        return legacy(LegacyAmounts.standardOverpunch());
+    }
+
+    /** Legacy chain whose posting step reads XFR-TRAN-AMT through {@code legacyAmount}. */
+    public static ShadowChain legacy(Function<TransferRequested, BigDecimal> legacyAmount) {
         SnapshotFeeSchedule schedule = new SnapshotFeeSchedule();
         return new ShadowChain(new LegacyTransferIntake(), schedule,
-                new LegacyAccountPosting(schedule, new LegacyFeePolicy()), new LegacyReconciliation());
+                new LegacyAccountPosting(schedule, new LegacyFeePolicy(), legacyAmount), new LegacyReconciliation());
     }
 
     public ChainResult run(List<DailyTransaction> transactions, List<CardXref> xrefs, List<Account> accounts,

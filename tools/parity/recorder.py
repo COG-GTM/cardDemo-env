@@ -125,8 +125,12 @@ def record_case(case: str, output: Path | None = None) -> Path:
 def run_chain(
     datasets: Path, joblog: Path, manifest: Path, expected: Path
 ) -> None:
-    """Run XFRDAILY on staged datasets and collect its outputs into expected."""
-    run([
+    """Run XFRDAILY on staged datasets and collect its outputs into expected.
+
+    A non-zero MAXCC (RC 4/8) is a legitimate chain outcome; only a missing
+    manifest or job log means the runner itself failed.
+    """
+    subprocess.run([
         sys.executable,
         str(ROOT / "tools" / "runjcl" / "runjcl.py"),
         "--chain",
@@ -137,7 +141,9 @@ def run_chain(
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], cwd=ROOT, check=False)
+    if not manifest.exists() or not (joblog / "XFRDAILY.log").exists():
+        raise RuntimeError(f"runjcl did not finish: no {manifest} / joblog")
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
@@ -173,8 +179,8 @@ def record_inputs(
 ) -> Path:
     """Run the chain on an arbitrary day (shadow mode) under a frozen rule snapshot.
 
-    CTL_XFER_PARM is replaced by ``rules`` for the run and restored afterwards;
-    XFER_FEE_LEDGER starts from ``ledger`` (empty when omitted).
+    CTL_XFER_PARM and XFER_FEE_LEDGER are replaced by ``rules`` / ``ledger``
+    (empty when omitted) for the run and restored afterwards, even on failure.
     """
     run_root = output.parent / f"{output.name}-run"
     if run_root.exists():
@@ -186,8 +192,9 @@ def record_inputs(
     datasets.mkdir(parents=True)
     for filename, dsn in INPUT_DSNS.items():
         shutil.copyfile(input_dir / filename, datasets / dsn)
-    saved = run_root / "CTL_XFER_PARM.saved.csv"
-    dump_table("CTL_XFER_PARM", saved)
+    saved = {table: run_root / f"{table}.saved.csv" for table in TABLES}
+    for table, path in saved.items():
+        dump_table(table, path)
     try:
         load_table("CTL_XFER_PARM", rules)
         runjcl_reset_db()
@@ -197,7 +204,8 @@ def record_inputs(
             datasets, run_root / "joblog", run_root / "manifest.json", output
         )
     finally:
-        load_table("CTL_XFER_PARM", saved)
+        for table, path in saved.items():
+            load_table(table, path)
     return output
 
 

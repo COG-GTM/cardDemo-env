@@ -95,7 +95,7 @@ def main() -> int:
             ["--input-dir", str(args.input_dir), "--rules", str(args.rules), *extra],
             args.out,
         )
-        return 0 if rc is not None else 2
+        return 2 if rc is None else rc["maxcc"]
 
     root = args.out or ROOT / "work" / "parity-java"
     cases = CASES if args.all else (args.case,)

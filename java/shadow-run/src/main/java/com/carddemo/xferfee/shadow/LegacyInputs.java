@@ -24,6 +24,11 @@ public final class LegacyInputs {
      * Daily transactions with TRAN-AMT as written (standard overpunch, like {@code copybook.py}). CBXFR01C moves it
      * byte-for-byte into the extract; the GnuCOBOL reading is applied where XFERFEE consumes it.
      */
+    /** TRAN-AMT bytes of each record, aligned with {@link #transactions}. */
+    public static List<String> rawAmounts(Path path) throws IOException {
+        return records(path, TRAN_LRECL).stream().map(r -> r.substring(132, 143)).toList();
+    }
+
     public static List<DailyTransaction> transactions(Path path) throws IOException {
         List<DailyTransaction> rows = new ArrayList<>();
         for (String r : records(path, TRAN_LRECL)) {

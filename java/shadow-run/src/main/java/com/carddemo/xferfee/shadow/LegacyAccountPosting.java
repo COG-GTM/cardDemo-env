@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
 import java.util.Set;
 
 /**
@@ -22,7 +23,7 @@ import java.util.Set;
  * no active/funds/limit checks (BR-13) and last-match account lookup, BR-12 unknown account abend, BR-14 duplicate
  * TRAN_ID abend, BR-15 one commit per run, BR-16 full new master generation, BR-17 input order. Balances keep the
  * S9(10)V99 and the running fee total the S9(9)V99 high-order truncation of the COBOL receiving fields.
- * XFR-TRAN-AMT is used as GnuCOBOL reads the extract bytes ({@link Zoned#gnuReadBack}).
+ * XFR-TRAN-AMT is used as GnuCOBOL reads the extract bytes ({@link LegacyAmounts}).
  */
 public final class LegacyAccountPosting implements AccountPosting {
 
@@ -31,7 +32,25 @@ public final class LegacyAccountPosting implements AccountPosting {
     private final SnapshotFeeSchedule schedule;
     private final FeePolicy feePolicy;
 
+    /** SQLCODE ocesql reports for a PostgreSQL unique violation, as DISPLAYed by XFERFEE. */
+    static final String SQLCODE_UNIQUE_VIOLATION = "-0000000403";
+
+    /** libcob's warnings when 9999-ABEND-PROGRAM does STOP RUN with all four files still open. */
+    static final List<String> IMPLICIT_CLOSE = List.of(
+            "libcob: warning: implicit CLOSE of XFERFEE ('XFERFEE')",
+            "libcob: warning: implicit CLOSE of ACCTOUT ('ACCTOUT')",
+            "libcob: warning: implicit CLOSE of XFEREXTR ('XFEREXTR')",
+            "libcob: warning: implicit CLOSE of ACCTFILE ('ACCTFILE')");
+
+    private final Function<TransferRequested, BigDecimal> legacyAmount;
+
     public LegacyAccountPosting(SnapshotFeeSchedule schedule, FeePolicy feePolicy) {
+        this(schedule, feePolicy, LegacyAmounts.standardOverpunch());
+    }
+
+    public LegacyAccountPosting(SnapshotFeeSchedule schedule, FeePolicy feePolicy,
+            Function<TransferRequested, BigDecimal> legacyAmount) {
+        this.legacyAmount = legacyAmount;
         this.schedule = schedule;
         this.feePolicy = feePolicy;
     }
@@ -53,12 +72,10 @@ public final class LegacyAccountPosting implements AccountPosting {
                 sysout.add("XFERFEE: NO FEE RULE FOR BOOK " + Snapshots.pad(xfer.bookId()));
                 return abend(posted, ledgerBefore, xfer, RejectReason.NO_FEE_RULE, sysout);
             }
-            if (matches.size() > 1) {
-                sysout.add("XFERFEE: RULE LOOKUP FAILED (" + matches.size() + " CTL_XFER_PARM rows)");
-                return abend(posted, ledgerBefore, xfer, RejectReason.POSTING_ERROR, sysout);
-            }
+            // ocesql's SELECT INTO does not raise -811: overlapping rows silently yield the first row in
+            // table order, which is snapshot (load) order.
             FeeRule rule = matches.get(0);
-            BigDecimal amount = Zoned.gnuReadBack(xfer.amount(), 2);
+            BigDecimal amount = legacyAmount.apply(xfer);
             FeeResult fee = amount.signum() != 0
                     ? feePolicy.apply(amount, rule)
                     : new FeeResult(ZERO, false);
@@ -77,7 +94,7 @@ public final class LegacyAccountPosting implements AccountPosting {
                     rule.effectiveDate());
             posted.add(row);
             if (!ledgerIds.add(xfer.tranId())) {
-                sysout.add("XFERFEE: LEDGER INSERT FAILED (duplicate TRAN_ID " + xfer.tranId() + ")");
+                sysout.add("XFERFEE: LEDGER INSERT FAILED " + SQLCODE_UNIQUE_VIOLATION);
                 return abend(posted, ledgerBefore, xfer, RejectReason.DUPLICATE_TRAN_ID, sysout);
             }
             pending.add(new LedgerEntry(row.tranId(), row.tranDate(), row.sourceAccountId(), row.targetAccountId(),
@@ -94,8 +111,9 @@ public final class LegacyAccountPosting implements AccountPosting {
     /** 9999-ABEND-PROGRAM: RC 8, nothing committed, the new master generation is empty. */
     private static PostingResult abend(List<TransferPosted> posted, List<LedgerEntry> ledgerBefore,
             TransferRequested xfer, RejectReason reason, List<String> sysout) {
+        String detail = sysout.get(sysout.size() - 1);
         sysout.add("XFERFEE: 9999-ABEND-PROGRAM");
-        String detail = sysout.get(sysout.size() - 2);
+        sysout.addAll(IMPLICIT_CLOSE);
         return new PostingResult(posted, List.of(), ledgerBefore,
                 List.of(new TransferRejected(xfer.tranId(), xfer.cardNumber(), reason, detail)),
                 new StepReport("STEP020", 8, sysout));

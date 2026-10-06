@@ -39,10 +39,11 @@ jobs:
         run: make java-test
       - name: Run Java parity (all recorded cases)
         run: make parity-java
-      - name: Shadow run (default case + synthetic day)
+      - name: Shadow run (default case, synthetic day, edge days)
         run: |
           make shadow SHADOW_ARGS="--case default --date 2024-06-20"
           make shadow SHADOW_ARGS="--synthetic 250 --date 2024-06-15"
+          make shadow-edge
       - name: Run dead-code split
         run: make deadcode
       - name: Check chain graph

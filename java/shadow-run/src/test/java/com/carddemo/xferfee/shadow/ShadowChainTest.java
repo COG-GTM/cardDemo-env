@@ -63,7 +63,8 @@ class ShadowChainTest {
                 RULES, List.of());
         assertThat(result.stepRc()).containsEntry("STEP020", 8);
         assertThat(result.sysout().get("STEP020"))
-                .containsExactly("XFERFEE: NO FEE RULE FOR BOOK RETAIL    ", "XFERFEE: 9999-ABEND-PROGRAM");
+                .startsWith("XFERFEE: NO FEE RULE FOR BOOK RETAIL    ", "XFERFEE: 9999-ABEND-PROGRAM")
+                .endsWith(LegacyAccountPosting.IMPLICIT_CLOSE.toArray(String[]::new));
         assertThat(result.ledger()).isEmpty();
         assertThat(result.accountsOut()).isEmpty();
     }
@@ -76,6 +77,17 @@ class ShadowChainTest {
                 RULES, List.of(existing));
         assertThat(result.stepRc()).containsEntry("STEP020", 8);
         assertThat(result.ledger()).containsExactly(existing);
+        assertThat(result.sysout().get("STEP020")).first().isEqualTo("XFERFEE: LEDGER INSERT FAILED -0000000403");
+    }
+
+    @Test
+    void overlappingRulesUseTheFirstSnapshotRow() {
+        List<FeeRule> overlapping = new ArrayList<>(RULES);
+        overlapping.add(rule("RETAIL", "0.500000", "25.00", "2000-01-01", "9999-12-31"));
+        ChainResult result = chain.run(List.of(tran("T1", "08", CARD, "100.00", "2024-06-20")), XREF, accounts(),
+                overlapping, List.of());
+        assertThat(result.stepRc()).containsEntry("STEP020", 0);
+        assertThat(result.posted().get(0).feeAmount()).isEqualByComparingTo("1.50");
     }
 
     @Test
@@ -133,6 +145,16 @@ class ShadowChainTest {
         assertThat(result.posted().get(0).amount()).isEqualByComparingTo("1666.60");
         assertThat(result.posted().get(0).feeAmount()).isEqualByComparingTo("25.00");
         assertThat(result.accountsOut().get(1).currentBalance()).isEqualByComparingTo("2666.60");
+    }
+
+    @Test
+    void rawPlainDigitAmountKeepsItsCents() {
+        List<DailyTransaction> txns = List.of(tran("T1", "08", CARD, "100.07", "2024-06-20"),
+                tran("T2", "08", CARD, "100.07", "2024-06-20"));
+        ChainResult result = ShadowChain.legacy(LegacyAmounts.fromRaw(txns, List.of("0000001000G", "00000010007")))
+                .run(txns, XREF, accounts(), RULES, List.of());
+        assertThat(result.posted().get(0).amount()).isEqualByComparingTo("100.00");
+        assertThat(result.posted().get(1).amount()).isEqualByComparingTo("100.07");
     }
 
     private static List<Account> accounts() {

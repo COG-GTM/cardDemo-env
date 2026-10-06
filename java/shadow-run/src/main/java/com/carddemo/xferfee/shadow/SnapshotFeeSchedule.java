@@ -23,7 +23,7 @@ public final class SnapshotFeeSchedule implements FeeSchedule {
         return matches.size() == 1 ? Optional.of(matches.get(0)) : Optional.empty();
     }
 
-    /** Every row whose {@code [EFF_DT, EXP_DT)} covers the date; more than one is a SELECT INTO error. */
+    /** Every row whose {@code [EFF_DT, EXP_DT)} covers the date; in snapshot order. */
     public List<FeeRule> matching(String bookId, LocalDate businessDate) {
         return rules.stream()
                 .filter(rule -> rule.bookId().strip().equals(bookId.strip()))

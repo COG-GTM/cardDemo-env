@@ -1,5 +1,7 @@
 package com.carddemo.xferfee.shadow;
 
+import com.carddemo.xferfee.contracts.DailyTransaction;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,8 +57,10 @@ public class ShadowRunApplication implements ApplicationRunner, ExitCodeGenerato
     /** Replays one staged day and writes the candidate to {@code out}. */
     public static ChainResult replay(Path input, Path rules, Path ledger, Path out) throws IOException {
         Path master = input.resolve("ACCTDATA.PS");
-        ChainResult result = ShadowChain.legacy().run(
-                LegacyInputs.transactions(input.resolve("DALYTRAN.PS")),
+        Path daily = input.resolve("DALYTRAN.PS");
+        List<DailyTransaction> transactions = LegacyInputs.transactions(daily);
+        ChainResult result = ShadowChain.legacy(LegacyAmounts.fromRaw(transactions, LegacyInputs.rawAmounts(daily)))
+                .run(transactions,
                 LegacyInputs.xrefs(input.resolve("CARDXREF.PS")),
                 LegacyInputs.accounts(master),
                 Snapshots.rules(rules),

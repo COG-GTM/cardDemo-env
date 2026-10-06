@@ -1,5 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	java-build java-test parity-java shadow deadcode chain-graph chain-graph-check
+	java-build java-test parity-java shadow shadow-edge deadcode chain-graph chain-graph-check
 
 MVN ?= mvn -B -q
 SHADOW_ARGS ?=
@@ -61,6 +61,9 @@ parity-java: java-build
 
 shadow: java-build
 	python3 tools/shadow/shadow_run.py $(SHADOW_ARGS)
+
+shadow-edge: java-build
+	python3 tools/shadow/edge_days.py
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py
