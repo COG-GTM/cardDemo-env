@@ -64,6 +64,33 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Legacy adapter (Java)
+
+`java/legacy-adapter` is the coexistence boundary between the COBOL estate and
+Java services: a native copybook codec plus file ingress/egress. It needs JDK 21
+and Maven.
+
+```sh
+make java-test                    # unit + fixture round-trip tests
+make parity-codec                 # python and java codecs, all 7 cases
+make parity-codec CODEC=java CASE=half_cent
+```
+
+- Codec: parses `copybook/*.cpy` (`PIC X`, zoned `PIC S9V9`, `COMP-3`,
+  `OCCURS`). Decoding accepts mainframe overpunch (`{A-I}`/`}J-R`) and GnuCOBOL
+  ASCII signs (`p-y`); FILLER and unchanged fields keep their original bytes, so
+  every fixture dataset round-trips byte for byte.
+- Ingress: `DALYTRAN.PS` to a `TransactionPublisher` (`card.transactions`),
+  `ACCTDATA.PS` and `CARDXREF.PS` to a `ReferenceDataLoader`.
+- Egress: new generation of `AWS.M2.CARDDEMO.ACCTDATA.XFER` in the runjcl GDG
+  layout (`.GnnnnV00` plus `.gdg` catalog, LIMIT 5 SCRATCH).
+- `codec_parity.py` decodes each recorded output, re-encodes it with
+  `--codec=python` and `--codec=java`, runs `compare.py` on both candidates,
+  and requires byte-identical output from the two codecs.
+
+The CLI jar (`make java-build`) also exposes `decode`, `roundtrip`, `ingest`
+and `egress`; run it without arguments for usage.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:

@@ -1,5 +1,8 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check java-build java-test parity-codec
+
+MVN ?= mvn
+CODEC ?= both
 
 up:
 	docker compose up -d --build --wait
@@ -56,3 +59,12 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+java-build:
+	$(MVN) -B -q -f java/pom.xml package -DskipTests
+
+java-test:
+	$(MVN) -B -f java/pom.xml verify
+
+parity-codec: java-build
+	python3 tools/parity/codec_parity.py --codec $(CODEC) $(if $(CASE),--case $(CASE))

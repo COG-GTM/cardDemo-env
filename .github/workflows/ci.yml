@@ -44,3 +44,20 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  legacy-adapter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test legacy-adapter
+        run: make java-test
+      - name: Codec parity (python and java, all cases)
+        run: make parity-codec

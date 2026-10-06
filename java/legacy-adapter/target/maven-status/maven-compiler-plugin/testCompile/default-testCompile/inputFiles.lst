@@ -1,0 +1,7 @@
+/home/ubuntu/repos/cardDemo-env/java/legacy-adapter/src/test/java/com/carddemo/legacy/egress/AcctDataXferEgressTest.java
+/home/ubuntu/repos/cardDemo-env/java/legacy-adapter/src/test/java/com/carddemo/legacy/copybook/CopybookParserTest.java
+/home/ubuntu/repos/cardDemo-env/java/legacy-adapter/src/test/java/com/carddemo/legacy/codec/FixtureRoundTripTest.java
+/home/ubuntu/repos/cardDemo-env/java/legacy-adapter/src/test/java/com/carddemo/legacy/ingress/LegacyFileIngressTest.java
+/home/ubuntu/repos/cardDemo-env/java/legacy-adapter/src/test/java/com/carddemo/legacy/codec/CopybookCodecTest.java
+/home/ubuntu/repos/cardDemo-env/java/legacy-adapter/src/test/java/com/carddemo/legacy/candidate/CandidateEncoderTest.java
+/home/ubuntu/repos/cardDemo-env/java/legacy-adapter/src/test/java/com/carddemo/legacy/Estate.java
