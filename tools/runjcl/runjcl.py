@@ -336,7 +336,8 @@ class Runner:
                      f"COND CODE {rc:04d}")
             results[step.name] = rc
             maxcc = max(maxcc, rc)
-            if rc != 0:
+            # RC <= 4 is a warning: catalog and let COND decide later steps.
+            if rc > 4:
                 break
             self.catalog_pending()
             for base in allocated_bases:
