@@ -26,6 +26,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "duplicate_tran_id",
 )
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",
@@ -45,8 +46,8 @@ TABLES = {
 }
 
 
-def run(command: list[str]) -> None:
-    subprocess.run(command, cwd=ROOT, check=True)
+def run(command: list[str], check: bool = True) -> int:
+    return subprocess.run(command, cwd=ROOT, check=check).returncode
 
 
 def dump_table(table: str, destination: Path) -> None:
@@ -129,7 +130,7 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], check=False)
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
