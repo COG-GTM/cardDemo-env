@@ -169,6 +169,13 @@ def case_transactions(case: str, cards: list[str]) -> list[bytes]:
         )
         assert_half_cent(Decimal("5.00"), Decimal("0.0050"))
         return transfers
+    if case == "duplicate_tran_id":
+        return [
+            transfer("TRN0000000000001", 100.00, 1, 2, cards[0],
+                     "2024-06-05"),
+            transfer("TRN0000000000001", 250.00, 3, 4, cards[2],
+                     "2024-06-05"),
+        ]
     raise ValueError(f"unsupported fixture case: {case}")
 
 
@@ -191,6 +198,9 @@ CASES = {
     "zero_amount": "Zero-amount transfer preserves fee and ledger records",
     "non_transfer": "Non-transfer transactions are ignored by the extract",
     "half_cent": "Half-cent fee rounding cases for both books",
+    "duplicate_tran_id": (
+        "Duplicate TRAN_ID violates the ledger key: RC 8 and full rollback"
+    ),
 }
 
 
