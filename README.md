@@ -36,7 +36,7 @@ The joblog is written under `work/joblog/`.
 
 ## Record fixtures
 
-Record one case or all seven deterministic cases:
+Record one case or all eight deterministic cases:
 
 ```sh
 make record CASE=half_cent
@@ -44,7 +44,9 @@ make record-all
 ```
 
 Recorded datasets, SYSOUT, return codes, and database snapshots are committed
-under `fixtures/xferfee/`.
+under `fixtures/xferfee/`. Only catalogued GDG generations are recorded, so a
+failing case such as `abend_rollback` (BR-15) records no `ACCTDATA.XFER`,
+`XFER.FEES`, or `XFER.RECON.RPT` generation and an empty ledger.
 
 ## Run parity
 

@@ -1,0 +1,6 @@
+XFERFEE: NO FEE RULE FOR BOOK RETAIL    
+XFERFEE: 9999-ABEND-PROGRAM
+libcob: warning: implicit CLOSE of XFERFEE ('XFERFEE')
+libcob: warning: implicit CLOSE of ACCTOUT ('ACCTOUT')
+libcob: warning: implicit CLOSE of XFEREXTR ('XFEREXTR')
+libcob: warning: implicit CLOSE of ACCTFILE ('ACCTFILE')

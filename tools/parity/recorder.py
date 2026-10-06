@@ -26,6 +26,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "abend_rollback",
 )
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",
@@ -45,8 +46,20 @@ TABLES = {
 }
 
 
-def run(command: list[str]) -> None:
-    subprocess.run(command, cwd=ROOT, check=True)
+def run(command: list[str], check: bool = True) -> None:
+    subprocess.run(command, cwd=ROOT, check=check)
+
+
+def catalogued(path: Path) -> bool:
+    """Return False for a GDG generation the failed job never catalogued."""
+    match = re.match(r"^(.*)\.G(\d{4})V00$", path.name)
+    if not match:
+        return True
+    meta = path.with_name(match.group(1) + ".gdg")
+    if not meta.exists():
+        return True
+    current = int(json.loads(meta.read_text()).get("current", 0))
+    return int(match.group(2)) <= current
 
 
 def dump_table(table: str, destination: Path) -> None:
@@ -129,13 +142,14 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], check=False)
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
     dataset_dir.mkdir(parents=True)
     for entry in entries:
-        shutil.copyfile(entry["path"], dataset_dir / entry["dsn"])
+        if catalogued(Path(entry["path"])):
+            shutil.copyfile(entry["path"], dataset_dir / entry["dsn"])
 
     sysout_dir = expected / "sysout"
     sysout_dir.mkdir(parents=True)
