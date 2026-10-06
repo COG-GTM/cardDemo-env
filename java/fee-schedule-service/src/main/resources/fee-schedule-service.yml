@@ -1,0 +1,14 @@
+# Loaded via spring.config.name=fee-schedule-service (see FeeScheduleApplication) so it is not
+# picked up as application.yml by modules that only consume the FeeSchedule bean.
+spring:
+  application:
+    name: fee-schedule-service
+  datasource:
+    url: ${FEE_SCHEDULE_JDBC_URL:jdbc:postgresql://localhost:5432/carddemo}
+    username: ${FEE_SCHEDULE_DB_USER:carddemo}
+    password: ${FEE_SCHEDULE_DB_PASSWORD:carddemo}
+  flyway:
+    locations: classpath:db/migration/fee-schedule
+    table: fee_schedule_flyway_history
+server:
+  port: ${FEE_SCHEDULE_PORT:8081}

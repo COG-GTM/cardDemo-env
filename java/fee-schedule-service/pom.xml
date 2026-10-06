@@ -14,6 +14,11 @@
   <name>fee-schedule-service</name>
   <description>Effective-dated fee rules migrated from CTL_XFER_PARM (BR-06). Owned by COG-1236.</description>
 
+  <properties>
+    <!-- 1.19.x (Boot 3.3 default) cannot talk to Docker Engine 29+ (minimum API 1.44). -->
+    <testcontainers.version>1.21.4</testcontainers.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.carddemo.xferfee</groupId>
@@ -23,5 +28,66 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
     </dependency>
+
+    <!--
+      Service-only infrastructure. Optional so that consumers of the FeeSchedule bean
+      (parity-replay) get the in-memory variant without a web server, DataSource or Flyway.
+    -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <!-- Plain jar stays a library for parity-replay; the runnable service jar gets -exec. -->
+          <classifier>exec</classifier>
+          <mainClass>com.carddemo.xferfee.feeschedule.FeeScheduleApplication</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
