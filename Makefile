@@ -1,5 +1,6 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check up-java down-java java-build java-test \
+	parity-java
 
 up:
 	docker compose up -d --build --wait
@@ -56,3 +57,25 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+JAVA_MODE ?= inproc
+POSTING_MODE ?= batch-atomic
+PARITY_JAVA_RUNNER ?= docker
+MVN ?= mvn
+
+up-java:
+	docker compose --profile java up -d --build --wait
+
+down-java:
+	docker compose --profile java down
+
+java-build:
+	cd java && $(MVN) -B -q -DskipTests package
+
+java-test:
+	cd java && $(MVN) -B verify
+
+parity-java:
+	PARITY_JAVA_RUNNER=$(PARITY_JAVA_RUNNER) python3 tools/parity/parity_java.py \
+		--mode $(JAVA_MODE) --posting-mode $(POSTING_MODE) \
+		$(if $(CASE),--case $(CASE))

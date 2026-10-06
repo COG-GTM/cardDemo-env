@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.carddemo.xferfee</groupId>
+    <artifactId>xferfee-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>event-services</artifactId>
+  <name>event-services</name>
+  <description>
+    Event-mode runtime (COG-1251): the four xferfee services as Spring Boot + Kafka + Postgres processes
+    wrapping the library modules. One jar, one main per service (select with -Dloader.main).
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.carddemo.xferfee</groupId>
+      <artifactId>event-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.carddemo.xferfee</groupId>
+      <artifactId>fee-policy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.carddemo.xferfee</groupId>
+      <artifactId>fee-schedule-service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.carddemo.xferfee</groupId>
+      <artifactId>transfer-intake-service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.carddemo.xferfee</groupId>
+      <artifactId>account-posting-service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.carddemo.xferfee</groupId>
+      <artifactId>reconciliation-service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>event-services</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <layout>ZIP</layout>
+          <mainClass>com.carddemo.xferfee.services.intake.TransferIntakeServiceApplication</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
