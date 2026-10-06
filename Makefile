@@ -1,4 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
+	java-build parity-java-recon \
 	deadcode chain-graph chain-graph-check
 
 up:
@@ -46,6 +47,15 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+MVN ?= mvn
+MVN_FLAGS ?=
+
+java-build:
+	cd java && $(MVN) -B $(MVN_FLAGS) package
+
+parity-java-recon: java-build
+	python3 tools/parity/java_recon.py $(if $(CASE),--case $(CASE))
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py

@@ -12,3 +12,5 @@ work/
 *.so
 *.cob.c
 __pycache__/
+
+target/
