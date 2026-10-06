@@ -148,7 +148,9 @@ def main() -> int:
     args = parser.parse_args()
     if args.build or not JAR.exists():
         build()
-    work = (args.work or ROOT / "work" / "parity-java" / args.case).resolve()
+    work = Path(os.path.abspath(args.work or ROOT / "work" / "parity-java" / args.case))
+    if work.is_symlink():
+        parser.error(f"--work must not be a symlink (it is deleted and recreated): {work}")
     return run(args.case, work)
 
 
