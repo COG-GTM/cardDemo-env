@@ -1,4 +1,4 @@
-.PHONY: up down build run reset shell record record-all parity parity-naive \
+.PHONY: up down build run reset shell record record-all parity parity-naive shadow \
 	deadcode chain-graph chain-graph-check
 
 up:
@@ -38,6 +38,14 @@ parity:
 			python3 tools/parity/compare.py --chain xferfee --all \
 			--report work/parity/report.md; \
 		fi'
+
+# Shadow-run one daily input through COBOL and a candidate (java|legacy|naive|cmd).
+# Default: synthetic day of COUNT transactions; CASE=<fixture> replays a fixture.
+shadow:
+	docker compose exec -T estate python3 tools/shadow/shadow_run.py \
+		$(if $(CASE),--case $(CASE),--synthetic $(or $(COUNT),250)) \
+		$(if $(DATE),--date $(DATE)) $(if $(SEED),--seed $(SEED)) \
+		--candidate $(or $(CANDIDATE),java) $(SHADOW_ARGS)
 
 parity-naive:
 	docker compose exec -T estate sh -c \

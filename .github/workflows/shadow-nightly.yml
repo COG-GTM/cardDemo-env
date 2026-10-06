@@ -1,0 +1,47 @@
+name: shadow-nightly
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+    inputs:
+      count:
+        description: Synthetic transactions for the day
+        default: "250"
+      candidate:
+        description: Candidate implementation (java, legacy, naive)
+        default: java
+
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure compose user
+        run: |
+          echo "UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "GID=$(id -g)" >> "$GITHUB_ENV"
+          echo "SHADOW_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+      - name: Start estate
+        run: docker compose up -d --build --wait
+      - name: Build COBOL estate
+        run: make build
+      - name: Build Java parity-replay
+        if: hashFiles('java/pom.xml') != ''
+        run: docker compose exec -T estate mvn -q -f java/pom.xml -DskipTests package
+      - name: Shadow-run synthetic day
+        run: >-
+          make shadow DATE="$SHADOW_DATE"
+          COUNT="${{ inputs.count || '250' }}"
+          CANDIDATE="${{ inputs.candidate || 'java' }}"
+      - name: Publish shadow report
+        if: always()
+        run: |
+          report="work/shadow/$SHADOW_DATE/report.md"
+          if [ -f "$report" ]; then cat "$report" >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload shadow artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shadow-${{ env.SHADOW_DATE }}
+          path: work/shadow/

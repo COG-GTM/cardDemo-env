@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import tempfile
 from decimal import Decimal, ROUND_FLOOR
 from pathlib import Path
@@ -12,27 +13,36 @@ from pathlib import Path
 
 POSITIVE = "{ABCDEFGHI"
 NEGATIVE = "}JKLMNOPQR"
+# GnuCOBOL's ASCII runtime reads trailing signs as plain digits (positive) or
+# p-y (negative); EBCDIC-style overpunch letters decode as 0 there.
+NATIVE_POSITIVE = "0123456789"
+NATIVE_NEGATIVE = "pqrstuvwxy"
 
 
-def zoned(value: float, digits: int = 12) -> str:
+def zoned(value: float, digits: int = 12, native: bool = False) -> str:
     cents = int(round(abs(value) * 100))
     raw = f"{cents:0{digits}d}"
-    sign = POSITIVE if value >= 0 else NEGATIVE
+    if native:
+        sign = NATIVE_POSITIVE if value >= 0 else NATIVE_NEGATIVE
+    else:
+        sign = POSITIVE if value >= 0 else NEGATIVE
     return raw[:-1] + sign[int(raw[-1])]
 
 
-def account(account_id: int, balance: float, book: str) -> bytes:
+def account(
+    account_id: int, balance: float, book: str, native: bool = False
+) -> bytes:
     fields = [
         f"{account_id:011d}",
         "Y",
-        zoned(balance),
-        zoned(50000),
-        zoned(10000),
+        zoned(balance, native=native),
+        zoned(50000, native=native),
+        zoned(10000, native=native),
         "2020-01-01",
         "2030-12-31",
         "2025-01-01",
-        zoned(0),
-        zoned(0),
+        zoned(0, native=native),
+        zoned(0, native=native),
         f"{account_id:05d}     ",
         book.ljust(10),
     ]
@@ -54,6 +64,7 @@ def transaction(
     card: str,
     date: str,
     description: str,
+    native: bool = False,
 ) -> bytes:
     fields = [
         transaction_id.ljust(16),
@@ -61,7 +72,7 @@ def transaction(
         "0001",
         "DEMO".ljust(10),
         description.ljust(100),
-        zoned(amount, 11),
+        zoned(amount, 11, native),
         "000000001",
         "CardDemo Test Merchant".ljust(50),
         "Legacyville".ljust(50),
@@ -82,6 +93,7 @@ def transfer(
     target: int,
     card: str,
     date: str,
+    native: bool = False,
 ) -> bytes:
     return transaction(
         transaction_id,
@@ -90,6 +102,7 @@ def transfer(
         card,
         date,
         f"XFER TO ACCT {target:011d}",
+        native,
     )
 
 
@@ -227,6 +240,93 @@ def case_metadata(case: str) -> dict:
     }
 
 
+SYNTHETIC_BOOKS = ("RETAIL", "INSTL")
+SYNTHETIC_ACCOUNTS = 40
+SYNTHETIC_HALF_CENT_AMOUNTS = {
+    # Exact half-cent ties with an even lower cent for each live fee rate.
+    "0.0125": ("2.00", "5.20", "10.00"),
+    "0.0150": ("3.00", "7.00", "11.00"),
+    "0.0050": ("5.00", "13.00", "21.00"),
+}
+
+
+def synthetic_rate(book: str, date: str) -> str:
+    if book == "INSTL":
+        return "0.0050"
+    return "0.0150" if date >= "2024-06-15" else "0.0125"
+
+
+def synthetic_amount(rng: random.Random, book: str, date: str) -> Decimal:
+    roll = rng.random()
+    if roll < 0.05:
+        return Decimal("0.00")
+    if roll < 0.20:
+        return Decimal(rng.choice(
+            SYNTHETIC_HALF_CENT_AMOUNTS[synthetic_rate(book, date)]
+        ))
+    if roll < 0.35:
+        upper = 250000 if book == "INSTL" else 5000
+        return Decimal(rng.randint(100000, upper * 100)) / 100
+    return Decimal(rng.randint(1, 150000)) / 100
+
+
+def synthetic_day(date: str, count: int, seed: int) -> dict[str, bytes]:
+    """Build one deterministic daily input set for shadow runs."""
+    rng = random.Random(f"{seed}:{date}:{count}")
+    books = [
+        SYNTHETIC_BOOKS[index % len(SYNTHETIC_BOOKS)]
+        for index in range(SYNTHETIC_ACCOUNTS)
+    ]
+    cards = [f"{4000000000000001 + index:016d}"
+             for index in range(SYNTHETIC_ACCOUNTS)]
+    account_rows = [
+        account(index, Decimal(rng.randint(100000, 50000000)) / 100,
+                books[index - 1], native=True)
+        for index in range(1, SYNTHETIC_ACCOUNTS + 1)
+    ]
+    xref_rows = [
+        xref(card, index, 800000000 + index)
+        for index, card in enumerate(cards, 1)
+    ]
+    compact = date.replace("-", "")
+    transactions = []
+    for number in range(1, count + 1):
+        transaction_id = f"SHD{compact}{number:05d}"
+        source = rng.randint(1, SYNTHETIC_ACCOUNTS)
+        card = cards[source - 1]
+        if rng.random() < 0.15:
+            transaction_type, description = rng.choice((
+                ("01", "POS purchase"),
+                ("02", "PAYMENT"),
+                ("05", "CASH ADVANCE"),
+            ))
+            amount = Decimal(rng.randint(100, 50000)) / 100
+            transactions.append(transaction(
+                transaction_id, transaction_type, amount, card, date,
+                description, native=True,
+            ))
+            continue
+        target = rng.randint(1, SYNTHETIC_ACCOUNTS - 1)
+        if target >= source:
+            target += 1
+        amount = synthetic_amount(rng, books[source - 1], date)
+        transactions.append(
+            transfer(transaction_id, amount, source, target, card, date,
+                     native=True)
+        )
+    return {
+        "ACCTDATA.PS": b"".join(account_rows),
+        "CARDXREF.PS": b"".join(xref_rows),
+        "DALYTRAN.PS": b"".join(transactions),
+    }
+
+
+def write_synthetic_day(output: Path, date: str, count: int, seed: int) -> None:
+    output.mkdir(parents=True, exist_ok=True)
+    for name, data in synthetic_day(date, count, seed).items():
+        (output / name).write_bytes(data)
+
+
 def generate(case: str, root: Path) -> None:
     output = root / "fixtures" / "xferfee" / case / "input"
     output.mkdir(parents=True, exist_ok=True)
@@ -276,7 +376,18 @@ def main() -> None:
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--root", default=None, type=Path)
+    parser.add_argument("--synthetic", type=int, metavar="COUNT",
+                        help="write a synthetic day of COUNT transactions")
+    parser.add_argument("--date", default="2024-06-30")
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--out", type=Path,
+                        help="input directory for --synthetic")
     args = parser.parse_args()
+    if args.synthetic is not None:
+        if args.out is None:
+            parser.error("--out is required with --synthetic")
+        write_synthetic_day(args.out, args.date, args.synthetic, args.seed)
+        return
     root = args.root or Path(__file__).resolve().parents[2]
     cases = CASES if args.all or args.check else (args.case,)
     if args.check:

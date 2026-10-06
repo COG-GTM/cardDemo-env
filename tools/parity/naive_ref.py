@@ -31,8 +31,12 @@ def fee_rule(book: str, date: str) -> tuple[float, float]:
     return RULES[book]
 
 
-def load_accounts(case: str) -> dict[int, dict[str, object]]:
-    path = ROOT / "fixtures" / "xferfee" / case / "input" / "ACCTDATA.PS"
+def input_root(case: str) -> Path:
+    return ROOT / "fixtures" / "xferfee" / case / "input"
+
+
+def load_accounts(source: Path) -> dict[int, dict[str, object]]:
+    path = source / "ACCTDATA.PS"
     accounts = {}
     for offset in range(0, path.stat().st_size, 300):
         raw = path.read_bytes()[offset:offset + 300]
@@ -41,10 +45,10 @@ def load_accounts(case: str) -> dict[int, dict[str, object]]:
     return accounts
 
 
-def load_transfers(case: str) -> list[dict[str, object]]:
-    path = ROOT / "fixtures" / "xferfee" / case / "input" / "DALYTRAN.PS"
+def load_transfers(source: Path) -> list[dict[str, object]]:
+    path = source / "DALYTRAN.PS"
     xrefs = {}
-    xref_path = ROOT / "fixtures" / "xferfee" / case / "input" / "CARDXREF.PS"
+    xref_path = source / "CARDXREF.PS"
     for offset in range(0, xref_path.stat().st_size, 50):
         values = decode_record("CVACT03Y", xref_path.read_bytes()[offset:offset + 50])
         xrefs[values["XREF-CARD-NUM"]] = int(values["XREF-ACCT-ID"])
@@ -67,13 +71,13 @@ def load_transfers(case: str) -> list[dict[str, object]]:
     return transfers
 
 
-def record(case: str, out: Path) -> None:
+def record(source: Path, out: Path) -> None:
     datasets = out / "datasets"
     datasets.mkdir(parents=True, exist_ok=True)
-    accounts = load_accounts(case)
+    accounts = load_accounts(source)
     extracts = []
     fees = []
-    for transfer in load_transfers(case):
+    for transfer in load_transfers(source):
         book = str(accounts[transfer["source"]]["ACCT-GROUP-ID"]).strip()
         pct, cap = fee_rule(book, transfer["date"])
         amount = transfer["amount"]
@@ -154,7 +158,7 @@ def record(case: str, out: Path) -> None:
     sysout = out / "sysout"
     sysout.mkdir(parents=True, exist_ok=True)
     (sysout / "STEP010.txt").write_text(
-        f"CBXFR01C: RECORDS READ {len(load_transfers(case)):09d}\n"
+        f"CBXFR01C: RECORDS READ {len(load_transfers(source)):09d}\n"
         f"CBXFR01C: TRANSFERS SELECTED {len(extracts):09d}\n"
         "CBXFR01C: UNMATCHED CARDS 000000000\n"
     )
@@ -232,12 +236,14 @@ def edited_fee(value: Decimal) -> bytes:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--case", required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--case")
+    source.add_argument("--input-dir", type=Path)
     parser.add_argument("--out", required=True, type=Path)
     args = parser.parse_args()
     if args.out.exists():
         shutil.rmtree(args.out)
-    record(args.case, args.out)
+    record(args.input_dir or input_root(args.case), args.out)
     return 0
 
 
