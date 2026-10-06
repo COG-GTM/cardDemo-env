@@ -1,5 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	parity-java parity-java-recon deadcode chain-graph chain-graph-check
 
 up:
 	docker compose up -d --build --wait
@@ -46,6 +46,32 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+JAVA_CASE = $(or $(CASE),default)
+MVN = mvn -B -q -Dmaven.repo.local=/estate/work/m2
+
+parity-java:
+	docker compose exec -T estate sh -c \
+		'$(MVN) -f java/pom.xml package && \
+		python3 tools/parity/java_candidate.py --case $(JAVA_CASE) \
+		--out work/parity/$(JAVA_CASE)/java && \
+		python3 tools/parity/compare.py --chain xferfee --case $(JAVA_CASE) \
+		--candidate work/parity/$(JAVA_CASE)/java/candidate \
+		--report work/parity/$(JAVA_CASE)/java-report.md'
+
+RECON_CASES = default under_cap at_cap rate_change zero_amount non_transfer half_cent
+
+parity-java-recon:
+	docker compose exec -T estate sh -c \
+		'$(MVN) -f java/pom.xml package && fail=0 && \
+		for c in $(or $(CASE),$(RECON_CASES)); do \
+		python3 tools/parity/java_recon_stage.py --case $$c \
+		--out work/parity/$$c/java-recon || exit 1; \
+		python3 tools/parity/compare.py --chain xferfee --case $$c \
+		--candidate work/parity/$$c/java-recon/candidate \
+		--report work/parity/$$c/java-recon-report.md > /dev/null || fail=1; \
+		echo "$$c: $$(tail -1 work/parity/$$c/java-recon-report.md)"; \
+		done; exit $$fail'
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py
