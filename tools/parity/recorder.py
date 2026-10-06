@@ -164,6 +164,18 @@ def run_chain(
         dump_table(table, after / f"{table}.csv")
 
 
+def save_table(table: str, destination: Path) -> None:
+    """Every column (incl. POSTED_TS), physical order, for an exact restore."""
+    escaped = str(destination).replace("'", "''")
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c", f"\\copy {table} TO '{escaped}' CSV HEADER"])
+
+
+def restore_table(table: str, source: Path) -> None:
+    escaped = str(source).replace("'", "''")
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c", f"TRUNCATE TABLE {table}"])
+    run(["psql", "-v", "ON_ERROR_STOP=1", "-c", f"\\copy {table} FROM '{escaped}' CSV HEADER"])
+
+
 def load_table(table: str, source: Path) -> None:
     columns, _ = TABLES[table]
     escaped = str(source).replace("'", "''")
@@ -194,7 +206,7 @@ def record_inputs(
         shutil.copyfile(input_dir / filename, datasets / dsn)
     saved = {table: run_root / f"{table}.saved.csv" for table in TABLES}
     for table, path in saved.items():
-        dump_table(table, path)
+        save_table(table, path)
     try:
         load_table("CTL_XFER_PARM", rules)
         runjcl_reset_db()
@@ -205,7 +217,7 @@ def record_inputs(
         )
     finally:
         for table, path in saved.items():
-            load_table(table, path)
+            restore_table(table, path)
     return output
 
 
