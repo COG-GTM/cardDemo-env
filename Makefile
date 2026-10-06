@@ -1,5 +1,6 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check \
+	cutover-deadcode cutover-rollback-dryrun cutover-gate cutover-final-replay
 
 up:
 	docker compose up -d --build --wait
@@ -56,3 +57,27 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+CUTOVER_CASES ?= default under_cap at_cap rate_change zero_amount non_transfer half_cent
+CUTOVER_DAYS ?= 20
+CUTOVER_ARGS ?=
+CUTOVER_MVN ?= mvn -B -q -Dmaven.repo.local=/estate/work/m2
+
+cutover-deadcode:
+	python3 tools/cutover/retire_with_chain.py
+
+cutover-rollback-dryrun:
+	docker compose exec -T estate python3 tools/cutover/rollback_dryrun.py
+
+cutover-final-replay:
+	@status=0; for c in $(CUTOVER_CASES); do \
+		$(MAKE) --no-print-directory parity-java CASE=$$c || status=1; \
+	done; \
+	$(MAKE) --no-print-directory parity || status=1; \
+	exit $$status
+
+cutover-gate:
+	docker compose exec -T estate sh -c \
+		'$(CUTOVER_MVN) -f java/pom.xml -pl cutover -am package && \
+		java -jar java/cutover/target/cutover.jar --required-days $(CUTOVER_DAYS) \
+		--cases "$(strip $(CUTOVER_CASES))" $(CUTOVER_ARGS)'

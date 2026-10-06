@@ -49,7 +49,7 @@ public final class CutoverGateApplication {
                     case "--required-days" -> requiredDays = Integer.parseInt(args[++i]);
                     case "--calendar" -> calendar = BusinessCalendar.valueOf(args[++i].toUpperCase());
                     case "--no-rate-change" -> requireRateChange = false;
-                    case "--cases" -> cases = Arrays.stream(args[++i].split(",")).map(String::trim)
+                    case "--cases" -> cases = Arrays.stream(args[++i].split("[,\\s]+")).map(String::trim)
                             .filter(s -> !s.isEmpty()).toList();
                     default -> throw new IllegalArgumentException("unknown argument " + args[i]);
                 }
