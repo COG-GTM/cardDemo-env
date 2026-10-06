@@ -74,7 +74,7 @@ public class FeeRuleRepository {
 
     private static FeeRule map(ResultSet rs, int row) throws SQLException {
         return new FeeRule(
-                rs.getString("book_id").stripTrailing(),
+                FeeRules.trimPadding(rs.getString("book_id")),
                 rs.getBigDecimal("fee_pct"),
                 rs.getBigDecimal("fee_cap"),
                 rs.getObject("eff_dt", LocalDate.class),

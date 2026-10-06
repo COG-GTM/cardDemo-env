@@ -43,11 +43,20 @@ public final class FeeRules {
         if (bookId == null || bookId.isBlank()) {
             throw new InvalidFeeRuleException("book is required");
         }
-        String book = bookId.stripTrailing();
+        String book = trimPadding(bookId);
         if (book.length() > BOOK_ID_LENGTH) {
             throw new InvalidFeeRuleException("book must be at most " + BOOK_ID_LENGTH + " characters");
         }
         return book;
+    }
+
+    /** Removes CHAR padding: trailing spaces only (a trailing tab is significant). */
+    public static String trimPadding(String value) {
+        int end = value.length();
+        while (end > 0 && value.charAt(end - 1) == ' ') {
+            end--;
+        }
+        return value.substring(0, end);
     }
 
     public static String padBook(String bookId) {

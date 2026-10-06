@@ -42,4 +42,21 @@ class FeeRuleCsvTest {
         assertThat(FeeRuleCsv.format(List.of(rule))).endsWith(
                 "\nINSTL     ,0.005000,500.00,2020-01-01,9999-12-31\n");
     }
+
+    @Test
+    void quotedBookIdsRoundTrip(@TempDir Path dir) throws Exception {
+        String snapshot = FeeRuleCsv.HEADER + "\n"
+                + "\"A,B       \",0.005000,500.00,2020-01-01,9999-12-31\n"
+                + "\"Q\"\"T       \",0.005000,500.00,2020-01-01,9999-12-31\n";
+        Path csv = Files.writeString(dir.resolve("CTL_XFER_PARM.csv"), snapshot);
+        List<FeeRule> rules = FeeRuleCsv.read(csv);
+        assertThat(rules).extracting(FeeRule::bookId).containsExactly("A,B", "Q\"T");
+        assertThat(FeeRuleCsv.format(rules)).isEqualTo(snapshot);
+    }
+
+    @Test
+    void onlyTrailingSpacesArePadding() {
+        assertThat(FeeRules.normaliseBook("RETAIL    ")).isEqualTo("RETAIL");
+        assertThat(FeeRules.normaliseBook("RETAIL\t")).isEqualTo("RETAIL\t");
+    }
 }

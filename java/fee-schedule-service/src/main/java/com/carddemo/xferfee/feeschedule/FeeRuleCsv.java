@@ -26,26 +26,25 @@ public final class FeeRuleCsv {
     }
 
     public static List<FeeRule> read(Path path) throws IOException {
-        List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-        if (lines.isEmpty() || !lines.get(0).equalsIgnoreCase(HEADER)) {
+        List<List<String>> records = parse(Files.readString(path, StandardCharsets.UTF_8));
+        if (records.isEmpty() || !String.join(",", records.get(0)).equalsIgnoreCase(HEADER)) {
             throw new IOException(path + ": expected header '" + HEADER + "'");
         }
         List<FeeRule> rules = new ArrayList<>();
-        for (int i = 1; i < lines.size(); i++) {
-            String line = lines.get(i);
-            if (line.isEmpty()) {
+        for (int i = 1; i < records.size(); i++) {
+            List<String> cells = records.get(i);
+            if (cells.size() == 1 && cells.get(0).isEmpty()) {
                 continue;
             }
-            String[] cells = line.split(",", -1);
-            if (cells.length != 5) {
-                throw new IOException(path + ":" + (i + 1) + ": expected 5 columns");
+            if (cells.size() != 5) {
+                throw new IOException(path + ": record " + (i + 1) + ": expected 5 columns");
             }
             rules.add(new FeeRule(
-                    unquote(cells[0]).stripTrailing(),
-                    new BigDecimal(cells[1]),
-                    new BigDecimal(cells[2]),
-                    LocalDate.parse(cells[3]),
-                    LocalDate.parse(cells[4])));
+                    FeeRules.trimPadding(cells.get(0)),
+                    new BigDecimal(cells.get(1)),
+                    new BigDecimal(cells.get(2)),
+                    LocalDate.parse(cells.get(3)),
+                    LocalDate.parse(cells.get(4))));
         }
         return rules;
     }
@@ -77,10 +76,48 @@ public final class FeeRuleCsv {
         return value;
     }
 
-    private static String unquote(String value) {
-        if (value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
-            return value.substring(1, value.length() - 1).replace("\"\"", "\"");
+    /** RFC 4180 records: quoted fields may contain commas, doubled quotes and line breaks. */
+    static List<List<String>> parse(String text) throws IOException {
+        List<List<String>> records = new ArrayList<>();
+        List<String> record = new ArrayList<>();
+        StringBuilder field = new StringBuilder();
+        boolean quoted = false;
+        int i = 0;
+        while (i < text.length()) {
+            char c = text.charAt(i++);
+            if (quoted) {
+                if (c != '"') {
+                    field.append(c);
+                } else if (i < text.length() && text.charAt(i) == '"') {
+                    field.append('"');
+                    i++;
+                } else {
+                    quoted = false;
+                }
+            } else if (c == '"' && field.isEmpty()) {
+                quoted = true;
+            } else if (c == ',') {
+                record.add(field.toString());
+                field.setLength(0);
+            } else if (c == '\n' || c == '\r') {
+                if (c == '\r' && i < text.length() && text.charAt(i) == '\n') {
+                    i++;
+                }
+                record.add(field.toString());
+                field.setLength(0);
+                records.add(record);
+                record = new ArrayList<>();
+            } else {
+                field.append(c);
+            }
         }
-        return value;
+        if (quoted) {
+            throw new IOException("unterminated quoted field");
+        }
+        if (!field.isEmpty() || !record.isEmpty()) {
+            record.add(field.toString());
+            records.add(record);
+        }
+        return records;
     }
 }
