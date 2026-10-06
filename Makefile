@@ -55,7 +55,8 @@ java-candidate: java-build
 	docker compose exec -T estate python3 tools/parity/java_candidate.py \
 		$(if $(CASE),--case "$(CASE)",--all) --root work/parity-java
 
-parity-java: java-candidate java-compare
+parity-java: java-candidate
+	$(MAKE) --no-print-directory java-compare
 
 java-compare:
 	docker compose exec -T estate sh -c \
