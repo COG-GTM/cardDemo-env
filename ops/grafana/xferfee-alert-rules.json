@@ -1,0 +1,163 @@
+{
+  "apiVersion": 1,
+  "groups": [
+    {
+      "orgId": 1,
+      "name": "carddemo-xferfee",
+      "folder": "CardDemo",
+      "interval": "1m",
+      "rules": [
+        {
+          "uid": "xferfee-rc8",
+          "title": "XFRDAILY step ended RC 8+ (abend, DLQ entry written)",
+          "condition": "B",
+          "for": "0m",
+          "labels": {
+            "severity": "critical",
+            "chain": "xferfee"
+          },
+          "annotations": {
+            "summary": "{{ $labels.program }} ({{ $labels.step }}) ended RC {{ $labels.rc }}: run rolled back, STEP030 skipped; see the DLQ entry.",
+            "runbook": "ops/README.md"
+          },
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "data": [
+            {
+              "refId": "A",
+              "datasourceUid": "${datasource}",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "model": {
+                "refId": "A",
+                "expr": "sum by (step, program, rc) (increase(carddemo_xferfee_step_alerts_total[10m]))",
+                "instant": true
+              }
+            },
+            {
+              "refId": "B",
+              "datasourceUid": "__expr__",
+              "model": {
+                "refId": "B",
+                "type": "threshold",
+                "expression": "A",
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "type": "gt",
+                      "params": [
+                        0
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "uid": "xferfee-rc4",
+          "title": "XFRDAILY step ended RC 4 (warning)",
+          "condition": "B",
+          "for": "0m",
+          "labels": {
+            "severity": "warning",
+            "chain": "xferfee"
+          },
+          "annotations": {
+            "summary": "{{ $labels.program }} ({{ $labels.step }}) ended RC 4: unmatched cards or empty fee set; check TransferRejected.",
+            "runbook": "ops/README.md"
+          },
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "data": [
+            {
+              "refId": "A",
+              "datasourceUid": "${datasource}",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "model": {
+                "refId": "A",
+                "expr": "sum by (step, program) (increase(carddemo_xferfee_step_warnings_total[10m]))",
+                "instant": true
+              }
+            },
+            {
+              "refId": "B",
+              "datasourceUid": "__expr__",
+              "model": {
+                "refId": "B",
+                "type": "threshold",
+                "expression": "A",
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "type": "gt",
+                      "params": [
+                        0
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "uid": "xferfee-recon-mismatch",
+          "title": "XFERFEE TOTAL FEES != CBXFR03C GRAND TOTAL FEE",
+          "condition": "B",
+          "for": "0m",
+          "labels": {
+            "severity": "critical",
+            "chain": "xferfee"
+          },
+          "annotations": {
+            "summary": "Posted fees and reconciled grand total disagree.",
+            "runbook": "ops/README.md"
+          },
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "data": [
+            {
+              "refId": "A",
+              "datasourceUid": "${datasource}",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "model": {
+                "refId": "A",
+                "expr": "abs(sum(increase(carddemo_xferfee_posting_fees_total_currency_total[1h])) - sum(increase(carddemo_xferfee_recon_grand_total_fee_currency_total[1h]))) > 0.005 and sum(increase(carddemo_xferfee_step_runs_total{step=\"STEP030\"}[1h])) > 0",
+                "instant": true
+              }
+            },
+            {
+              "refId": "B",
+              "datasourceUid": "__expr__",
+              "model": {
+                "refId": "B",
+                "type": "threshold",
+                "expression": "A",
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "type": "gt",
+                      "params": [
+                        0
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

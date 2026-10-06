@@ -26,6 +26,7 @@
     <module>account-posting-service</module>
     <module>reconciliation-service</module>
     <module>legacy-adapter</module>
+    <module>observability</module>
     <module>parity-replay</module>
   </modules>
 
@@ -70,6 +71,11 @@
       <dependency>
         <groupId>com.carddemo.xferfee</groupId>
         <artifactId>legacy-adapter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.carddemo.xferfee</groupId>
+        <artifactId>observability</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

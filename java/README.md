@@ -13,6 +13,7 @@ recorded fixtures in `fixtures/xferfee/<case>/expected/`.
 | `account-posting-service` | `XFERFEE` posting (STEP020) | `AccountPosting` | COG-1238 |
 | `reconciliation-service` | `CBXFR03C` (STEP030) | `Reconciliation` | COG-1239 |
 | `legacy-adapter` | dataset I/O | Java copybook codec | COG-1240 |
+| `observability` | SYSOUT counters / RC / JES log | (consumes step results) | COG-1241 |
 | `parity-replay` | `XFERFEEP` proc / JCL | harness | COG-1234 |
 
 ## Frozen contracts (`com.carddemo.xferfee.contracts`)
@@ -41,6 +42,25 @@ To let downstream steps be exercised before upstream ones land, a missing `Trans
 is stubbed with the recorded `XFER.EXTRACT` and a missing `AccountPosting` with the recorded
 `XFER.FEES` (inputs only; the stubbed step's own outputs stay missing). Disable with
 `--no-stub-upstream`.
+
+## Observability (COG-1241)
+
+`observability` is a Spring Boot auto-configuration that `parity-replay` (and later the
+services) pick up from the classpath. `ChainObserver` takes each step's `contracts` result
+(`IntakeResult`, `PostingResult`, `ReconResult`) and records:
+
+* Micrometer counters mirroring the SYSOUT counter lines of `CBXFR01C`, `XFERFEE` and `CBXFR03C`;
+* RC 4: `carddemo.xferfee.step.warnings` + `carddemo.xferfee.transfers.rejected{reason}`;
+* RC 8+: an `AlertPublisher` alert + a `DeadLetterQueue` entry (no posted counters, BR-15).
+
+Applications override `MeterRegistry`, `AlertPublisher` or `DeadLetterQueue` by declaring their
+own bean. `RunArtifactsWriter` writes the replay's `sysout/`, `rc.json` and `observability/`.
+Meter names, the dashboards and the RC runbook are in [`ops/README.md`](../ops/README.md).
+
+Until COG-1235..COG-1239 land, `parity-replay` runs each step with the matching
+`parity.interim` implementation (logged at startup); a real contract bean always wins.
+`make parity-java` defaults to `PARITY_SCOPE=signals` (SYSOUT + `rc.json` + counters);
+`PARITY_SCOPE=full` adds datasets and DB2 tables once the services write them.
 
 ## Build and run
 

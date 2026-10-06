@@ -64,6 +64,16 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+The Java port replays the same fixtures (see `java/README.md`):
+
+```sh
+make java-test
+make parity-java CASE=default
+```
+
+`make parity-java` diffs SYSOUT and `rc.json` (`compare.py --scope signals`) and the
+SYSOUT counters (`tools/parity/compare_counters.py`); dashboards are under `ops/`.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:

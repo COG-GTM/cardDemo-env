@@ -216,7 +216,13 @@ def append_sysout_diffs(
     return field_diffs, record_diffs
 
 
-def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
+SCOPES = ("full", "signals")
+
+
+def compare_case(
+    case: str, candidate: Path | None = None, scope: str = "full"
+) -> tuple[str, int]:
+    """``scope="signals"`` compares only SYSOUT and return codes (the operator signals)."""
     expected_root = CHAIN_ROOT / case / "expected"
     if candidate is None:
         candidate = ROOT / "work" / "parity" / case / "candidate"
@@ -245,7 +251,9 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     ]
     field_diffs = 0
     record_diffs = 0
-    for output in metadata["outputs"]:
+    outputs = metadata["outputs"] if scope == "full" else []
+    tables = metadata["db2"] if scope == "full" else []
+    for output in outputs:
         expected = dataset_file(expected_root / "datasets", output["dsn"])
         actual = dataset_file(candidate / "datasets", output["dsn"])
         if expected is None and actual is None:
@@ -264,7 +272,7 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         field_diffs += fields
         record_diffs += records
 
-    for table in metadata["db2"]:
+    for table in tables:
         fields, records = append_db_diffs(
             lines,
             expected_root / "db2_after",
@@ -302,8 +310,11 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         if line.startswith("- ") and not line.startswith("- RC:")
     ]
     rc_lines = [line for line in details if line.startswith("- RC:")]
+    title = f"# Parity: xferfee / {case}"
+    if scope != "full":
+        title += f" (scope: {scope})"
     lines = [
-        f"# Parity: xferfee / {case} — {'FAIL' if rc else 'PASS'}",
+        f"{title} — {'FAIL' if rc else 'PASS'}",
         "",
         "| Dataset/Table | Record key | Field | Expected | Actual |",
         "|---|---|---|---|---|",
@@ -328,6 +339,8 @@ def main() -> int:
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--scope", choices=SCOPES, default="full",
+                        help="signals: compare only SYSOUT and rc.json")
     args = parser.parse_args()
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
@@ -338,7 +351,7 @@ def main() -> int:
     overall = 0
     for case in cases:
         candidate = args.candidate if len(cases) == 1 else None
-        report, rc = compare_case(case, candidate)
+        report, rc = compare_case(case, candidate, args.scope)
         aggregate.append(report)
         overall = max(overall, rc)
     if args.all:
