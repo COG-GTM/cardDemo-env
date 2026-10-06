@@ -27,6 +27,13 @@ def discover() -> list[str]:
     return [case for case in ORIGINAL if case in found] + [case for case in found if case not in ORIGINAL]
 
 
+def ensure_replay_image() -> None:
+    image = "carddemo-xferfee-java:local"
+    if subprocess.run(["docker", "image", "inspect", image], cwd=ROOT,
+                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode != 0:
+        run(["docker", "compose", "--profile", "parity", "build", "parity-replay"], check=True)
+
+
 def replay_command(runner: str, args: list[str]) -> list[str]:
     if runner == "docker":
         return ["docker", "compose", "run", "--rm", "--no-deps", "-T", "parity-replay", *args]
@@ -57,6 +64,8 @@ def main() -> int:
     root = Path("work") / "parity-java" / args.mode / args.posting_mode
     summary = [f"# make parity-java — mode={args.mode} posting-mode={args.posting_mode}", ""]
     failures = 0
+    if args.runner == "docker":
+        ensure_replay_image()
     for case in cases:
         work = root / case
         steps = [

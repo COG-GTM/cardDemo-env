@@ -6,10 +6,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.carddemo.xferfee.contracts.Account;
 import com.carddemo.xferfee.contracts.AccountPosting;
+import com.carddemo.xferfee.contracts.FeeRule;
+import com.carddemo.xferfee.contracts.FeeSchedule;
 import com.carddemo.xferfee.contracts.RejectReason;
 import com.carddemo.xferfee.contracts.TransferPosted;
 import com.carddemo.xferfee.contracts.TransferRejected;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class PerTransferPostingTest {
@@ -41,5 +45,33 @@ class PerTransferPostingTest {
         assertThat(result.rejected()).extracting(TransferRejected::reason)
                 .containsExactly(RejectReason.DUPLICATE_TRAN_ID);
         assertThat(result.accountMasterAfter().get(1).currentBalance()).isEqualByComparingTo("600.00");
+    }
+
+    @Test
+    void identicalRedeliveryIsReplayedEvenAfterItsFeeRuleIsRemoved() {
+        PerTransferPosting.Outcome first = posting.postOne(transfer("T1", 1, 2, "RETAIL", "100.00"), master, List.of());
+        assertThat(first).isInstanceOf(PerTransferPosting.Outcome.Posted.class);
+        PerTransferPosting.Outcome.Posted posted = (PerTransferPosting.Outcome.Posted) first;
+        FeeSchedule noRules = new FeeSchedule() {
+            @Override
+            public void seed(List<FeeRule> rules) {
+            }
+
+            @Override
+            public Optional<FeeRule> effectiveRule(String bookId, LocalDate date) {
+                return Optional.empty();
+            }
+
+            @Override
+            public List<FeeRule> rules() {
+                return List.of();
+            }
+        };
+        PerTransferPosting withoutRules =
+                new PerTransferPosting(new CobolAccountPosting(noRules, CobolAccountPostingTest.POLICY));
+        assertThat(withoutRules.postOne(transfer("T1", 1, 2, "RETAIL", "100.00"), posted.masterAfter(),
+                posted.ledgerAfter())).isEqualTo(new PerTransferPosting.Outcome.Replayed("T1"));
+        assertThat(withoutRules.postOne(transfer("T2", 1, 2, "RETAIL", "100.00"), posted.masterAfter(),
+                posted.ledgerAfter())).isInstanceOf(PerTransferPosting.Outcome.Rejected.class);
     }
 }

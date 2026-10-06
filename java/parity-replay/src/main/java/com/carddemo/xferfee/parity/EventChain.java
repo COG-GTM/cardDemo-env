@@ -54,6 +54,9 @@ import org.slf4j.LoggerFactory;
  */
 final class EventChain {
 
+    /** XFERFEE 3000-WRITE-MASTER writes only the first 500 accounts it loaded (WS-ACCOUNT-ROW OCCURS 500). */
+    static final int ACCOUNT_TABLE_LIMIT = 500;
+
     private static final Logger LOG = LoggerFactory.getLogger(EventChain.class);
 
     private final ReplayOptions options;
@@ -225,7 +228,8 @@ final class EventChain {
                 : null;
         boolean postingKept = step020.filter(ChainOutput::kept).isPresent();
         List<Account> master = postingKept
-                ? payloads(db, "SELECT payload FROM posting.account ORDER BY seq", null, Account.class)
+                ? payloads(db, "SELECT payload FROM posting.account ORDER BY seq LIMIT " + ACCOUNT_TABLE_LIMIT, null,
+                        Account.class)
                 : null;
         List<TransferPosted> fees = postingKept
                 ? payloads(db, "SELECT payload FROM posting.fee_record WHERE run_id = ? ORDER BY seq", runId,

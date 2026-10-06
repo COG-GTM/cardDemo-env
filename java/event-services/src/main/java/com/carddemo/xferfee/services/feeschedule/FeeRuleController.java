@@ -7,8 +7,6 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,11 +31,5 @@ public class FeeRuleController {
     public ResponseEntity<FeeRule> effective(@RequestParam String bookId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.of(schedule.effectiveRule(bookId, date));
-    }
-
-    @PutMapping
-    public List<FeeRule> replace(@RequestBody List<FeeRule> rules) {
-        schedule.seed(rules);
-        return schedule.rules();
     }
 }

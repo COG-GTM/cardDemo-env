@@ -3,7 +3,6 @@ package com.carddemo.xferfee.posting;
 import com.carddemo.xferfee.contracts.Account;
 import com.carddemo.xferfee.contracts.AccountPosting;
 import com.carddemo.xferfee.contracts.LedgerEntry;
-import com.carddemo.xferfee.contracts.RejectReason;
 import com.carddemo.xferfee.contracts.StepReport;
 import com.carddemo.xferfee.contracts.TransferPosted;
 import com.carddemo.xferfee.contracts.TransferRejected;
@@ -40,16 +39,16 @@ public final class PerTransferPosting implements AccountPosting {
         this.legacy = legacy;
     }
 
+    /** A redelivery identical to its ledger row is {@code Replayed} before any reference data is looked up (D3). */
     public Outcome postOne(TransferRequested transfer, List<Account> master, List<LedgerEntry> ledger) {
+        if (identicalInLedger(transfer, ledger)) {
+            return new Outcome.Replayed(transfer.tranId());
+        }
         PostingResult result = legacy.post(List.of(transfer), master, ledger);
         if (result.report().returnCode() <= 4) {
             return new Outcome.Posted(result.posted().get(0), result.accountMasterAfter(), result.ledgerAfter());
         }
-        TransferRejected rejected = result.rejected().get(0);
-        if (rejected.reason() == RejectReason.DUPLICATE_TRAN_ID && identicalInLedger(transfer, ledger)) {
-            return new Outcome.Replayed(transfer.tranId());
-        }
-        return new Outcome.Rejected(rejected);
+        return new Outcome.Rejected(result.rejected().get(0));
     }
 
     @Override
