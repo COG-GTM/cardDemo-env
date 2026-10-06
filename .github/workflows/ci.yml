@@ -71,7 +71,7 @@ jobs:
       - name: Run Java parity
         id: parity_java
         continue-on-error: true
-        run: make parity-java
+        run: make java-compare
       - name: Report parity summary
         if: always()
         run: |

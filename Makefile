@@ -1,5 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check java-build java-candidate parity-java
+	deadcode chain-graph chain-graph-check java-build java-candidate java-compare parity-java
 
 up:
 	docker compose up -d --build --wait
@@ -55,7 +55,9 @@ java-candidate: java-build
 	docker compose exec -T estate python3 tools/parity/java_candidate.py \
 		$(if $(CASE),--case "$(CASE)",--all) --root work/parity-java
 
-parity-java: java-candidate
+parity-java: java-candidate java-compare
+
+java-compare:
 	docker compose exec -T estate sh -c \
 		'python3 tools/parity/compare.py --chain xferfee \
 			$(if $(CASE),--case "$(CASE)" \
