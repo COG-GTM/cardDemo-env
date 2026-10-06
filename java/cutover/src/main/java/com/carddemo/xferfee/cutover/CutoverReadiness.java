@@ -29,8 +29,7 @@ public record CutoverReadiness(
             blockers.add("G2 replay: no cases evaluated");
         }
         if (!rollback.met()) {
-            blockers.add("G3 rollback: rehearsal " + rollback.status()
-                    + (rollback.failedChecks().isEmpty() ? "" : " failed " + rollback.failedChecks()));
+            rollback.problems().forEach(problem -> blockers.add("G3 rollback: " + problem));
         }
         return blockers;
     }
@@ -53,6 +52,12 @@ public record CutoverReadiness(
                 .append(rollback.status());
         if (rollback.finishedAt() != null) {
             md.append(" at ").append(rollback.finishedAt());
+        }
+        if (rollback.sourceKind() != null) {
+            md.append(", generation: ").append(rollback.sourceKind());
+        }
+        if (rollback.commit() != null) {
+            md.append(", commit ").append(rollback.commit(), 0, Math.min(12, rollback.commit().length()));
         }
         md.append(" |\n\n## Final replay per case\n\n| Case | COBOL `make parity` | Java `make parity-java` |\n|---|---|---|\n");
         for (String name : caseOrder) {
@@ -92,7 +97,8 @@ public record CutoverReadiness(
         }
         root.put("replay", Map.of("met", replay.met(), "cases", cases));
         root.put("rollback", Map.of("met", rollback.met(), "status", rollback.status(),
-                "failed_checks", rollback.failedChecks()));
+                "failed_checks", rollback.failedChecks(),
+                "problems", rollback.problems()));
         root.put("blockers", blockers());
         try {
             return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(root) + "\n";

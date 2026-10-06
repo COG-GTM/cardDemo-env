@@ -20,6 +20,10 @@ class ShadowExitCriterionTest {
         return new ShadowDay(date, status, Set.of(RATE_CHANGE), Path.of(date + "/report.json"));
     }
 
+    private static LocalDate last(List<ShadowDay> history) {
+        return history.get(history.size() - 1).date();
+    }
+
     private static List<ShadowDay> clean(int days) {
         List<ShadowDay> history = new ArrayList<>();
         for (int i = 0; i < days; i++) {
@@ -31,7 +35,7 @@ class ShadowExitCriterionTest {
     @Test
     void metWhenStreakLongEnoughAndSpansRateChange() {
         ShadowExitCriterion.Result result =
-                new ShadowExitCriterion(20, true, BusinessCalendar.DAILY).evaluate(clean(20));
+                new ShadowExitCriterion(20, true, BusinessCalendar.DAILY).evaluate(clean(20), START.plusDays(19));
         assertTrue(result.met());
         assertEquals(20, result.cleanStreak());
         assertEquals(START, result.windowStart());
@@ -43,7 +47,7 @@ class ShadowExitCriterionTest {
         List<ShadowDay> history = clean(25);
         history.set(10, day(history.get(10).date(), ShadowStatus.FAIL));
         ShadowExitCriterion.Result result =
-                new ShadowExitCriterion(20, false, BusinessCalendar.DAILY).evaluate(history);
+                new ShadowExitCriterion(20, false, BusinessCalendar.DAILY).evaluate(history, last(history));
         assertFalse(result.met());
         assertEquals(14, result.cleanStreak());
         assertEquals(ShadowStatus.FAIL, result.lastUnclean().orElseThrow().status());
@@ -54,7 +58,7 @@ class ShadowExitCriterionTest {
         List<ShadowDay> history = clean(5);
         history.set(4, day(history.get(4).date(), ShadowStatus.ERROR));
         ShadowExitCriterion.Result result =
-                new ShadowExitCriterion(1, false, BusinessCalendar.DAILY).evaluate(history);
+                new ShadowExitCriterion(1, false, BusinessCalendar.DAILY).evaluate(history, last(history));
         assertFalse(result.met());
         assertEquals(0, result.cleanStreak());
     }
@@ -64,7 +68,7 @@ class ShadowExitCriterionTest {
         List<ShadowDay> history = clean(25);
         history.remove(12);
         ShadowExitCriterion.Result result =
-                new ShadowExitCriterion(20, false, BusinessCalendar.DAILY).evaluate(history);
+                new ShadowExitCriterion(20, false, BusinessCalendar.DAILY).evaluate(history, last(history));
         assertFalse(result.met());
         assertEquals(12, result.cleanStreak());
         assertTrue(result.reasons().get(0).contains("missing shadow run for 2024-06-13"));
@@ -79,9 +83,9 @@ class ShadowExitCriterionTest {
             }
         }
         assertEquals(10, new ShadowExitCriterion(10, false, BusinessCalendar.WEEKDAYS)
-                .evaluate(history).cleanStreak());
+                .evaluate(history, last(history)).cleanStreak());
         assertEquals(5, new ShadowExitCriterion(10, false, BusinessCalendar.DAILY)
-                .evaluate(history).cleanStreak());
+                .evaluate(history, last(history)).cleanStreak());
     }
 
     @Test
@@ -91,17 +95,60 @@ class ShadowExitCriterionTest {
             history.add(day(LocalDate.of(2024, 7, 1).plusDays(i), ShadowStatus.PASS));
         }
         ShadowExitCriterion.Result result =
-                new ShadowExitCriterion(20, true, BusinessCalendar.DAILY).evaluate(history);
+                new ShadowExitCriterion(20, true, BusinessCalendar.DAILY).evaluate(history, last(history));
         assertFalse(result.met());
         assertFalse(result.rateChangeCovered());
-        assertTrue(new ShadowExitCriterion(20, false, BusinessCalendar.DAILY).evaluate(history).met());
+        assertTrue(new ShadowExitCriterion(20, false, BusinessCalendar.DAILY).evaluate(history, last(history)).met());
     }
 
     @Test
     void emptyHistoryIsNotMet() {
         ShadowExitCriterion.Result result =
-                new ShadowExitCriterion(1, false, BusinessCalendar.DAILY).evaluate(List.of());
+                new ShadowExitCriterion(1, false, BusinessCalendar.DAILY).evaluate(List.of(), START);
         assertFalse(result.met());
         assertEquals(List.of("no shadow-run reports found"), result.reasons());
+    }
+
+    @Test
+    void staleHistoryDoesNotSatisfyTheGate() {
+        List<ShadowDay> history = clean(20);
+        ShadowExitCriterion.Result result = new ShadowExitCriterion(20, false, BusinessCalendar.DAILY)
+                .evaluate(history, START.plusDays(40));
+        assertFalse(result.met());
+        assertEquals(0, result.cleanStreak());
+        assertTrue(result.reasons().get(0).contains("missing shadow run for " + START.plusDays(40)), result.reasons().toString());
+    }
+
+    @Test
+    void reportsAfterAsOfAreIgnored() {
+        List<ShadowDay> history = clean(25);
+        history.set(24, day(history.get(24).date(), ShadowStatus.FAIL));
+        assertTrue(new ShadowExitCriterion(20, false, BusinessCalendar.DAILY)
+                .evaluate(history, START.plusDays(23)).met());
+    }
+
+    @Test
+    void rateChangeMustFallInTheLatestRequiredDays() {
+        List<ShadowDay> history = clean(30);
+        ShadowExitCriterion.Result result = new ShadowExitCriterion(10, true, BusinessCalendar.DAILY)
+                .evaluate(history, last(history));
+        assertEquals(30, result.cleanStreak());
+        assertEquals(START.plusDays(20), result.windowStart());
+        assertFalse(result.rateChangeCovered());
+        assertFalse(result.met());
+        assertTrue(new ShadowExitCriterion(20, true, BusinessCalendar.DAILY)
+                .evaluate(history, last(history)).met());
+    }
+
+    @Test
+    void weekdayAsOfOnWeekendAnchorsToFriday() {
+        List<ShadowDay> history = new ArrayList<>();
+        for (LocalDate d = LocalDate.of(2024, 6, 3); !d.isAfter(LocalDate.of(2024, 6, 14)); d = d.plusDays(1)) {
+            if (d.getDayOfWeek().getValue() <= 5) {
+                history.add(day(d, ShadowStatus.PASS));
+            }
+        }
+        assertTrue(new ShadowExitCriterion(10, false, BusinessCalendar.WEEKDAYS)
+                .evaluate(history, LocalDate.of(2024, 6, 16)).met());
     }
 }

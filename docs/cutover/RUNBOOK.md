@@ -28,8 +28,12 @@ the migration lead runs the gate, Finance and the product owner accept it.
 All three gates are evaluated by one command on the release candidate commit:
 
 ```sh
-make cutover-gate CUTOVER_DAYS=20      # GO = exit 0, writes work/cutover/readiness.{md,json}
+make cutover-gate CUTOVER_DAYS=20 CUTOVER_ARGS="--as-of <last completed business date>"
+# GO = exit 0, writes work/cutover/readiness.{md,json}
 ```
+
+`make cutover-gate` and `make cutover-test` run in a `maven:3.9-eclipse-temurin-21` container,
+so they do not depend on the estate image having a JDK.
 
 The gate is `java/cutover` (`CutoverGateApplication`). It reads only artefacts the other
 tickets already produce, so it can be re-run by anyone.
@@ -38,17 +42,21 @@ tickets already produce, so it can be re-run by anyone.
 
 Met when **all** of the following hold over `work/shadow/<date>/report.json`:
 
-1. The latest **N consecutive scheduled business days** (default `N = 20`) each have a shadow
+1. The **N consecutive scheduled business days ending at `--as-of`** (default: the previous
+   scheduled day; default `N = 20`) each have a shadow
    report with `status = PASS`. `XFRDAILY` is scheduled `DAYS="ALL"` in Control-M, so the
    default calendar is every calendar day (`--calendar WEEKDAYS` if the business agrees
    otherwise).
 2. `PASS` means `shadow_run.py` exit 0: zero differences across datasets, `db2_after`, SYSOUT
    and `rc.json`, and zero mismatches in its fees / balances / ledger / report-totals
    sections.
-3. A day with `FAIL`, `ERROR`, an unreadable report or **no report at all resets the count**.
+3. A day with `FAIL`, `ERROR`, an unreadable report or **no report at all resets the count**,
+   including the `--as-of` day itself, so a shadow job that stopped reporting cannot leave G1
+   green on old history.
    An "explained" diff is still a diff: it is fixed in Java (or decided in COG-1249 and
    re-recorded by the owning ticket) and the count restarts.
-4. The clean window spans at least one fee-rate change: an `EFF_DT` in that day's frozen
+4. The latest N-day window (not any older part of a longer streak) spans at least one
+   fee-rate change: an `EFF_DT` in that day's frozen
    `CTL_XFER_PARM` snapshot that supersedes an earlier rule for the same book (BR-06/07). If no
    real rate change falls in the window, schedule one with Finance or replay a day with
    `shadow_run.py --rules <snapshot with a change>`.
@@ -75,8 +83,13 @@ outputs are never edited to make Java match.
 make cutover-rollback-dryrun   # work/cutover/rollback/{rollback.log,rollback.json}
 ```
 
-Must be `PASS` (all checks) on the release build within 5 business days before T0. The
-committed rehearsal log is [evidence/rollback-dryrun.log](evidence/rollback-dryrun.log).
+Met only when `rollback.json` is `PASS` with a non-empty list of checks that all passed, was
+rehearsed from a Java / legacy-adapter generation (`source_kind` `java`, or `explicit` for an
+operator-supplied `--source`; the COBOL fixture stand-in does not count), finished within
+`--rehearsal-max-age-days` (default 7 calendar days ≈ the runbook's 5 business days), and ran on
+the release commit (`make cutover-gate` passes `--release-commit $(git rev-parse HEAD)`).
+`--allow-fixture-rehearsal` exists for development only. The committed rehearsal log is
+[evidence/rollback-dryrun.log](evidence/rollback-dryrun.log).
 
 ## 3. Cut-over steps
 

@@ -14,7 +14,8 @@ Simulates "Java is system of record, roll back to XFRDAILY":
 5. Post-run reconciliation of the first legacy day after rollback.
 
 Writes work/cutover/rollback/{rollback.log,rollback.json}. Exit 0 only if every check
-passed. Truncates XFER_FEE_LEDGER in the compose database (as runjcl --db-reset does).
+passed. Truncates XFER_FEE_LEDGER, so it refuses to run unless PGHOST is the compose
+`db` service (as runjcl --db-reset does); never point it at a shared database.
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ import argparse
 import csv
 import datetime as dt
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -99,7 +101,7 @@ class DryRun:
         return proc.returncode
 
     def recon(self, label: str, acct_before: Path, acct_after: Path, fees: Path,
-              incoming: Path) -> dict[str, tuple[str, str, bool]]:
+              incoming: Path, window: tuple[dt.date, dt.date]) -> dict[str, tuple[str, str, bool]]:
         self.log(f"$ psql -f ops/cutover/ledger_recon.sql   ({label})")
         load = self.staging / "load.sql"
         load.write_text("".join(
@@ -109,7 +111,8 @@ class DryRun:
         ))
         proc = subprocess.run(
             ["psql", "-X", "-q", "-v", "ON_ERROR_STOP=1", "-At", "-F", "|",
-             "-v", f"load={load}", "-f", str(RECON_SQL)],
+             "-v", f"load={load}", "-v", f"run_from={window[0]}", "-v", f"run_to={window[1]}",
+             "-f", str(RECON_SQL)],
             cwd=ROOT, capture_output=True, text=True, check=False,
         )
         if proc.returncode:
@@ -161,14 +164,32 @@ def transfer_ids(dalytran: Path) -> list[str]:
     return [r["TRAN-ID"] for r in records(dalytran, "CVTRA05Y") if r["TRAN-TYPE-CD"] == "08"]
 
 
+def run_window(dalytran: Path, business_date: dt.date) -> tuple[dt.date, dt.date]:
+    """Transaction-date range of the run's type-08 records (the business date if none)."""
+    dates = [dt.date.fromisoformat(str(r["TRAN-ORIG-TS"])[:10])
+             for r in records(dalytran, "CVTRA05Y") if r["TRAN-TYPE-CD"] == "08"]
+    return (min(dates), max(dates)) if dates else (business_date, business_date)
+
+
+def release_commit() -> str | None:
+    proc = subprocess.run(["git", "-c", f"safe.directory={ROOT}", "rev-parse", "HEAD"],
+                          cwd=ROOT, capture_output=True, text=True, check=False)
+    return proc.stdout.strip() or None if proc.returncode == 0 else None
+
+
 def psql(sql: str) -> str:
     return subprocess.run(["psql", "-X", "-q", "-v", "ON_ERROR_STOP=1", "-At", "-c", sql],
                           cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
 
 
-def choose_source(case: str, explicit: Path | None) -> tuple[Path, str]:
+def choose_source(case: str, explicit: Path | None) -> tuple[Path, str, str]:
+    """Generation to roll back from, its label, and its kind (java / explicit / fixture).
+
+    Only java and explicit (operator-supplied adapter output) rehearsals satisfy cut-over
+    gate G3; the fixture stand-in exercises the procedure before the Java stages exist.
+    """
     if explicit:
-        return explicit, f"--source {explicit}"
+        return explicit, f"--source {explicit}", "explicit"
     for java, report in (
         (ROOT / "work" / "parity-java" / case / "candidate",
          ROOT / "work" / "parity-java" / case / "report.md"),
@@ -177,10 +198,11 @@ def choose_source(case: str, explicit: Path | None) -> tuple[Path, str]:
     ):
         if (java / "datasets" / f"{ACCT_GDG}.G0001V00").exists() and report.exists() \
                 and f"/ {case} \u2014 PASS" in report.read_text():
-            return java, "Java parity-replay candidate (legacy-adapter egress, parity PASS)"
+            return java, "Java parity-replay candidate (legacy-adapter egress, parity PASS)", "java"
     return (CHAIN_ROOT / case / "expected",
             "COBOL-recorded fixture outputs as stand-in for legacy-adapter egress "
-            "(no Java candidate with parity PASS for this case yet; COG-1240/P1-P6 not merged)")
+            "(no Java candidate with parity PASS for this case yet; COG-1240/P1-P6 not merged)",
+            "fixture")
 
 
 def next_day_dalytran(run_date: dt.date) -> bytes:
@@ -203,14 +225,16 @@ def dry_run(args: argparse.Namespace) -> int:
     case_dir = CHAIN_ROOT / args.case
     metadata = json.loads((case_dir / "case.json").read_text())
     run_date = dt.date.fromisoformat(metadata["run_date"])
-    source, source_label = choose_source(args.case, args.source)
+    source, source_label, source_kind = choose_source(args.case, args.source)
+    commit = release_commit()
     status = "FAIL"
     try:
         run.log("=" * 78)
         run.log("COG-1252 xferfee ROLLBACK DRY RUN (compose stack)")
         run.log(f"started      {started.isoformat(timespec='seconds')}")
         run.log(f"case         {args.case}  (last Java-posted business day {run_date})")
-        run.log(f"generation   {source_label}")
+        run.log(f"commit       {commit or 'unknown'}")
+        run.log(f"generation   {source_label}  [{source_kind}]")
         run.log(f"             {source.relative_to(ROOT) if source.is_relative_to(ROOT) else source}")
         run.log("=" * 78)
 
@@ -253,7 +277,9 @@ def dry_run(args: argparse.Namespace) -> int:
         before_csv = accounts_csv(frozen_master, run.staging / "acct_frozen.csv")
         gen_csv = accounts_csv(generation, run.staging / "acct_gen.csv")
         gen_fees = fees_csv(run.gdg_path(FEES_GDG, run.catalog(FEES_GDG)), run.staging / "fees_gen.csv")
-        rows = run.recon("pre-flight", before_csv, gen_csv, gen_fees, incoming)
+        java_window = run_window(case_dir / "input" / "DALYTRAN.PS", run_date)
+        run.log(f"  Java-day transaction window {java_window[0]} .. {java_window[1]}")
+        rows = run.recon("pre-flight", before_csv, gen_csv, gen_fees, incoming, java_window)
         for name, (expected, actual, ok) in rows.items():
             run.check(f"preflight.{name}", ok, f"expected {expected} actual {actual}")
 
@@ -262,7 +288,7 @@ def dry_run(args: argparse.Namespace) -> int:
         replay = write_csv(run.staging / "incoming_replay.csv", ["tran_id"],
                            [[t] for t in transfer_ids(case_dir / "input" / "DALYTRAN.PS")])
         rows = run.recon("drill: re-run of the Java day's DALYTRAN", before_csv, gen_csv,
-                         gen_fees, replay)
+                         gen_fees, replay, java_window)
         _, actual, ok = rows["incoming_already_in_ledger"]
         run.check("drill.duplicate_post_detected", not ok and int(actual) == java_rows,
                   f"{actual} TRAN_IDs already posted would be rejected")
@@ -272,9 +298,16 @@ def dry_run(args: argparse.Namespace) -> int:
 
         tampered = accounts_csv(generation, run.staging / "acct_gen_tampered.csv", nudge)
         rows = run.recon("drill: generation off by 0.01 on one account", before_csv, tampered,
-                         gen_fees, incoming)
+                         gen_fees, incoming, java_window)
         run.check("drill.balance_drift_detected", not rows["accounts_not_explained_by_ledger"][2],
                   f"{rows['accounts_not_explained_by_ledger'][1]} account(s) not explained")
+
+        no_fees = write_csv(run.staging / "fees_empty.csv", LEDGER_HEADER, [])
+        rows = run.recon("drill: partial day (ledger rows, empty XFER.FEES)", before_csv, before_csv,
+                         no_fees, incoming, java_window)
+        _, actual, ok = rows["ledger_rows_not_in_fees_file"]
+        run.check("drill.partial_day_detected", not ok and int(actual) == java_rows,
+                  f"{actual} ledger rows in the run window not explained by an empty fees file")
 
         preflight_ok = all(c["ok"] for c in run.checks)
         if not preflight_ok:
@@ -303,7 +336,8 @@ def dry_run(args: argparse.Namespace) -> int:
         after_csv = accounts_csv(new_gen, run.staging / "acct_after.csv")
         day_fees = fees_csv(new_fees, run.staging / "fees_day1.csv")
         empty = write_csv(run.staging / "incoming_none.csv", ["tran_id"], [])
-        rows = run.recon("post-run", restored_csv, after_csv, day_fees, empty)
+        next_window = run_window(tomorrow, run_date + dt.timedelta(days=1))
+        rows = run.recon("post-run", restored_csv, after_csv, day_fees, empty, next_window)
         for name, (expected, actual, ok) in rows.items():
             run.check(f"postrun.{name}", ok, f"expected {expected} actual {actual}")
         fee_total = sum((Decimal(r[6]) for r in csv.reader(day_fees.open()) if r[0] != "tran_id"),
@@ -333,6 +367,8 @@ def dry_run(args: argparse.Namespace) -> int:
         "status": status,
         "case": args.case,
         "generation_source": source_label,
+        "source_kind": source_kind,
+        "commit": commit,
         "started_at": started.isoformat(timespec="seconds"),
         "finished_at": finished.isoformat(timespec="seconds"),
         "checks": run.checks,
@@ -349,7 +385,12 @@ def main() -> int:
                              "legacy-adapter output (default: Java candidate if it passed "
                              "parity, else the COBOL-recorded expected outputs)")
     parser.add_argument("--out", type=Path, default=ROOT / "work" / "cutover" / "rollback")
+    parser.add_argument("--allow-non-compose-db", action="store_true",
+                        help="run even if PGHOST is not the compose 'db' service (truncates XFER_FEE_LEDGER)")
     args = parser.parse_args()
+    if os.environ.get("PGHOST") != "db" and not args.allow_non_compose_db:
+        parser.error(f"PGHOST={os.environ.get('PGHOST')!r} is not the compose 'db' service; this "
+                     "rehearsal truncates XFER_FEE_LEDGER (use --allow-non-compose-db for a disposable DB)")
     args.out = args.out.resolve()
     if args.source:
         args.source = args.source.resolve()

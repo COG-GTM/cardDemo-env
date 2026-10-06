@@ -6,7 +6,12 @@
 --   check | expected | actual | ok
 -- and the run is clean only if every row has ok = t.
 --
--- psql -v ON_ERROR_STOP=1 -At -F'|' -v load=<load.sql> -f ops/cutover/ledger_recon.sql
+-- psql -v ON_ERROR_STOP=1 -At -F'|' -v load=<load.sql> \
+--      -v run_from=<YYYY-MM-DD> -v run_to=<YYYY-MM-DD> -f ops/cutover/ledger_recon.sql
+--
+-- run_from / run_to bound the transaction dates of the run being checked (the type-08
+-- records of that run's DALYTRAN). They are required and independent of the fees file, so
+-- ledger rows of a partial run are caught even when its XFER.FEES generation is empty.
 --
 -- psql does not interpolate variables inside \copy, so <load.sql> holds the four loads
 -- (tools/cutover/rollback_dryrun.py writes it; operators can hand-write it):
@@ -51,8 +56,7 @@ run_ledger AS (
 window_ledger AS (
     SELECT l.*
     FROM XFER_FEE_LEDGER l
-    WHERE l.TRAN_DT BETWEEN (SELECT MIN(tran_dt) FROM rb_fees)
-                        AND (SELECT MAX(tran_dt) FROM rb_fees)
+    WHERE l.TRAN_DT BETWEEN :'run_from'::DATE AND :'run_to'::DATE
 ),
 movement AS (
     SELECT acct_id, SUM(credit) AS credit, SUM(debit) AS debit

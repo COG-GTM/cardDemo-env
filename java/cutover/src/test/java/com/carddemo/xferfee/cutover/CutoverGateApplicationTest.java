@@ -43,9 +43,24 @@ class CutoverGateApplicationTest {
     }
 
     private void rollback(String status, boolean ok) throws IOException {
-        Files.writeString(root.resolve("rollback.json"),
-                "{\"status\": \"" + status + "\", \"finished_at\": \"2024-07-02T00:00:00Z\", "
-                        + "\"checks\": [{\"name\": \"ledger_vs_fees\", \"ok\": " + ok + "}]}\n");
+        rollbackJson("{\"status\": \"" + status + "\", \"finished_at\": \"" + java.time.Instant.now() + "\", "
+                + "\"source_kind\": \"java\", \"commit\": \"abc1234def\", "
+                + "\"checks\": [{\"name\": \"ledger_vs_fees\", \"ok\": " + ok + "}]}\n");
+    }
+
+    private void rollbackJson(String json) throws IOException {
+        Files.writeString(root.resolve("rollback.json"), json);
+    }
+
+    private void allGreenExceptRollback() throws IOException {
+        shadowDay(LocalDate.of(2024, 6, 14), "PASS", true);
+        shadowDay(LocalDate.of(2024, 6, 15), "PASS", true);
+        shadowDay(LocalDate.of(2024, 6, 16), "PASS", true);
+        parity("PASS");
+    }
+
+    private String readiness() throws IOException {
+        return Files.readString(root.resolve("out").resolve("readiness.md"));
     }
 
     private int gate(String... extra) throws IOException {
@@ -54,7 +69,8 @@ class CutoverGateApplicationTest {
                 "--parity-root", root.resolve("parity").toString(),
                 "--rollback", root.resolve("rollback.json").toString(),
                 "--out", root.resolve("out").toString(),
-                "--required-days", "3"));
+                "--required-days", "3",
+                "--as-of", "2024-06-16"));
         args.addAll(List.of(extra));
         return CutoverGateApplication.run(args.toArray(String[]::new));
     }
@@ -124,5 +140,50 @@ class CutoverGateApplicationTest {
     @Test
     void rejectsUnknownArguments() throws IOException {
         assertEquals(2, gate("--bogus"));
+    }
+
+    @Test
+    void fixtureStandInRehearsalDoesNotMeetG3() throws IOException {
+        allGreenExceptRollback();
+        rollbackJson("{\"status\": \"PASS\", \"finished_at\": \"" + java.time.Instant.now() + "\", "
+                + "\"source_kind\": \"fixture\", \"checks\": [{\"name\": \"a\", \"ok\": true}]}");
+        assertEquals(1, gate());
+        assertTrue(readiness().contains("G3 rollback: rehearsal generation came from fixture"), readiness());
+        assertEquals(0, gate("--allow-fixture-rehearsal"));
+    }
+
+    @Test
+    void rehearsalWithoutChecksDoesNotMeetG3() throws IOException {
+        allGreenExceptRollback();
+        rollbackJson("{\"status\": \"PASS\", \"finished_at\": \"" + java.time.Instant.now() + "\", "
+                + "\"source_kind\": \"java\"}");
+        assertEquals(1, gate());
+        assertTrue(readiness().contains("G3 rollback: rehearsal has no checks"), readiness());
+    }
+
+    @Test
+    void staleRehearsalDoesNotMeetG3() throws IOException {
+        allGreenExceptRollback();
+        rollbackJson("{\"status\": \"PASS\", \"finished_at\": \"2024-01-02T00:00:00+00:00\", "
+                + "\"source_kind\": \"java\", \"checks\": [{\"name\": \"a\", \"ok\": true}]}");
+        assertEquals(1, gate());
+        assertTrue(readiness().contains("older than 7 days"), readiness());
+    }
+
+    @Test
+    void rehearsalMustMatchReleaseCommit() throws IOException {
+        allGreenExceptRollback();
+        rollback("PASS", true);
+        assertEquals(0, gate("--release-commit", "abc1234"));
+        assertEquals(1, gate("--release-commit", "fff0000"));
+        assertTrue(readiness().contains("release is fff0000"), readiness());
+    }
+
+    @Test
+    void staleShadowHistoryIsNoGo() throws IOException {
+        allGreenExceptRollback();
+        rollback("PASS", true);
+        assertEquals(1, gate("--as-of", "2024-07-30"));
+        assertTrue(readiness().contains("missing shadow run for 2024-07-30"), readiness());
     }
 }

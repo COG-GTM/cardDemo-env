@@ -3,6 +3,10 @@ package com.carddemo.xferfee.cutover;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +16,8 @@ import java.util.List;
  * <pre>
  * java -jar java/cutover/target/cutover.jar [--shadow-root work/shadow] [--parity-root work/parity]
  *     [--rollback work/cutover/rollback/rollback.json] [--required-days 20] [--calendar DAILY|WEEKDAYS]
- *     [--no-rate-change] [--cases a,b,...] [--out work/cutover]
+ *     [--no-rate-change] [--cases a,b,...] [--out work/cutover] [--as-of YYYY-MM-DD]
+ *     [--rehearsal-max-age-days 7] [--release-commit SHA] [--allow-fixture-rehearsal]
  * </pre>
  *
  * Exit code 0 = GO, 1 = NO-GO, 2 = usage error.
@@ -39,6 +44,10 @@ public final class CutoverGateApplication {
         boolean requireRateChange = true;
         BusinessCalendar calendar = BusinessCalendar.DAILY;
         List<String> cases = ALL_CASES;
+        LocalDate asOf = null;
+        int rehearsalMaxAgeDays = 7;
+        Optional<String> releaseCommit = Optional.empty();
+        boolean allowFixtureRehearsal = false;
         try {
             for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
@@ -51,11 +60,18 @@ public final class CutoverGateApplication {
                     case "--no-rate-change" -> requireRateChange = false;
                     case "--cases" -> cases = Arrays.stream(args[++i].split("[,\\s]+")).map(String::trim)
                             .filter(s -> !s.isEmpty()).toList();
+                    case "--as-of" -> asOf = LocalDate.parse(args[++i]);
+                    case "--rehearsal-max-age-days" -> rehearsalMaxAgeDays = Integer.parseInt(args[++i]);
+                    case "--release-commit" -> releaseCommit = Optional.of(args[++i].trim()).filter(c -> !c.isEmpty());
+                    case "--allow-fixture-rehearsal" -> allowFixtureRehearsal = true;
                     default -> throw new IllegalArgumentException("unknown argument " + args[i]);
                 }
             }
             if (requiredDays < 1) {
                 throw new IllegalArgumentException("--required-days must be positive");
+            }
+            if (rehearsalMaxAgeDays < 1) {
+                throw new IllegalArgumentException("--rehearsal-max-age-days must be positive");
             }
         } catch (RuntimeException e) {
             System.err.println("usage error: " + e.getMessage());
@@ -63,9 +79,11 @@ public final class CutoverGateApplication {
         }
         CutoverReadiness readiness = new CutoverReadiness(
                 new ShadowExitCriterion(requiredDays, requireRateChange, calendar)
-                        .evaluate(ShadowRunHistory.load(shadowRoot)),
+                        .evaluate(ShadowRunHistory.load(shadowRoot),
+                                asOf != null ? asOf : calendar.previous(LocalDate.now())),
                 ParityReports.finalReplay(parityRoot, cases),
-                RollbackRehearsal.load(rollback));
+                RollbackRehearsal.load(rollback, new RollbackRehearsal.Policy(Instant.now(),
+                        Duration.ofDays(rehearsalMaxAgeDays), releaseCommit, allowFixtureRehearsal)));
         Files.createDirectories(out);
         String markdown = readiness.toMarkdown(cases);
         Files.writeString(out.resolve("readiness.md"), markdown);
