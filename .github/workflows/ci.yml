@@ -44,3 +44,17 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Java unit tests
+        run: make java-test
+      - name: Java fee-policy parity (COG-1235)
+        run: make parity-java ONLY=AWS.M2.CARDDEMO.XFER.FEES,XFER_FEE_LEDGER,CTL_XFER_PARM
