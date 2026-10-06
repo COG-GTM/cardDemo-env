@@ -14,6 +14,7 @@ recorded fixtures in `fixtures/xferfee/<case>/expected/`.
 | `reconciliation-service` | `CBXFR03C` (STEP030) | `Reconciliation` | COG-1239 |
 | `legacy-adapter` | dataset I/O | Java copybook codec | COG-1240 |
 | `parity-replay` | `XFERFEEP` proc / JCL | harness | COG-1234 |
+| `shadow-run` | whole `XFRDAILY` chain, fixed-width I/O | all three step SPIs (legacy-exact) | COG-1242 |
 
 ## Frozen contracts (`com.carddemo.xferfee.contracts`)
 

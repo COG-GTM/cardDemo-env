@@ -1,5 +1,8 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	java-build java-test parity-java shadow deadcode chain-graph chain-graph-check
+
+MVN ?= mvn -B -q
+SHADOW_ARGS ?=
 
 up:
 	docker compose up -d --build --wait
@@ -46,6 +49,18 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+java-build:
+	$(MVN) -f java/pom.xml package -DskipTests
+
+java-test:
+	$(MVN) -f java/pom.xml verify
+
+parity-java: java-build
+	python3 tools/parity/java_candidate.py $(if $(CASE),--case $(CASE),--all)
+
+shadow: java-build
+	python3 tools/shadow/shadow_run.py $(SHADOW_ARGS)
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py

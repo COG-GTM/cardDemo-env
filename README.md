@@ -64,6 +64,29 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Java parity and shadow run
+
+The Java port lives under `java/` (JDK 21 + Maven on the host, see
+`java/README.md`). `make parity-java [CASE=x]` replays recorded cases through
+`java/shadow-run` and diffs the candidate with `compare.py`
+(`work/parity-java/<case>/report.md`, summary in `work/parity-java/summary.md`).
+
+`make shadow` is migration phase 3: it stages one day's `DALYTRAN.PS`,
+`CARDXREF.PS`, `ACCTDATA.PS` and a `CTL_XFER_PARM` snapshot under
+`work/shadow/<date>/`, runs `XFRDAILY` in the estate and the Java chain on the
+identical files, and writes `report.md` / `report.json` (per-transfer fee,
+balances, ledger, report totals). Exit 0 = identical, 1 = differences,
+2 = a leg did not finish.
+
+```sh
+make shadow                                              # synthetic day of 250, today
+make shadow SHADOW_ARGS="--synthetic 300 --date 2024-06-15"
+make shadow SHADOW_ARGS="--case default --date 2024-06-20"
+make shadow SHADOW_ARGS="--input-dir /estate/... --rules ctl.csv --date 2024-07-01"
+```
+
+The `shadow-nightly` workflow runs it every night on a generated day.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:

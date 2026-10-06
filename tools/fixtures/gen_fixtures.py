@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
+import random
 import tempfile
 from decimal import Decimal, ROUND_FLOOR
 from pathlib import Path
@@ -183,6 +185,89 @@ def assert_half_cent(amount: Decimal, pct: Decimal) -> None:
     )
 
 
+SYNTHETIC_CASES = {
+    "synthetic_day": {"date": "2024-06-15", "transactions": 250, "seed": 1242},
+}
+SYNTHETIC_ACCOUNTS = 120
+RETAIL_CAP_AMOUNT = Decimal("1666.67")
+
+
+def synthetic_day(
+    date: str, transactions: int = 250, seed: int = 1242
+) -> tuple[list[bytes], list[bytes], list[bytes]]:
+    """One deterministic business day: (ACCTDATA, CARDXREF, DALYTRAN) records.
+
+    Ten percent of the records are non-transfer types; the rest are type-08
+    transfers between matched accounts of both books, in shuffled book order,
+    with zero, sub-cent, at-cap and over-cap amounts and a few prior-day
+    stragglers. Balances never go negative and every card is matched, so the
+    whole chain runs (no BR-05 stop).
+    """
+    rng = random.Random(f"{seed}:{date}")
+    day = dt.date.fromisoformat(date)
+    prior = (day - dt.timedelta(days=1)).isoformat()
+    books = {}
+    balances = {}
+    account_rows = []
+    xref_rows = []
+    cards = {}
+    for account_id in range(1, SYNTHETIC_ACCOUNTS + 1):
+        book = "RETAIL" if rng.random() < 0.6 else "INSTL"
+        balance = rng.randrange(50_000, 200_000)
+        books[account_id] = book
+        balances[account_id] = Decimal(balance)
+        cards[account_id] = f"{4000000000000000 + account_id:016d}"
+        account_rows.append(account(account_id, balance, book))
+        xref_rows.append(xref(cards[account_id], account_id, 800000000 + account_id))
+
+    non_transfers = transactions // 10
+    kinds = ["08"] * (transactions - non_transfers) + ["NT"] * non_transfers
+    rng.shuffle(kinds)
+    records = []
+    for number, kind in enumerate(kinds, 1):
+        tran_id = f"SYN{day:%Y%m%d}{number:05d}"
+        source = rng.randrange(1, SYNTHETIC_ACCOUNTS + 1)
+        tran_date = prior if rng.random() < 0.08 else date
+        if kind == "NT":
+            records.append(transaction(
+                tran_id, rng.choice(("01", "02", "03")),
+                float(Decimal(rng.randrange(100, 50_000)) / 100),
+                cards[source], tran_date, "POS purchase",
+            ))
+            continue
+        target = rng.choice(
+            [n for n in range(1, SYNTHETIC_ACCOUNTS + 1) if n != source]
+        )
+        roll = rng.random()
+        if roll < 0.05:
+            amount = Decimal("0")
+        elif roll < 0.20:
+            amount = Decimal(rng.randrange(1, 100)) / 100
+        elif roll < 0.25:
+            amount = RETAIL_CAP_AMOUNT - Decimal(rng.randrange(0, 2)) / 100
+        elif roll < 0.35:
+            amount = Decimal(rng.randrange(170_000, 500_000)) / 100
+        else:
+            amount = Decimal(rng.randrange(100, 150_000)) / 100
+        amount = min(amount, balances[source] - 600)
+        balances[source] -= amount + 500
+        balances[target] += amount
+        records.append(transfer(
+            tran_id, float(amount), source, target, cards[source], tran_date
+        ))
+    return account_rows, xref_rows, records
+
+
+def write_day(
+    output: Path, account_rows: list[bytes], xref_rows: list[bytes],
+    transactions: list[bytes],
+) -> None:
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "ACCTDATA.PS").write_bytes(b"".join(account_rows))
+    (output / "CARDXREF.PS").write_bytes(b"".join(xref_rows))
+    (output / "DALYTRAN.PS").write_bytes(b"".join(transactions))
+
+
 CASES = {
     "default": "Default transfer-fee chain fixture",
     "under_cap": "Retail and installment transfers below their fee caps",
@@ -191,13 +276,15 @@ CASES = {
     "zero_amount": "Zero-amount transfer preserves fee and ledger records",
     "non_transfer": "Non-transfer transactions are ignored by the extract",
     "half_cent": "Half-cent fee rounding cases for both books",
+    "synthetic_day": "Synthetic business day: 250 transactions, 225 transfers "
+    "across both books and the June 15 rate change (shadow-run, COG-1242)",
 }
 
 
 def case_metadata(case: str) -> dict:
     return {
         "description": CASES[case],
-        "run_date": "2024-06-30",
+        "run_date": SYNTHETIC_CASES.get(case, {}).get("date", "2024-06-30"),
         "outputs": [
             {
                 "dsn": "AWS.M2.CARDDEMO.XFER.EXTRACT",
@@ -230,6 +317,12 @@ def case_metadata(case: str) -> dict:
 def generate(case: str, root: Path) -> None:
     output = root / "fixtures" / "xferfee" / case / "input"
     output.mkdir(parents=True, exist_ok=True)
+    if case in SYNTHETIC_CASES:
+        write_day(output, *synthetic_day(**SYNTHETIC_CASES[case]))
+        (output.parent / "case.json").write_text(
+            json.dumps(case_metadata(case), indent=2) + "\n"
+        )
+        return
 
     cards = [f"{n:016d}" for n in range(1000000000000001, 1000000000000009)]
     account_rows = [
@@ -276,8 +369,18 @@ def main() -> None:
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--root", default=None, type=Path)
+    parser.add_argument("--synthetic", type=int, metavar="N",
+                        help="write a synthetic day of N transactions to --out")
+    parser.add_argument("--date", default=dt.date.today().isoformat())
+    parser.add_argument("--seed", type=int, default=1242)
+    parser.add_argument("--out", type=Path)
     args = parser.parse_args()
     root = args.root or Path(__file__).resolve().parents[2]
+    if args.synthetic is not None:
+        if args.out is None:
+            parser.error("--synthetic needs --out")
+        write_day(args.out, *synthetic_day(args.date, args.synthetic, args.seed))
+        return
     cases = CASES if args.all or args.check else (args.case,)
     if args.check:
         for case in cases:
