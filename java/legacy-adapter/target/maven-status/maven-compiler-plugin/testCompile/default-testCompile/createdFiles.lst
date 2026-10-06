@@ -1,8 +1,0 @@
-com/carddemo/legacy/Estate.class
-com/carddemo/legacy/ingress/LegacyFileIngressTest.class
-com/carddemo/legacy/ingress/LegacyFileIngressTest$1.class
-com/carddemo/legacy/egress/AcctDataXferEgressTest.class
-com/carddemo/legacy/copybook/CopybookParserTest.class
-com/carddemo/legacy/candidate/CandidateEncoderTest.class
-com/carddemo/legacy/codec/FixtureRoundTripTest.class
-com/carddemo/legacy/codec/CopybookCodecTest.class
