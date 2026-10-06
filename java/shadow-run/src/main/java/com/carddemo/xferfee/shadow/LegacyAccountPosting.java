@@ -72,8 +72,8 @@ public final class LegacyAccountPosting implements AccountPosting {
                 sysout.add("XFERFEE: NO FEE RULE FOR BOOK " + Snapshots.pad(xfer.bookId()));
                 return abend(posted, ledgerBefore, xfer, RejectReason.NO_FEE_RULE, sysout);
             }
-            // ocesql's SELECT INTO does not raise -811: overlapping rows silently yield the first row in
-            // table order, which is snapshot (load) order.
+            // ocesql's SELECT INTO does not raise -811: overlapping rows silently yield whichever row the
+            // planner returns first (not deterministic, COG-1249). Snapshot order is used here.
             FeeRule rule = matches.get(0);
             BigDecimal amount = legacyAmount.apply(xfer);
             FeeResult fee = amount.signum() != 0

@@ -3,6 +3,10 @@
 Each edge day is derived from fixtures/xferfee/synthetic_day and run through
 shadow_run.py (real COBOL leg vs Java). Exit status is the worst shadow exit.
 
+Overlapping CTL_XFER_PARM rows are deliberately not an edge day: ocesql's SELECT INTO
+takes whichever row PostgreSQL returns first (index vs seq scan), so the legacy
+result is not deterministic (decision register, COG-1249).
+
     python3 tools/shadow/edge_days.py [--only plain,dup] [--out-root work/shadow-edge]
 """
 from __future__ import annotations
@@ -73,21 +77,12 @@ def rules_without(book: str):
     return build
 
 
-def overlapping_rules(out: Path) -> Path:
-    """An extra RETAIL row covering every date, after the real ones (SELECT INTO takes the first)."""
-    lines = (BASE / "db2_before" / "CTL_XFER_PARM.csv").read_text().splitlines()
-    path = out / "CTL_XFER_PARM.csv"
-    path.write_text("\n".join([*lines, "RETAIL    ,0.500000,25.00,2000-01-01,9999-12-31"]) + "\n")
-    return path
-
-
 EDGES = {
     "plain": (plain, None),
     "negative": (negative, None),
     "unmatched": (unmatched, None),
     "dup": (dup, None),
     "norule": (None, rules_without("RETAIL")),
-    "overlap": (None, overlapping_rules),
 }
 
 
