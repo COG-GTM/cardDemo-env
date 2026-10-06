@@ -36,6 +36,10 @@ jobs:
         run: make chain-graph-check
       - name: Check generated fixtures
         run: python3 tools/fixtures/gen_fixtures.py --check
+      - name: Start live parity console (GnuCOBOL vs Spring Boot)
+        run: make parity-console
+      - name: Live parity — all fixtures + generated stream MATCH, break-Java caught
+        run: make parity-console-check
       - name: Upload estate artifacts
         if: always()
         uses: actions/upload-artifact@v4

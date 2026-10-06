@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CardDemo xferfee — Live Parity Console</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <div class="title">CardDemo transfer-fee chain &mdash; live parity console</div>
+      <div class="subtitle">
+        <span class="sys cobol">COBOL</span> real XFRDAILY chain on GnuCOBOL (CBXFR01C &rarr; XFERFEE &rarr; CBXFR03C), one micro-batch per transaction
+        &nbsp;vs&nbsp;
+        <span class="sys java">JAVA</span> Spring Boot engine <span id="javaInfo" class="muted"></span>
+      </div>
+    </div>
+    <div id="verdictBanner" class="banner idle">READY</div>
+  </header>
+
+  <section class="controls">
+    <label>Stream
+      <select id="stream"></select>
+    </label>
+    <label id="countWrap" class="hidden">Transactions
+      <input id="count" type="number" min="5" max="500" value="60">
+    </label>
+    <label>Pace
+      <select id="pace">
+        <option value="0">As fast as COBOL runs</option>
+        <option value="400">0.4 s / txn</option>
+        <option value="900" selected>0.9 s / txn</option>
+        <option value="2000">2 s / txn</option>
+      </select>
+    </label>
+    <button id="run" class="primary">Run stream</button>
+    <button id="stop" disabled>Stop</button>
+    <div class="spacer"></div>
+    <label class="toggle" title="Switch the Java engine to banker's rounding (HALF_EVEN) to prove the console catches a real defect">
+      <input id="breakJava" type="checkbox">
+      <span class="slider"></span>
+      <span class="toggle-label">Break Java <span id="roundingMode" class="pill">HALF_UP</span></span>
+    </label>
+  </section>
+
+  <section class="description">
+    <span id="streamDesc"></span>
+    <span id="phase" class="muted"></span>
+  </section>
+
+  <section class="totals">
+    <div class="tile"><div class="k">Transactions</div><div class="v" id="tTx">0</div><div class="s" id="tTxOf"></div></div>
+    <div class="tile"><div class="k">Transfers (type 08)</div><div class="v" id="tXfer">0</div><div class="s" id="tIgnored"></div></div>
+    <div class="tile"><div class="k">Fees &mdash; COBOL</div><div class="v cobol-t" id="tFeeC">0.00</div></div>
+    <div class="tile"><div class="k">Fees &mdash; Java</div><div class="v java-t" id="tFeeJ">0.00</div></div>
+    <div class="tile ok"><div class="k">MATCH</div><div class="v" id="tMatch">0</div></div>
+    <div class="tile bad"><div class="k">DIFF</div><div class="v" id="tDiff">0</div><div class="s" id="tFeeDiff"></div></div>
+  </section>
+
+  <section id="final" class="final hidden"></section>
+
+  <section class="tablewrap">
+    <table id="grid">
+      <thead>
+        <tr class="groups">
+          <th colspan="4"></th>
+          <th colspan="2" class="g">Book / rule</th>
+          <th colspan="2" class="g">Fee</th>
+          <th colspan="2" class="g">Balances after</th>
+          <th class="g">Ledger row (XFER_FEE_LEDGER)</th>
+          <th></th>
+        </tr>
+        <tr>
+          <th>#</th>
+          <th>Tran ID</th>
+          <th>Type</th>
+          <th class="num">Amount</th>
+          <th>Book</th>
+          <th>Rule (EFF_DT &middot; pct &middot; cap)</th>
+          <th class="num">Fee</th>
+          <th>Cap</th>
+          <th class="num">Source</th>
+          <th class="num">Target</th>
+          <th>Ledger</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div id="empty" class="empty">Pick a stream and press <b>Run stream</b>. Every transaction is fed to the real COBOL chain and to the Java engine from the same starting state.</div>
+  </section>
+
+  <footer class="legend">
+    <span><span class="sys cobol">COBOL</span> top line of each cell</span>
+    <span><span class="sys java">JAVA</span> bottom line</span>
+    <span><span class="swatch diff"></span> field differs</span>
+    <span>Click a row for every compared field, step return codes and SYSOUT.</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
