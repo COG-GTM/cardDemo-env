@@ -44,3 +44,17 @@ jobs:
           path: |
             work/
             ops/smf/job_activity.csv
+
+  java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Java unit tests
+        run: make java-test
+      - name: Java parity (STEP020 outputs; other steps land in their own tickets)
+        run: make parity-java STEP=STEP020
