@@ -26,6 +26,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "unmatched_card",
 )
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",

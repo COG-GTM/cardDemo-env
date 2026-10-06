@@ -93,6 +93,17 @@ def transfer(
     )
 
 
+UNKNOWN_CARD = "9999999999999999"
+ORPHAN_CARD = "1000000000000009"
+ORPHAN_ACCOUNT = 9
+
+
+def case_xref_extra(case: str) -> list[bytes]:
+    if case == "unmatched_card":
+        return [xref(ORPHAN_CARD, ORPHAN_ACCOUNT, 900000000 + ORPHAN_ACCOUNT)]
+    return []
+
+
 def case_transactions(case: str, cards: list[str]) -> list[bytes]:
     if case == "default":
         return [
@@ -169,6 +180,17 @@ def case_transactions(case: str, cards: list[str]) -> list[bytes]:
         )
         assert_half_cent(Decimal("5.00"), Decimal("0.0050"))
         return transfers
+    if case == "unmatched_card":
+        return [
+            transfer("TRN0000000000001", 100.00, 1, 2, cards[0],
+                     "2024-06-05"),
+            transfer("TRN0000000000002", 250.00, 3, 4, UNKNOWN_CARD,
+                     "2024-06-05"),
+            transfer("TRN0000000000003", 75.00, ORPHAN_ACCOUNT, 5,
+                     ORPHAN_CARD, "2024-06-05"),
+            transaction("TRN0000000000004", "01", 42.00, cards[2],
+                        "2024-06-05", "POS purchase"),
+        ]
     raise ValueError(f"unsupported fixture case: {case}")
 
 
@@ -191,6 +213,8 @@ CASES = {
     "zero_amount": "Zero-amount transfer preserves fee and ledger records",
     "non_transfer": "Non-transfer transactions are ignored by the extract",
     "half_cent": "Half-cent fee rounding cases for both books",
+    "unmatched_card": "BR-05 unmatched card or source account is skipped "
+                      "with RC 4",
 }
 
 
@@ -243,6 +267,7 @@ def generate(case: str, root: Path) -> None:
         account(8, 900, "INSTL"),
     ]
     xref_rows = [xref(card, idx, 900000000 + idx) for idx, card in enumerate(cards, 1)]
+    xref_rows += case_xref_extra(case)
     transactions = case_transactions(case, cards)
     (output / "ACCTDATA.PS").write_bytes(b"".join(account_rows))
     (output / "CARDXREF.PS").write_bytes(b"".join(xref_rows))

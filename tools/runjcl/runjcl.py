@@ -328,7 +328,8 @@ class Runner:
             if output:
                 for line in output.rstrip().splitlines():
                     emit(line)
-            if rc < 0:
+            abended = rc < 0
+            if abended:
                 emit(f"IEF202I {job} {step.name} - ABEND S0C7")
                 rc = 12
             else:
@@ -336,7 +337,7 @@ class Runner:
                      f"COND CODE {rc:04d}")
             results[step.name] = rc
             maxcc = max(maxcc, rc)
-            if rc != 0:
+            if abended:
                 break
             self.catalog_pending()
             for base in allocated_bases:
