@@ -25,6 +25,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "missing_rule",
 )
 
 
