@@ -42,6 +42,11 @@ is stubbed with the recorded `XFER.EXTRACT` and a missing `AccountPosting` with 
 `XFER.FEES` (inputs only; the stubbed step's own outputs stay missing). Disable with
 `--no-stub-upstream`.
 
+Until `AccountPosting` (COG-1238) lands, `FeePricingReplay` prices the stubbed `XFER.EXTRACT`
+through the `FeePolicy` bean (COG-1235) and the `FeeSchedule` bean (or a fixture-backed BR-06
+lookup) and writes `XFER.FEES`, `XFER_FEE_LEDGER` and `CTL_XFER_PARM`, so fee parity can be
+gated now: `make parity-java ONLY=AWS.M2.CARDDEMO.XFER.FEES,XFER_FEE_LEDGER,CTL_XFER_PARM`.
+
 ## Build and run
 
 ```bash

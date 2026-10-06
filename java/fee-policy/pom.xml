@@ -19,5 +19,11 @@
       <groupId>com.carddemo.xferfee</groupId>
       <artifactId>contracts</artifactId>
     </dependency>
+    <!-- Only FeePolicyAutoConfiguration uses Spring; HalfUpFeePolicy itself is dependency-free. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 </project>
