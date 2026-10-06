@@ -93,6 +93,9 @@ def transfer(
     )
 
 
+MISSING_TARGET_ACCOUNT = 99
+
+
 def case_transactions(case: str, cards: list[str]) -> list[bytes]:
     if case == "default":
         return [
@@ -169,6 +172,11 @@ def case_transactions(case: str, cards: list[str]) -> list[bytes]:
         )
         assert_half_cent(Decimal("5.00"), Decimal("0.0050"))
         return transfers
+    if case == "missing_target_acct":
+        return [
+            transfer("TRN0000000000001", 100.00, 1, MISSING_TARGET_ACCOUNT,
+                     cards[0], "2024-06-05"),
+        ]
     raise ValueError(f"unsupported fixture case: {case}")
 
 
@@ -191,6 +199,8 @@ CASES = {
     "zero_amount": "Zero-amount transfer preserves fee and ledger records",
     "non_transfer": "Non-transfer transactions are ignored by the extract",
     "half_cent": "Half-cent fee rounding cases for both books",
+    "missing_target_acct": "BR-12 transfer to an account missing from the "
+                           "master abends XFERFEE with RC 8",
 }
 
 

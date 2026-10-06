@@ -26,6 +26,7 @@ CASES = (
     "zero_amount",
     "non_transfer",
     "half_cent",
+    "missing_target_acct",
 )
 INPUT_DSNS = {
     "ACCTDATA.PS": "AWS.M2.CARDDEMO.ACCTDATA.PS",
@@ -73,6 +74,17 @@ def load_inputs(case: str, datasets: Path) -> None:
         shutil.copyfile(source / filename, datasets / dsn)
 
 
+def is_cataloged(datasets: Path, dsn: str) -> bool:
+    match = re.fullmatch(r"(.+)\.G(\d{4})V00", dsn)
+    if not match:
+        return True
+    catalog = datasets / f"{match.group(1)}.gdg"
+    if not catalog.exists():
+        return False
+    current = json.loads(catalog.read_text()).get("current", 0)
+    return int(match.group(2)) <= current
+
+
 def parse_rc(joblog: Path) -> dict[str, object]:
     steps: dict[str, int] = {}
     maxcc = 0
@@ -118,7 +130,9 @@ def record_case(case: str, output: Path | None = None) -> Path:
     for table in TABLES:
         dump_table(table, before / f"{table}.csv")
 
-    run([
+    # A non-zero MAXCC (e.g. RC 8 from an XFERFEE abend) is recorded
+    # behaviour, not a recorder failure; rc.json captures it below.
+    subprocess.run([
         sys.executable,
         str(ROOT / "tools" / "runjcl" / "runjcl.py"),
         "--chain",
@@ -129,13 +143,16 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(joblog),
         "--manifest",
         str(manifest),
-    ])
+    ], cwd=ROOT, check=False)
+    if not (joblog / "XFRDAILY.log").exists():
+        raise SystemExit(f"chain did not produce a job log for {case}")
 
     entries = json.loads(manifest.read_text()).get("outputs", [])
     dataset_dir = expected / "datasets"
     dataset_dir.mkdir(parents=True)
     for entry in entries:
-        shutil.copyfile(entry["path"], dataset_dir / entry["dsn"])
+        if is_cataloged(datasets, entry["dsn"]):
+            shutil.copyfile(entry["path"], dataset_dir / entry["dsn"])
 
     sysout_dir = expected / "sysout"
     sysout_dir.mkdir(parents=True)
