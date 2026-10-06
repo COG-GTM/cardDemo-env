@@ -134,6 +134,16 @@ def append_dataset_diffs(
                     f"{scalar(right.get(field), scales.get(field))} |"
                 )
                 field_diffs += 1
+    if (
+        set(expected_rows) == set(actual_rows)
+        and list(expected_rows) != list(actual_rows)
+    ):
+        lines.append(
+            f"- {label}: record order differs: expected "
+            f"`{' | '.join(', '.join(k) for k in expected_rows)}`, actual "
+            f"`{' | '.join(', '.join(k) for k in actual_rows)}`"
+        )
+        record_diffs += 1
     return field_diffs, record_diffs
 
 
