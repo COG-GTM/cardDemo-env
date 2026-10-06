@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TOOLS = ROOT / "tools" / "parity"
 CHAIN_ROOT = ROOT / "fixtures" / "xferfee"
-JAR = ROOT / "java" / "parity-replay" / "target" / "parity-replay.jar"
+JAR = Path(os.environ.get("PARITY_REPLAY_JAR", ROOT / "java" / "parity-replay" / "target" / "parity-replay.jar"))
 ORIGINAL = ("default", "under_cap", "at_cap", "rate_change", "zero_amount", "non_transfer", "half_cent")
 
 
