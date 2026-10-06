@@ -58,6 +58,49 @@ class FeePricingReplayTest {
         assertThat(Files.readString(work.resolve("out/rc.json"))).contains("\"STEP020\":8");
     }
 
+    @Test
+    void overlappingRulesAbendLikeTheSingletonSelect() throws Exception {
+        writeInput(RULES + """
+                {"bookId":"RETAIL","feePct":"0.020000","feeCap":"25.00","effectiveDate":"2024-06-01","expiryDate":"2024-07-01"}
+                """, """
+                {"tranId":"T1","tranDate":"2024-06-20","sourceAccountId":1,"targetAccountId":2,"bookId":"RETAIL","amount":"2.00","cardNumber":"4000000000000001"}
+                """);
+
+        run().close();
+
+        assertThat(work.resolve("out/datasets/AWS.M2.CARDDEMO.XFER.FEES.jsonl")).doesNotExist();
+        assertThat(Files.readString(work.resolve("out/rc.json"))).contains("\"STEP020\":8");
+    }
+
+    @Test
+    void duplicateTranIdAbendsWithoutCommitting() throws Exception {
+        writeInput(RULES, """
+                {"tranId":"T1","tranDate":"2024-06-14","sourceAccountId":1,"targetAccountId":2,"bookId":"RETAIL","amount":"2.00","cardNumber":"4000000000000001"}
+                {"tranId":"T2","tranDate":"2024-06-14","sourceAccountId":1,"targetAccountId":2,"bookId":"RETAIL","amount":"3.00","cardNumber":"4000000000000001"}
+                """);
+        Files.writeString(work.resolve("in/db2_before/XFER_FEE_LEDGER.jsonl"), """
+                {"tranId":"T2","tranDate":"2024-06-01","sourceAccountId":1,"targetAccountId":2,"bookId":"RETAIL","amount":"1.00","feeAmount":"0.01","capApplied":false}
+                """);
+
+        run().close();
+
+        assertThat(work.resolve("out/datasets/AWS.M2.CARDDEMO.XFER.FEES.jsonl")).doesNotExist();
+        assertThat(Files.readAllLines(work.resolve("out/db2_after/XFER_FEE_LEDGER.jsonl"))).hasSize(1);
+        assertThat(Files.readString(work.resolve("out/rc.json"))).contains("\"STEP020\":8");
+    }
+
+    @Test
+    void noStubUpstreamWritesNothing() throws Exception {
+        writeInput(RULES, """
+                {"tranId":"T1","tranDate":"2024-06-14","sourceAccountId":1,"targetAccountId":2,"bookId":"RETAIL","amount":"2.00","cardNumber":"4000000000000001"}
+                """);
+
+        SpringApplication.run(ParityReplayApplication.class, "--in=" + work.resolve("in"),
+                "--out=" + work.resolve("out"), "--no-stub-upstream").close();
+
+        assertThat(work.resolve("out")).doesNotExist();
+    }
+
     private void writeInput(String rules, String extract) throws Exception {
         Files.createDirectories(work.resolve("in/db2_before"));
         Files.createDirectories(work.resolve("in/recorded"));

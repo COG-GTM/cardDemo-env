@@ -9,7 +9,8 @@ import java.util.Optional;
 
 /**
  * Replay-only stand-in for the CTL_XFER_PARM lookup (BR-06), used while no {@link FeeSchedule}
- * bean (COG-1236) is on the classpath: {@code EFF_DT <= business date < EXP_DT}.
+ * bean (COG-1236) is on the classpath: {@code EFF_DT <= business date < EXP_DT}. Like the
+ * singleton {@code SELECT ... INTO}, more than one matching row is an error (SQLCODE -811).
  */
 final class FixtureFeeSchedule implements FeeSchedule {
 
@@ -25,10 +26,14 @@ final class FixtureFeeSchedule implements FeeSchedule {
 
     @Override
     public Optional<FeeRule> effectiveRule(String bookId, LocalDate businessDate) {
-        return rules.stream()
+        List<FeeRule> matches = rules.stream()
                 .filter(rule -> rule.bookId().equals(bookId))
                 .filter(rule -> !rule.effectiveDate().isAfter(businessDate) && rule.expiryDate().isAfter(businessDate))
-                .findFirst();
+                .toList();
+        if (matches.size() > 1) {
+            throw new IllegalStateException(matches.size() + " CTL_XFER_PARM rows for " + bookId + " on " + businessDate);
+        }
+        return matches.stream().findFirst();
     }
 
     @Override

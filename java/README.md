@@ -3,6 +3,8 @@
 Maven multi-module (Java 21, Spring Boot 3.3) port of the `XFRDAILY` transfer-fee chain.
 Every change is gated by COBOL parity: `make parity-java` must report 0 diffs against the
 recorded fixtures in `fixtures/xferfee/<case>/expected/`.
+While steps are still landing, each ticket gates its own outputs with `ONLY=` (CI runs the
+fee-scoped gate); unscoped runs report the not-yet-implemented steps as missing outputs.
 
 | Module | Replaces | Contract it implements | Ticket |
 |---|---|---|---|
