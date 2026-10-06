@@ -235,7 +235,7 @@ class ParitySession:
             )
             baseline["cobolLive"] = judge(stream.id, cobol_dir)
             baseline["java"] = judge(stream.id, java_dir)
-            if "HALF_EVEN" in roundings:
+            if roundings == {"HALF_EVEN"}:  # naive_ref is HALF_EVEN for every transaction
                 naive = judge_naive(stream.id)
                 baseline["naive"] = naive
                 baseline["javaMatchesNaive"] = (
@@ -355,6 +355,8 @@ def end_state(cobol_accounts: dict[int, dict[str, Any]], cobol_ledger: dict[str,
         pairs = (("FEE_AMT", money(cobol["FEE_AMT"]), money(java["feeAmt"])),
                  ("TRAN_AMT", money(cobol["TRAN_AMT"]), money(java["tranAmt"])),
                  ("CAP_APPLIED", cobol["CAP_APPLIED"], java["capApplied"]),
+                 ("SRC_ACCT_ID", int(cobol["SRC_ACCT_ID"]), int(java["srcAcctId"])),
+                 ("TGT_ACCT_ID", int(cobol["TGT_ACCT_ID"]), int(java["tgtAcctId"])),
                  ("BOOK_ID", cobol["BOOK_ID"].strip(), java["bookId"].strip()),
                  ("TRAN_DT", cobol["TRAN_DT"], str(java["tranDt"])))
         for field, left, right in pairs:

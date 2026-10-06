@@ -14,7 +14,8 @@ make parity-console-down
 On the Devin VM put `/usr/bin` first (`PATH=/usr/bin:$PATH make ...`, `~/emsdk/docker` shadows
 docker). If Maven Central rate-limits the image build (HTTP 429), set a mirror:
 `MAVEN_MIRROR_URL=https://maven-central.storage-download.googleapis.com/maven2/ make parity-console`.
-Ports: `PARITY_CONSOLE_PORT` (8090), `JAVA_LIVE_PORT` (8091).
+Ports (bound to 127.0.0.1 — the APIs are unauthenticated): `PARITY_CONSOLE_PORT` (8090),
+`JAVA_LIVE_PORT` (8091).
 
 ## What runs
 
@@ -58,9 +59,11 @@ reset with the same accounts and xref decoded from those files, and the same
   `zero_amount`, `non_transfer`, `half_cent`) are replayed from
   `fixtures/xferfee/<case>/input/DALYTRAN.PS`.
 * `generated` builds a longer DALYTRAN with `tools/fixtures/gen_fixtures.py`'s record
-  builders over the fixture accounts: transfers in both books, both sides of the June 15
-  RETAIL rate change, RETAIL and INSTL cap hits, even half-cent ties, zero amounts and
-  non-transfers (count and seed selectable).
+  builders over the fixture accounts: a seeded random mix (count 5–500 and seed selectable,
+  reproducible) drawn from transfers in both books, both sides of the June 15 RETAIL rate
+  change, RETAIL and INSTL cap hits, even half-cent ties, zero amounts and non-transfers.
+  Coverage of every scenario is likely for the default 60 / seed 1250 but not guaranteed for
+  an arbitrary count and seed — the fixtures are the deterministic cases.
 * Pace: as fast as COBOL runs, 0.4 s, 0.9 s or 2 s per transaction.
 
 ## Reading the screen

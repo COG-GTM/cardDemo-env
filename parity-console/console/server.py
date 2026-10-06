@@ -20,11 +20,15 @@ from streams import GENERATED, list_streams
 STATIC = Path(__file__).resolve().parent / "static"
 
 
+MIN_COUNT, MAX_COUNT = 5, 500  # generated stream size, same bounds as the UI
+
+
 class Hub:
     """Fan-out of run events to every connected browser; replays the current run on connect."""
 
     def __init__(self) -> None:
         self.lock = threading.Lock()
+        self.run_lock = threading.Lock()
         self.history: list[tuple[str, dict[str, Any]]] = []
         self.subscribers: list[queue.Queue[tuple[str, dict[str, Any]]]] = []
         self.session: ParitySession | None = None
@@ -55,8 +59,12 @@ class Hub:
         return self.thread is not None and self.thread.is_alive()
 
     def start(self, stream: str, pace_ms: int, count: int, seed: int) -> None:
-        if self.running:
-            raise RuntimeError("a run is already in progress")
+        with self.run_lock:  # both runs would reset the same datasets and databases
+            if self.running:
+                raise RuntimeError("a run is already in progress")
+            self._start(stream, pace_ms, max(MIN_COUNT, min(count, MAX_COUNT)), seed)
+
+    def _start(self, stream: str, pace_ms: int, count: int, seed: int) -> None:
         self.emit("phase", {"reset": True, "text": f"Starting stream {stream}"})
         self.session = ParitySession(self.emit, java=self.java)
 
