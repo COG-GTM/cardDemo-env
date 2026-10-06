@@ -64,6 +64,16 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Java parity
+
+The Spring Boot port lives under [`java/`](java/README.md). Build it and diff
+its in-process replay against the COBOL recordings:
+
+```sh
+make parity-java
+make parity-java CASE=half_cent ONLY=XFER_FEE_LEDGER
+```
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:

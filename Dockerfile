@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnucobol3 libpq-dev postgresql-client make python3 git build-essential \
     autoconf automake libtool bison flex ca-certificates pkg-config \
+    openjdk-21-jdk-headless maven \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone --depth 1 --branch v1.4 \
@@ -16,6 +17,8 @@ RUN git clone --depth 1 --branch v1.4 \
     && make install \
     && rm -rf /tmp/ocesql
 
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV PATH=${JAVA_HOME}/bin:${PATH}
 ENV COB_LIBRARY_PATH=/estate/loadlib
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib/x86_64-linux-gnu
 WORKDIR /estate
