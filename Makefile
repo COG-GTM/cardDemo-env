@@ -1,5 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	parity-java java-build java-test deadcode chain-graph chain-graph-check
 
 up:
 	docker compose up -d --build --wait
@@ -46,6 +46,32 @@ parity-naive:
 		python3 tools/parity/compare.py --chain xferfee --case $(CASE) \
 		--candidate work/parity/$(CASE)/naive \
 		--report work/parity/$(CASE)/naive-report.md'
+
+PARITY_CASES ?= default under_cap at_cap rate_change zero_amount non_transfer half_cent
+# signals = SYSOUT + rc.json (observability, COG-1241); full adds datasets and DB2 tables.
+PARITY_SCOPE ?= signals
+MVN ?= mvn -q -B
+
+java-build:
+	$(MVN) -f java/pom.xml package -DskipTests
+
+java-test:
+	$(MVN) -f java/pom.xml verify
+
+parity-java: java-build
+	@status=0; \
+	for case in $(if $(CASE),$(CASE),$(PARITY_CASES)); do \
+		out=work/parity-java/$$case; \
+		python3 tools/parity/java_candidate.py --case $$case \
+			--work $$out || status=1; \
+		python3 tools/parity/compare.py --chain xferfee --case $$case \
+			--candidate $$out/candidate --scope $(PARITY_SCOPE) \
+			--report $$out/report.md || status=1; \
+		python3 tools/parity/compare_counters.py --case $$case \
+			--candidate $$out/candidate \
+			--report $$out/counters.md || status=1; \
+	done; \
+	exit $$status
 
 deadcode:
 	python3 tools/deadcode/gen_smf.py

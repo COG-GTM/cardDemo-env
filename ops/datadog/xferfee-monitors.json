@@ -1,0 +1,58 @@
+[
+  {
+    "name": "[xferfee] XFRDAILY step ended RC 8+ (abend, DLQ entry written)",
+    "type": "query alert",
+    "query": "sum(last_10m):sum:carddemo.xferfee.step.alerts{*} by {step,program,rc}.as_count() > 0",
+    "message": "{{program.name}} ({{step.name}}) ended RC {{rc.name}}. The run was rolled back (BR-15), STEP030 was skipped (COND=(4,LT,STEP020)) and a dead-letter entry holds the rejected transfer and SYSOUT. Runbook: ops/README.md",
+    "tags": [
+      "chain:xferfee",
+      "severity:critical"
+    ],
+    "priority": 1,
+    "options": {
+      "thresholds": {
+        "critical": 0
+      },
+      "notify_no_data": false,
+      "require_full_window": false,
+      "include_tags": true
+    }
+  },
+  {
+    "name": "[xferfee] XFRDAILY step ended RC 4 (warning)",
+    "type": "query alert",
+    "query": "sum(last_10m):sum:carddemo.xferfee.step.warnings{*} by {step,program}.as_count() > 0",
+    "message": "{{program.name}} ({{step.name}}) ended RC 4: unmatched cards (BR-05) or an empty fee set (BR-19). Check carddemo.xferfee.transfers.rejected by reason. Runbook: ops/README.md",
+    "tags": [
+      "chain:xferfee",
+      "severity:warning"
+    ],
+    "priority": 3,
+    "options": {
+      "thresholds": {
+        "critical": 0
+      },
+      "notify_no_data": false,
+      "require_full_window": false,
+      "include_tags": true
+    }
+  },
+  {
+    "name": "[xferfee] XFERFEE TOTAL FEES != CBXFR03C GRAND TOTAL FEE",
+    "type": "query alert",
+    "query": "sum(last_1h):abs(sum:carddemo.xferfee.posting.fees.total{*}.as_count() - sum:carddemo.xferfee.recon.grand.total.fee{*}.as_count()) > 0.005",
+    "message": "Posted fees and reconciled grand total disagree for the last run. Runbook: ops/README.md",
+    "tags": [
+      "chain:xferfee",
+      "severity:critical"
+    ],
+    "priority": 2,
+    "options": {
+      "thresholds": {
+        "critical": 0.005
+      },
+      "notify_no_data": false,
+      "require_full_window": false
+    }
+  }
+]
