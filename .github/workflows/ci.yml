@@ -24,6 +24,25 @@ jobs:
           grep -q 'MAXCC=0000' work/ci-chain.log
       - name: Run self parity
         run: make parity
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Java parity (parity-console candidate vs COBOL outputs)
+        run: make parity-java JAVA_HOME="$JAVA_HOME"
+      - name: Verify Java break-it rounding is caught
+        run: |
+          if make parity-java JAVA_HOME="$JAVA_HOME" CASE=half_cent BREAK=1; then
+            echo "half_cent HALF_EVEN Java candidate unexpectedly passed"
+            exit 1
+          fi
+      - name: Live parity console against GnuCOBOL feed
+        run: |
+          "$JAVA_HOME/bin/java" -jar parity-console/target/parity-console.jar > work/parity-console.log 2>&1 &
+          for i in $(seq 60); do curl -sf localhost:8080/api/cases >/dev/null && break; sleep 2; done
+          python3 parity-console/ci/live-smoke.py http://localhost:8080
       - name: Verify naive parity is intentionally different
         run: |
           if make parity-naive CASE=half_cent; then
