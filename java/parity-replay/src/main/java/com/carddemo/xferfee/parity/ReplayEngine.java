@@ -23,11 +23,14 @@ import org.slf4j.LoggerFactory;
  * In-process equivalent of the {@code XFERFEEP} proc: STEP010 intake, STEP020 posting, STEP030
  * reconciliation. Step sequencing mirrors {@code tools/runjcl/runjcl.py}, which recorded the
  * expected outputs: the job stops at the first step with a non-zero RC and that step's datasets
- * are not cataloged. Steps whose module is not implemented yet are skipped and write nothing.
+ * are not cataloged. DB2 is dumped regardless: a posting RC of 4 or lower keeps its committed
+ * ledger, while an abend or a posting that never ran leaves {@code db2_before}. Steps whose module is not implemented yet are skipped and write nothing.
  */
 public class ReplayEngine {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReplayEngine.class);
+    /** {@link AccountPosting}: RC above 4 is an abend with the whole run rolled back (BR-15). */
+    private static final int MAX_COMMIT_RC = 4;
 
     private final Optional<FeeSchedule> feeSchedule;
     private final Optional<TransferIntake> intake;
@@ -74,26 +77,27 @@ public class ReplayEngine {
 
         List<TransferPosted> posted = List.of();
         if (stopped) {
-            posting.ifPresent(p -> LOG.info("STEP020 not run: job stopped at {}", lastStep(steps)));
+            if (posting.isPresent()) {
+                LOG.info("STEP020 not run: job stopped at {}", lastStep(steps));
+                writer.ledger(fixture.ledgerBefore());
+            }
         } else if (posting.isPresent()) {
             PostingResult result = posting.get().post(
                     requested, fixture.accounts(), new ArrayList<>(fixture.ledgerBefore()));
             stopped = !record(steps, writer, result.report());
+            boolean committed = result.report().returnCode() <= MAX_COMMIT_RC;
+            writer.ledger(committed ? result.ledgerAfter() : fixture.ledgerBefore());
             if (!stopped) {
                 posted = result.posted();
                 writer.dataset(LegacyRecords.ACCTDATA_XFER_DSN,
                         result.accountMasterAfter().stream().map(LegacyRecords::accountRow).toList());
                 writer.dataset(LegacyRecords.FEES_DSN,
                         posted.stream().map(LegacyRecords::feeRow).toList());
-                writer.ledger(result.ledgerAfter());
             }
         } else {
             posted = options.stubUpstream() ? fixture.recordedFees() : List.of();
             LOG.warn("STEP020 AccountPosting not implemented: skipped{}",
                     options.stubUpstream() ? " (STEP030 fed from recorded XFER.FEES)" : "");
-        }
-        if (stopped && posting.isPresent()) {
-            writer.ledger(fixture.ledgerBefore());
         }
 
         if (feeSchedule.isPresent()) {

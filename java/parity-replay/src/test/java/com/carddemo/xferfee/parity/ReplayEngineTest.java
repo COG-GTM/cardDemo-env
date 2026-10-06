@@ -3,6 +3,7 @@ package com.carddemo.xferfee.parity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.carddemo.xferfee.contracts.AccountPosting;
+import com.carddemo.xferfee.contracts.LedgerEntry;
 import com.carddemo.xferfee.contracts.Reconciliation;
 import com.carddemo.xferfee.contracts.StepReport;
 import com.carddemo.xferfee.contracts.TransferIntake;
@@ -150,6 +151,26 @@ class ReplayEngineTest {
 
         assertThat(steps).containsExactly(Map.entry("STEP010", 4));
         assertThat(work.resolve("out").resolve("datasets")).doesNotExist();
+    }
+
+    @Test
+    void postingRcFourKeepsCommittedLedgerButStopsJob() throws IOException {
+        LedgerEntry committed = new LedgerEntry("TRN0000000000002", LocalDate.of(2024, 6, 20), 1L, 2L,
+                "RETAIL", new BigDecimal("100.00"), new BigDecimal("1.50"), false);
+        AccountPosting posting = (transfers, accounts, ledger) -> new AccountPosting.PostingResult(
+                List.of(posted()), List.of(), List.of(committed), List.of(),
+                new StepReport("STEP020", 4, List.of("WARNING")));
+        Reconciliation recon = posted -> {
+            throw new AssertionError("STEP030 must not run after STEP020 RC 4");
+        };
+
+        Map<String, Integer> steps = engine(null, posting, recon).run(options);
+
+        Path out = work.resolve("out");
+        assertThat(steps).containsExactly(Map.entry("STEP020", 4));
+        assertThat(out.resolve("datasets")).doesNotExist();
+        assertThat(Db2Csv.readLedger(out.resolve("db2_after").resolve("XFER_FEE_LEDGER.csv")))
+                .containsExactly(committed);
     }
 
     private static ReplayEngine engine(TransferIntake intake, AccountPosting posting, Reconciliation recon) {
