@@ -1,0 +1,456 @@
+{
+  "uid": "xferfee-chain",
+  "title": "XFERFEE chain: COBOL counters and return codes",
+  "tags": [
+    "carddemo",
+    "xferfee",
+    "modernization"
+  ],
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "label": "Prometheus"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Legacy SYSOUT counters",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "collapsed": false
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "CBXFR01C: RECORDS READ",
+      "description": "STEP010 CBXFR01C DISPLAY \"RECORDS READ\" -> xfer.extract.records.read",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(xfer_extract_records_read_total{chain=\"xferfee\"}[$__range]))",
+          "legendFormat": "RECORDS READ"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "CBXFR01C: TRANSFERS SELECTED",
+      "description": "STEP010 CBXFR01C DISPLAY \"TRANSFERS SELECTED\" -> xfer.extract.transfers.selected",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(xfer_extract_transfers_selected_total{chain=\"xferfee\"}[$__range]))",
+          "legendFormat": "TRANSFERS SELECTED"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "CBXFR01C: UNMATCHED CARDS",
+      "description": "STEP010 CBXFR01C DISPLAY \"UNMATCHED CARDS\" -> xfer.extract.cards.unmatched",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(xfer_extract_cards_unmatched_total{chain=\"xferfee\"}[$__range]))",
+          "legendFormat": "UNMATCHED CARDS"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "XFERFEE: TRANSFERS POSTED",
+      "description": "STEP020 XFERFEE DISPLAY \"TRANSFERS POSTED\" -> xfer.posting.transfers.posted",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(xfer_posting_transfers_posted_total{chain=\"xferfee\"}[$__range]))",
+          "legendFormat": "TRANSFERS POSTED"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "XFERFEE: TOTAL FEES",
+      "description": "STEP020 XFERFEE DISPLAY \"TOTAL FEES\" -> xfer.posting.fees.amount",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(xfer_posting_fees_amount_total{chain=\"xferfee\"}[$__range]))",
+          "legendFormat": "TOTAL FEES"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "CBXFR03C: GRAND TOTAL FEE",
+      "description": "STEP030 CBXFR03C DISPLAY \"GRAND TOTAL FEE\" -> xfer.recon.fees.grand_total",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(xfer_recon_fees_grand_total_total{chain=\"xferfee\"}[$__range]))",
+          "legendFormat": "GRAND TOTAL FEE"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "row",
+      "title": "Return codes, rejects, alerts",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "collapsed": false
+    },
+    {
+      "id": 9,
+      "type": "stat",
+      "title": "Last return code by step",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 4
+              },
+              {
+                "color": "red",
+                "value": 8
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "RC 0"
+                },
+                "4": {
+                  "text": "RC 4"
+                },
+                "8": {
+                  "text": "RC 8"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (step, program) (xfer_step_return_code{chain=\"xferfee\"})",
+          "legendFormat": "{{step}} {{program}}"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Step runs by outcome",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (step, outcome) (increase(xfer_step_runs_total{chain=\"xferfee\"}[$__interval]))",
+          "legendFormat": "{{step}} {{outcome}}"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Rejected transfers by reason",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (reason) (increase(xfer_transfers_rejected_total{chain=\"xferfee\"}[$__interval]))",
+          "legendFormat": "{{reason}}"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Alerts by severity",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (severity, step) (increase(xfer_alerts_total{chain=\"xferfee\"}[$__interval]))",
+          "legendFormat": "{{severity}} {{step}}"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Dead-letter entries by reason",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (reason, step) (increase(xfer_dlq_entries_total{chain=\"xferfee\"}[$__interval]))",
+          "legendFormat": "{{reason}} {{step}}"
+        }
+      ]
+    }
+  ]
+}

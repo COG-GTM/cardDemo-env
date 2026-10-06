@@ -1,0 +1,65 @@
+{
+  "chain": "xferfee",
+  "counters": [
+    {
+      "id": "RECORDS_READ",
+      "step": "STEP010",
+      "program": "CBXFR01C",
+      "label": "RECORDS READ",
+      "kind": "count",
+      "metric": "xfer.extract.records.read"
+    },
+    {
+      "id": "TRANSFERS_SELECTED",
+      "step": "STEP010",
+      "program": "CBXFR01C",
+      "label": "TRANSFERS SELECTED",
+      "kind": "count",
+      "metric": "xfer.extract.transfers.selected"
+    },
+    {
+      "id": "UNMATCHED_CARDS",
+      "step": "STEP010",
+      "program": "CBXFR01C",
+      "label": "UNMATCHED CARDS",
+      "kind": "count",
+      "metric": "xfer.extract.cards.unmatched"
+    },
+    {
+      "id": "TRANSFERS_POSTED",
+      "step": "STEP020",
+      "program": "XFERFEE",
+      "label": "TRANSFERS POSTED",
+      "kind": "count",
+      "metric": "xfer.posting.transfers.posted"
+    },
+    {
+      "id": "TOTAL_FEES",
+      "step": "STEP020",
+      "program": "XFERFEE",
+      "label": "TOTAL FEES",
+      "kind": "amount",
+      "metric": "xfer.posting.fees.amount"
+    },
+    {
+      "id": "GRAND_TOTAL_FEE",
+      "step": "STEP030",
+      "program": "CBXFR03C",
+      "label": "GRAND TOTAL FEE",
+      "kind": "amount",
+      "metric": "xfer.recon.fees.grand_total"
+    }
+  ],
+  "returnCodes": {
+    "0": {"outcome": "ok", "alert": null},
+    "4": {"outcome": "warning", "alert": "warning"},
+    "8": {"outcome": "abend", "alert": "critical", "deadLetter": true}
+  },
+  "stepMetrics": [
+    "xfer.step.return_code",
+    "xfer.step.runs",
+    "xfer.transfers.rejected",
+    "xfer.alerts",
+    "xfer.dlq.entries"
+  ]
+}

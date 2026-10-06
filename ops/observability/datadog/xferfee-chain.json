@@ -1,0 +1,302 @@
+{
+  "title": "XFERFEE chain: COBOL counters and return codes",
+  "description": "Legacy CBXFR01C / XFERFEE / CBXFR03C SYSOUT counters and step return codes. Source: ops/observability/counter-catalog.json",
+  "layout_type": "ordered",
+  "template_variables": [
+    {
+      "name": "env",
+      "prefix": "env",
+      "available_values": [],
+      "default": "*"
+    }
+  ],
+  "widgets": [
+    {
+      "definition": {
+        "type": "query_value",
+        "title": "CBXFR01C: RECORDS READ",
+        "precision": 0,
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "aggregator": "sum",
+                "query": "sum:xfer.extract.records.read{chain:xferfee,$env}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "query_value",
+        "title": "CBXFR01C: TRANSFERS SELECTED",
+        "precision": 0,
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "aggregator": "sum",
+                "query": "sum:xfer.extract.transfers.selected{chain:xferfee,$env}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "query_value",
+        "title": "CBXFR01C: UNMATCHED CARDS",
+        "precision": 0,
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "aggregator": "sum",
+                "query": "sum:xfer.extract.cards.unmatched{chain:xferfee,$env}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "query_value",
+        "title": "XFERFEE: TRANSFERS POSTED",
+        "precision": 0,
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "aggregator": "sum",
+                "query": "sum:xfer.posting.transfers.posted{chain:xferfee,$env}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "query_value",
+        "title": "XFERFEE: TOTAL FEES",
+        "precision": 2,
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "aggregator": "sum",
+                "query": "sum:xfer.posting.fees.amount{chain:xferfee,$env}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "query_value",
+        "title": "CBXFR03C: GRAND TOTAL FEE",
+        "precision": 2,
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "aggregator": "sum",
+                "query": "sum:xfer.recon.fees.grand_total{chain:xferfee,$env}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "query_table",
+        "title": "Last return code by step",
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "rc",
+                "aggregator": "last",
+                "query": "max:xfer.step.return_code{chain:xferfee,$env} by {step,program}"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "rc",
+                "conditional_formats": [
+                  {
+                    "comparator": ">=",
+                    "value": 8,
+                    "palette": "white_on_red"
+                  },
+                  {
+                    "comparator": ">=",
+                    "value": 4,
+                    "palette": "white_on_yellow"
+                  },
+                  {
+                    "comparator": "<",
+                    "value": 4,
+                    "palette": "white_on_green"
+                  }
+                ]
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "timeseries",
+        "title": "Step runs by outcome",
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "query": "sum:xfer.step.runs{chain:xferfee,$env} by {step,outcome}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "timeseries",
+            "display_type": "bars"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "timeseries",
+        "title": "Rejected transfers by reason",
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "query": "sum:xfer.transfers.rejected{chain:xferfee,$env} by {reason}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "timeseries",
+            "display_type": "bars"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "timeseries",
+        "title": "Alerts by severity",
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "query": "sum:xfer.alerts{chain:xferfee,$env} by {severity,step}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "timeseries",
+            "display_type": "bars"
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "timeseries",
+        "title": "Dead-letter entries by reason",
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "q",
+                "query": "sum:xfer.dlq.entries{chain:xferfee,$env} by {reason,step}.as_count()"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "q"
+              }
+            ],
+            "response_format": "timeseries",
+            "display_type": "bars"
+          }
+        ]
+      }
+    }
+  ]
+}

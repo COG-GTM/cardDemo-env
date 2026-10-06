@@ -64,6 +64,25 @@ make parity-naive CASE=half_cent
 The non-tie cases pass; `half_cent` is expected to fail with fee and derived
 ledger differences.
 
+## Java counter and return-code parity
+
+`java/` holds the observability contract for the transfer-fee chain: the
+CBXFR01C / XFERFEE / CBXFR03C SYSOUT counters become Micrometer metrics, RC 4
+raises a warning alert (unmatched cards become `TransferRejected` events), and
+RC 8 raises a critical alert and dead-letters the in-flight transfer.
+
+```sh
+make parity-java             # all cases
+make parity-java CASE=half_cent
+```
+
+`parity-replay` writes `work/parity-java/<case>/` (`sysout/STEPnnn.{txt,json}`,
+`rc.json`, `rejects.jsonl`, `dlq.jsonl`, `alerts.jsonl`, `metrics.json`) and
+`tools/parity/compare_counters.py` diffs the counters and return codes against
+the recorded COBOL SYSOUT. Counter names, metrics, dashboards and alert rules
+are documented in `ops/observability/README.md`. Set `ESTATE_EXEC=` to run on
+the host with JDK 21 and Maven instead of in the estate container.
+
 ## Dead code split
 
 Generate deterministic SMF-shaped activity and classify every JCL member:
