@@ -131,7 +131,9 @@ def record_case(case: str, output: Path | None = None) -> Path:
         str(manifest),
     ], check=False)
     expected_maxcc = EXPECTED_MAXCC.get(case, 0)
-    if maxcc != expected_maxcc:
+    # Parity candidates (--out) keep whatever RC the run produced so that
+    # compare.py can report the mismatch; only baselines are guarded.
+    if output is None and maxcc != expected_maxcc:
         raise RuntimeError(
             f"{case}: chain ended with MAXCC {maxcc}, expected "
             f"{expected_maxcc}; existing baseline left unchanged"
