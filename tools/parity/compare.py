@@ -216,7 +216,10 @@ def append_sysout_diffs(
     return field_diffs, record_diffs
 
 
-def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
+def compare_case(
+    case: str, candidate: Path | None = None, only: set[str] | None = None
+) -> tuple[str, int]:
+    """``only`` limits the diff to these DSNs/tables (or sysout, rc)."""
     expected_root = CHAIN_ROOT / case / "expected"
     if candidate is None:
         candidate = ROOT / "work" / "parity" / case / "candidate"
@@ -245,7 +248,13 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     ]
     field_diffs = 0
     record_diffs = 0
+
+    def selected(name: str) -> bool:
+        return only is None or name in only
+
     for output in metadata["outputs"]:
+        if not selected(output["dsn"]):
+            continue
         expected = dataset_file(expected_root / "datasets", output["dsn"])
         actual = dataset_file(candidate / "datasets", output["dsn"])
         if expected is None and actual is None:
@@ -265,6 +274,8 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         record_diffs += records
 
     for table in metadata["db2"]:
+        if not selected(table["table"]):
+            continue
         fields, records = append_db_diffs(
             lines,
             expected_root / "db2_after",
@@ -273,14 +284,18 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
         )
         field_diffs += fields
         record_diffs += records
-    fields, records = append_sysout_diffs(
-        lines, expected_root / "sysout", candidate / "sysout"
-    )
-    field_diffs += fields
-    record_diffs += records
+    if selected("sysout"):
+        fields, records = append_sysout_diffs(
+            lines, expected_root / "sysout", candidate / "sysout"
+        )
+        field_diffs += fields
+        record_diffs += records
 
     expected_rc = json.loads((expected_root / "rc.json").read_text())
-    actual_rc = json.loads((candidate / "rc.json").read_text())
+    actual_rc = (
+        json.loads((candidate / "rc.json").read_text())
+        if selected("rc") else expected_rc
+    )
     if expected_rc != actual_rc:
         lines.append(
             f"- RC: expected `{json.dumps(expected_rc, sort_keys=True)}`, "
@@ -295,6 +310,8 @@ def compare_case(case: str, candidate: Path | None = None) -> tuple[str, int]:
     else:
         verdict = "PARITY: PASS"
         rc = 0
+    if only is not None:
+        verdict += f" [only: {', '.join(sorted(only))}]"
     details = lines[4:]
     field_lines = [line for line in details if line.startswith("| ")]
     record_lines = [
@@ -328,7 +345,16 @@ def main() -> int:
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--report", type=Path)
+    parser.add_argument(
+        "--only",
+        help="comma-separated DSNs/tables (or sysout, rc) to compare; "
+        "everything else is skipped",
+    )
     args = parser.parse_args()
+    only = (
+        {name.strip() for name in args.only.split(",") if name.strip()}
+        if args.only else None
+    )
     if args.chain != "xferfee":
         parser.error("only the xferfee chain is supported")
     cases = CASES if args.all else (args.case,)
@@ -338,7 +364,7 @@ def main() -> int:
     overall = 0
     for case in cases:
         candidate = args.candidate if len(cases) == 1 else None
-        report, rc = compare_case(case, candidate)
+        report, rc = compare_case(case, candidate, only)
         aggregate.append(report)
         overall = max(overall, rc)
     if args.all:
