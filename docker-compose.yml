@@ -1,3 +1,20 @@
+x-java-service: &java-service
+  profiles: ["java"]
+  pull_policy: build
+  restart: on-failure
+  depends_on:
+    db:
+      condition: service_healthy
+    kafka:
+      condition: service_healthy
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/carddemo
+    SPRING_DATASOURCE_USERNAME: carddemo
+    SPRING_DATASOURCE_PASSWORD: carddemo
+    SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    XFER_POSTING_MODE: ${XFER_POSTING_MODE:-batch-atomic}
+    XFER_FEESCHEDULE_URL: http://fee-schedule-service:8081
+
 services:
   db:
     image: postgres:15
@@ -40,6 +57,85 @@ services:
       PGUSER: carddemo
       PGPASSWORD: carddemo
     command: ["sleep", "infinity"]
+
+  kafka:
+    profiles: ["java"]
+    image: ${KAFKA_IMAGE:-apache/kafka:3.7.0}
+    pull_policy: missing
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 1
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list"]
+      interval: 5s
+      timeout: 20s
+      retries: 30
+
+  fee-schedule-service:
+    <<: *java-service
+    build:
+      context: java
+      args:
+        MODULE: fee-schedule-service
+        JAVA_BASE_IMAGE: ${JAVA_BASE_IMAGE:-eclipse-temurin:21-jre}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  transfer-intake-service:
+    <<: *java-service
+    build:
+      context: java
+      args:
+        MODULE: transfer-intake-service
+        JAVA_BASE_IMAGE: ${JAVA_BASE_IMAGE:-eclipse-temurin:21-jre}
+
+  account-posting-service:
+    <<: *java-service
+    build:
+      context: java
+      args:
+        MODULE: account-posting-service
+        JAVA_BASE_IMAGE: ${JAVA_BASE_IMAGE:-eclipse-temurin:21-jre}
+
+  outbox-relay:
+    <<: *java-service
+    build:
+      context: java
+      args:
+        MODULE: outbox-relay
+        JAVA_BASE_IMAGE: ${JAVA_BASE_IMAGE:-eclipse-temurin:21-jre}
+
+  reconciliation-service:
+    <<: *java-service
+    build:
+      context: java
+      args:
+        MODULE: reconciliation-service
+        JAVA_BASE_IMAGE: ${JAVA_BASE_IMAGE:-eclipse-temurin:21-jre}
+
+  parity-replay:
+    <<: *java-service
+    restart: "no"
+    user: "${UID:-1000}:${GID:-1000}"
+    build:
+      context: java
+      args:
+        MODULE: parity-replay
+        JAVA_BASE_IMAGE: ${JAVA_BASE_IMAGE:-eclipse-temurin:21-jre}
+    volumes:
+      - .:/estate
+    working_dir: /estate
 
 volumes:
   carddemo-db:

@@ -1,5 +1,11 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check java-build java-up java-down parity-java
+
+MVN ?= mvn
+JAVA_COMPOSE = docker compose --profile java
+JAVA_SERVICES = fee-schedule-service transfer-intake-service \
+	account-posting-service outbox-relay reconciliation-service
+PARITY_CASES ?= $(sort $(notdir $(patsubst %/case.json,%,$(wildcard fixtures/xferfee/*/case.json))))
 
 up:
 	docker compose up -d --build --wait
@@ -56,3 +62,26 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+java-build:
+	cd java && $(MVN) -B -q package
+
+java-up: java-build
+	$(JAVA_COMPOSE) build $(JAVA_SERVICES) parity-replay
+	$(JAVA_COMPOSE) up -d --wait db kafka $(JAVA_SERVICES)
+
+java-down:
+	$(JAVA_COMPOSE) stop kafka $(JAVA_SERVICES)
+
+parity-java:
+	@cases="$(CASE)"; [ -n "$$cases" ] || cases="$(PARITY_CASES)"; \
+	status=0; \
+	for c in $$cases; do \
+		out=work/parity-java/$$c; \
+		$(JAVA_COMPOSE) run --rm -T parity-replay --mode=events \
+			--case $$c --out $$out/candidate || status=1; \
+		python3 tools/parity/compare.py --chain xferfee --case $$c \
+			--candidate $$out/candidate --report $$out/report.md || status=1; \
+	done; \
+	python3 tools/parity/java_summary.py $$cases; \
+	exit $$status
