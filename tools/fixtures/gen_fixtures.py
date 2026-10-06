@@ -13,27 +13,36 @@ from pathlib import Path
 
 POSITIVE = "{ABCDEFGHI"
 NEGATIVE = "}JKLMNOPQR"
+# GnuCOBOL's ASCII runtime reads trailing signs as plain digits (positive) or
+# p-y (negative); EBCDIC-style overpunch letters decode as 0 there.
+NATIVE_POSITIVE = "0123456789"
+NATIVE_NEGATIVE = "pqrstuvwxy"
 
 
-def zoned(value: float, digits: int = 12) -> str:
+def zoned(value: float, digits: int = 12, native: bool = False) -> str:
     cents = int(round(abs(value) * 100))
     raw = f"{cents:0{digits}d}"
-    sign = POSITIVE if value >= 0 else NEGATIVE
+    if native:
+        sign = NATIVE_POSITIVE if value >= 0 else NATIVE_NEGATIVE
+    else:
+        sign = POSITIVE if value >= 0 else NEGATIVE
     return raw[:-1] + sign[int(raw[-1])]
 
 
-def account(account_id: int, balance: float, book: str) -> bytes:
+def account(
+    account_id: int, balance: float, book: str, native: bool = False
+) -> bytes:
     fields = [
         f"{account_id:011d}",
         "Y",
-        zoned(balance),
-        zoned(50000),
-        zoned(10000),
+        zoned(balance, native=native),
+        zoned(50000, native=native),
+        zoned(10000, native=native),
         "2020-01-01",
         "2030-12-31",
         "2025-01-01",
-        zoned(0),
-        zoned(0),
+        zoned(0, native=native),
+        zoned(0, native=native),
         f"{account_id:05d}     ",
         book.ljust(10),
     ]
@@ -55,6 +64,7 @@ def transaction(
     card: str,
     date: str,
     description: str,
+    native: bool = False,
 ) -> bytes:
     fields = [
         transaction_id.ljust(16),
@@ -62,7 +72,7 @@ def transaction(
         "0001",
         "DEMO".ljust(10),
         description.ljust(100),
-        zoned(amount, 11),
+        zoned(amount, 11, native),
         "000000001",
         "CardDemo Test Merchant".ljust(50),
         "Legacyville".ljust(50),
@@ -83,6 +93,7 @@ def transfer(
     target: int,
     card: str,
     date: str,
+    native: bool = False,
 ) -> bytes:
     return transaction(
         transaction_id,
@@ -91,6 +102,7 @@ def transfer(
         card,
         date,
         f"XFER TO ACCT {target:011d}",
+        native,
     )
 
 
@@ -268,7 +280,8 @@ def synthetic_day(date: str, count: int, seed: int) -> dict[str, bytes]:
     cards = [f"{4000000000000001 + index:016d}"
              for index in range(SYNTHETIC_ACCOUNTS)]
     account_rows = [
-        account(index, rng.randint(1000, 500000), books[index - 1])
+        account(index, Decimal(rng.randint(100000, 50000000)) / 100,
+                books[index - 1], native=True)
         for index in range(1, SYNTHETIC_ACCOUNTS + 1)
     ]
     xref_rows = [
@@ -290,7 +303,7 @@ def synthetic_day(date: str, count: int, seed: int) -> dict[str, bytes]:
             amount = Decimal(rng.randint(100, 50000)) / 100
             transactions.append(transaction(
                 transaction_id, transaction_type, amount, card, date,
-                description,
+                description, native=True,
             ))
             continue
         target = rng.randint(1, SYNTHETIC_ACCOUNTS - 1)
@@ -298,7 +311,8 @@ def synthetic_day(date: str, count: int, seed: int) -> dict[str, bytes]:
             target += 1
         amount = synthetic_amount(rng, books[source - 1], date)
         transactions.append(
-            transfer(transaction_id, amount, source, target, card, date)
+            transfer(transaction_id, amount, source, target, card, date,
+                     native=True)
         )
     return {
         "ACCTDATA.PS": b"".join(account_rows),
