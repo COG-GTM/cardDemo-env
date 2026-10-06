@@ -30,6 +30,8 @@ jobs:
             echo "half_cent naive parity unexpectedly passed"
             exit 1
           fi
+      - name: Run Java counter and return-code parity
+        run: make parity-java
       - name: Run dead-code split
         run: make deadcode
       - name: Check chain graph

@@ -1,0 +1,32 @@
+groups:
+  - name: xferfee-chain
+    rules:
+      - alert: XferStepAbend
+        expr: max by (step, program) (xfer_step_return_code{chain="xferfee"}) >= 8
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.step }} {{ $labels.program }} ended RC {{ $value }}"
+          description: >-
+            Legacy 9999-ABEND-PROGRAM path. In-flight work is parked on the
+            dead-letter queue (xfer_dlq_entries_total by reason).
+      - alert: XferStepWarning
+        expr: max by (step, program) (xfer_step_return_code{chain="xferfee"}) == 4
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.step }} {{ $labels.program }} ended RC 4"
+          description: >-
+            CBXFR01C had unmatched cards, or CBXFR03C found no fee records.
+      - alert: XferTransfersRejected
+        expr: sum by (reason) (increase(xfer_transfers_rejected_total{chain="xferfee"}[1d])) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value }} transfers rejected ({{ $labels.reason }}) in the last day"
+      - alert: XferDeadLetters
+        expr: sum by (reason) (increase(xfer_dlq_entries_total{chain="xferfee"}[1d])) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $value }} dead-letter entries ({{ $labels.reason }}) in the last day"

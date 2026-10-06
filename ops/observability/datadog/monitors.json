@@ -1,0 +1,51 @@
+[
+  {
+    "name": "[xferfee] {{step.name}} {{program.name}} abended (RC 8)",
+    "type": "query alert",
+    "query": "max(last_15m):max:xfer.step.return_code{chain:xferfee} by {step,program} >= 8",
+    "message": "XFERFEE chain step {{step.name}} ({{program.name}}) ended RC 8. In-flight work is on the dead-letter queue; see xfer.dlq.entries by reason.",
+    "options": {
+      "thresholds": {
+        "critical": 8,
+        "warning": 4
+      },
+      "notify_no_data": false
+    },
+    "tags": [
+      "chain:xferfee",
+      "severity:critical"
+    ]
+  },
+  {
+    "name": "[xferfee] unmatched cards in transfer extract (RC 4)",
+    "type": "query alert",
+    "query": "sum(last_1d):sum:xfer.extract.cards.unmatched{chain:xferfee}.as_count() > 0",
+    "message": "CBXFR01C dropped type-08 transactions with no card xref / account. Rejected transfers are counted in xfer.transfers.rejected by reason.",
+    "options": {
+      "thresholds": {
+        "critical": 0
+      },
+      "notify_no_data": false
+    },
+    "tags": [
+      "chain:xferfee",
+      "severity:warning"
+    ]
+  },
+  {
+    "name": "[xferfee] reconciliation found no fee records (RC 4)",
+    "type": "query alert",
+    "query": "sum(last_1d):sum:xfer.step.runs{chain:xferfee,step:step030,outcome:warning}.as_count() > 0",
+    "message": "CBXFR03C ended RC 4 with NO FEE RECORDS.",
+    "options": {
+      "thresholds": {
+        "critical": 0
+      },
+      "notify_no_data": false
+    },
+    "tags": [
+      "chain:xferfee",
+      "severity:warning"
+    ]
+  }
+]
