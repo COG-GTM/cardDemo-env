@@ -1,5 +1,5 @@
 .PHONY: up down build run reset shell record record-all parity parity-naive \
-	deadcode chain-graph chain-graph-check
+	deadcode chain-graph chain-graph-check cutover-retire cutover-rollback-dryrun
 
 up:
 	docker compose up -d --build --wait
@@ -56,3 +56,9 @@ chain-graph:
 
 chain-graph-check:
 	python3 tools/chaingraph/gen_chain_graph.py --check
+
+cutover-retire: deadcode
+	python3 tools/cutover/retire_with_chain.py
+
+cutover-rollback-dryrun:
+	docker compose exec -T estate python3 tools/cutover/rollback_dryrun.py
