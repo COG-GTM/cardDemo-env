@@ -36,6 +36,12 @@ jobs:
         run: make chain-graph-check
       - name: Check generated fixtures
         run: python3 tools/fixtures/gen_fixtures.py --check
+      - name: Cut-over dead-code classification
+        run: make cutover-deadcode
+      - name: Rollback dry-run
+        run: make cutover-rollback-dryrun
+      - name: Cut-over gate unit tests
+        run: make cutover-test
       - name: Upload estate artifacts
         if: always()
         uses: actions/upload-artifact@v4

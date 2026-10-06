@@ -1,0 +1,176 @@
+18:55:28Z ==============================================================================
+18:55:28Z COG-1252 xferfee ROLLBACK DRY RUN (compose stack)
+18:55:28Z started      2026-10-06T18:55:28+00:00
+18:55:28Z case         default  (last Java-posted business day 2024-06-30)
+18:55:28Z commit       38cc7006c3f6878f3d1c2a48bedbb2a00bddaf1c
+18:55:28Z generation   COBOL-recorded fixture outputs as stand-in for legacy-adapter egress (no Java candidate with parity PASS for this case yet; COG-1240/P1-P6 not merged)  [fixture]
+18:55:28Z              fixtures/xferfee/default/expected
+18:55:28Z ==============================================================================
+18:55:28Z 
+18:55:28Z STEP 1  stage state after the last Java-posted day
+18:55:28Z $ runjcl --job jcl/DEFGDGX.jcl
+18:55:28Z     | IEF236I ALLOC. FOR DEFGDGX STEP01
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSPRINT
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSOUT
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSIN
+18:55:28Z     | IEF142I DEFGDGX STEP01 - STEP WAS EXECUTED - COND CODE 0000
+18:55:28Z     | $HASP395 DEFGDGX ENDED - MAXCC=0000
+18:55:28Z   legacy-adapter catalogued AWS.M2.CARDDEMO.ACCTDATA.XFER(+1) -> G0001V00
+18:55:28Z   legacy-adapter catalogued AWS.M2.CARDDEMO.XFER.FEES(+1) -> G0001V00
+18:55:28Z   mirrored 2 Java ledger rows into XFER_FEE_LEDGER
+18:55:28Z 
+18:55:28Z STEP 2  pre-flight on ACCTDATA.XFER(0)
+18:55:28Z   [OK  ] catalog_points_at_generation - AWS.M2.CARDDEMO.ACCTDATA.XFER(0) = AWS.M2.CARDDEMO.ACCTDATA.XFER.G0001V00
+18:55:28Z   [OK  ] generation_decodes - 8 x 300-byte CVACT01Y records
+18:55:28Z   [OK  ] generation_unique_acct_ids
+18:55:28Z   [OK  ] generation_is_full_master - same ACCT-ID set as the master frozen at cut-over (BR-16)
+18:55:28Z $ psql -f ops/cutover/ledger_recon.sql   (pre-flight)
+18:55:28Z     check                                   expected     actual       ok
+18:55:28Z     fees_rows_in_ledger                     2            2            t
+18:55:28Z     fees_fields_match_ledger                0            0            t
+18:55:28Z     ledger_rows_not_in_fees_file            0            0            t
+18:55:28Z     fee_total                               6.50         6.50         t
+18:55:28Z     account_set_unchanged                   0            0/0          t
+18:55:28Z     ledger_legs_unknown_account             0            0            t
+18:55:28Z     accounts_not_explained_by_ledger        0            0            t
+18:55:28Z     balance_total_delta_equals_minus_fees   -6.50        -6.50        t
+18:55:28Z     ledger_duplicate_tran_ids               0            0            t
+18:55:28Z     incoming_already_in_ledger              0            0            t
+18:55:28Z   [OK  ] preflight.fees_rows_in_ledger - expected 2 actual 2
+18:55:28Z   [OK  ] preflight.fees_fields_match_ledger - expected 0 actual 0
+18:55:28Z   [OK  ] preflight.ledger_rows_not_in_fees_file - expected 0 actual 0
+18:55:28Z   [OK  ] preflight.fee_total - expected 6.50 actual 6.50
+18:55:28Z   [OK  ] preflight.account_set_unchanged - expected 0 actual 0/0
+18:55:28Z   [OK  ] preflight.ledger_legs_unknown_account - expected 0 actual 0
+18:55:28Z   [OK  ] preflight.accounts_not_explained_by_ledger - expected 0 actual 0
+18:55:28Z   [OK  ] preflight.balance_total_delta_equals_minus_fees - expected -6.50 actual -6.50
+18:55:28Z   [OK  ] preflight.ledger_duplicate_tran_ids - expected 0 actual 0
+18:55:28Z   [OK  ] preflight.incoming_already_in_ledger - expected 0 actual 0
+18:55:28Z 
+18:55:28Z STEP 2b negative drills (query must refuse)
+18:55:28Z $ psql -f ops/cutover/ledger_recon.sql   (drill: re-run of the Java day's DALYTRAN)
+18:55:28Z     check                                   expected     actual       ok
+18:55:28Z     fees_rows_in_ledger                     2            2            t
+18:55:28Z     fees_fields_match_ledger                0            0            t
+18:55:28Z     ledger_rows_not_in_fees_file            0            0            t
+18:55:28Z     fee_total                               6.50         6.50         t
+18:55:28Z     account_set_unchanged                   0            0/0          t
+18:55:28Z     ledger_legs_unknown_account             0            0            t
+18:55:28Z     accounts_not_explained_by_ledger        0            0            t
+18:55:28Z     balance_total_delta_equals_minus_fees   -6.50        -6.50        t
+18:55:28Z     ledger_duplicate_tran_ids               0            0            t
+18:55:28Z     incoming_already_in_ledger              0            2            f
+18:55:28Z   [OK  ] drill.duplicate_post_detected - 2 TRAN_IDs already posted would be rejected
+18:55:28Z $ psql -f ops/cutover/ledger_recon.sql   (drill: generation off by 0.01 on one account)
+18:55:28Z     check                                   expected     actual       ok
+18:55:28Z     fees_rows_in_ledger                     2            2            t
+18:55:28Z     fees_fields_match_ledger                0            0            t
+18:55:28Z     ledger_rows_not_in_fees_file            0            0            t
+18:55:28Z     fee_total                               6.50         6.50         t
+18:55:28Z     account_set_unchanged                   0            0/0          t
+18:55:28Z     ledger_legs_unknown_account             0            0            t
+18:55:28Z     accounts_not_explained_by_ledger        0            1            f
+18:55:28Z     balance_total_delta_equals_minus_fees   -6.50        -6.49        f
+18:55:28Z     ledger_duplicate_tran_ids               0            0            t
+18:55:28Z     incoming_already_in_ledger              0            0            t
+18:55:28Z   [OK  ] drill.balance_drift_detected - 1 account(s) not explained
+18:55:28Z $ psql -f ops/cutover/ledger_recon.sql   (drill: partial day (ledger rows, empty XFER.FEES))
+18:55:28Z     check                                   expected     actual       ok
+18:55:28Z     fees_rows_in_ledger                     0            0            t
+18:55:28Z     fees_fields_match_ledger                0            0            t
+18:55:28Z     ledger_rows_not_in_fees_file            0            2            f
+18:55:28Z     fee_total                               0            0            t
+18:55:28Z     account_set_unchanged                   0            0/0          t
+18:55:28Z     ledger_legs_unknown_account             0            0            t
+18:55:28Z     accounts_not_explained_by_ledger        0            0            t
+18:55:28Z     balance_total_delta_equals_minus_fees   0            0.00         t
+18:55:28Z     ledger_duplicate_tran_ids               0            0            t
+18:55:28Z     incoming_already_in_ledger              0            0            t
+18:55:28Z   [OK  ] drill.partial_day_detected - 2 ledger rows posted by the run not explained by an empty fees file
+18:55:28Z 
+18:55:28Z STEP 3  restore ACCTDATA.PS from ACCTDATA.XFER(0)
+18:55:28Z $ runjcl --job ops/cutover/XFRRBACK.jcl
+18:55:28Z     | IEF236I ALLOC. FOR XFRRBACK STEP010
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSPRINT
+18:55:28Z     | IEF237I JES2 ALLOCATED TO ACCTGEN
+18:55:28Z     | IEF237I JES2 ALLOCATED TO ACCTMAST
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSIN
+18:55:28Z     | IEF142I XFRRBACK STEP010 - STEP WAS EXECUTED - COND CODE 0000
+18:55:28Z     | IEF285I   AWS.M2.CARDDEMO.ACCTDATA.XFER.G0001V00   CATALOGED
+18:55:28Z     | $HASP395 XFRRBACK ENDED - MAXCC=0000
+18:55:28Z   [OK  ] XFRRBACK_maxcc_0 - MAXCC=0000
+18:55:28Z   [OK  ] master_equals_generation - AWS.M2.CARDDEMO.ACCTDATA.PS == AWS.M2.CARDDEMO.ACCTDATA.XFER.G0001V00
+18:55:28Z 
+18:55:28Z STEP 4  re-enable XFRDAILY for 2024-07-01
+18:55:28Z $ runjcl --job jcl/XFRDAILY.jcl
+18:55:28Z     | IEF236I ALLOC. FOR XFRDAILY STEP010
+18:55:28Z     | IEF237I JES2 ALLOCATED TO STEPLIB
+18:55:28Z     | IEF237I JES2 ALLOCATED TO DALYTRAN
+18:55:28Z     | IEF237I JES2 ALLOCATED TO XREFFILE
+18:55:28Z     | IEF237I JES2 ALLOCATED TO ACCTFILE
+18:55:28Z     | IEF237I JES2 ALLOCATED TO XFEREXTR
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSPRINT
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSOUT
+18:55:28Z     | CBXFR01C: RECORDS READ 000000003
+18:55:28Z     | CBXFR01C: TRANSFERS SELECTED 000000002
+18:55:28Z     | CBXFR01C: UNMATCHED CARDS 000000000
+18:55:28Z     | IEF142I XFRDAILY STEP010 - STEP WAS EXECUTED - COND CODE 0000
+18:55:28Z     | IEF285I   AWS.M2.CARDDEMO.XFER.EXTRACT.G0001V00   CATALOGED
+18:55:28Z     | IEF236I ALLOC. FOR XFRDAILY STEP020
+18:55:28Z     | IEF237I JES2 ALLOCATED TO STEPLIB
+18:55:28Z     | IEF237I JES2 ALLOCATED TO XFEREXTR
+18:55:28Z     | IEF237I JES2 ALLOCATED TO ACCTFILE
+18:55:28Z     | IEF237I JES2 ALLOCATED TO ACCTOUT
+18:55:28Z     | IEF237I JES2 ALLOCATED TO XFERFEE
+18:55:28Z     | IEF237I JES2 ALLOCATED TO DB2PARM
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSPRINT
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSOUT
+18:55:28Z     | XFERFEE: TRANSFERS POSTED 000000002
+18:55:28Z     | XFERFEE: TOTAL FEES +00000001325
+18:55:28Z     | IEF142I XFRDAILY STEP020 - STEP WAS EXECUTED - COND CODE 0000
+18:55:28Z     | IEF285I   AWS.M2.CARDDEMO.XFER.EXTRACT.G0001V00   CATALOGED
+18:55:28Z     | IEF285I   AWS.M2.CARDDEMO.ACCTDATA.XFER.G0002V00   CATALOGED
+18:55:28Z     | IEF285I   AWS.M2.CARDDEMO.XFER.FEES.G0002V00   CATALOGED
+18:55:28Z     | IEF236I ALLOC. FOR XFRDAILY STEP030
+18:55:28Z     | IEF237I JES2 ALLOCATED TO STEPLIB
+18:55:28Z     | IEF237I JES2 ALLOCATED TO XFERFEE
+18:55:28Z     | IEF237I JES2 ALLOCATED TO XFERRPT
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSPRINT
+18:55:28Z     | IEF237I JES2 ALLOCATED TO SYSOUT
+18:55:28Z     | CBXFR03C: GRAND TOTAL FEE +00000001325
+18:55:28Z     | IEF142I XFRDAILY STEP030 - STEP WAS EXECUTED - COND CODE 0000
+18:55:28Z     | IEF285I   AWS.M2.CARDDEMO.XFER.FEES.G0002V00   CATALOGED
+18:55:28Z     | IEF285I   AWS.M2.CARDDEMO.XFER.RECON.RPT.G0001V00   CATALOGED
+18:55:28Z     | $HASP395 XFRDAILY ENDED - MAXCC=0000
+18:55:28Z   [OK  ] XFRDAILY_maxcc_0 - MAXCC=0000
+18:55:28Z 
+18:55:28Z STEP 5  post-run reconciliation (first legacy day after rollback)
+18:55:28Z   [OK  ] new_generation_catalogued - AWS.M2.CARDDEMO.ACCTDATA.XFER.G0002V00
+18:55:28Z $ psql -f ops/cutover/ledger_recon.sql   (post-run)
+18:55:28Z     check                                   expected     actual       ok
+18:55:28Z     fees_rows_in_ledger                     2            2            t
+18:55:28Z     fees_fields_match_ledger                0            0            t
+18:55:28Z     ledger_rows_not_in_fees_file            0            0            t
+18:55:28Z     fee_total                               13.25        13.25        t
+18:55:28Z     account_set_unchanged                   0            0/0          t
+18:55:28Z     ledger_legs_unknown_account             0            0            t
+18:55:28Z     accounts_not_explained_by_ledger        0            0            t
+18:55:28Z     balance_total_delta_equals_minus_fees   -13.25       -13.25       t
+18:55:28Z     ledger_duplicate_tran_ids               0            0            t
+18:55:28Z     incoming_already_in_ledger              0            0            t
+18:55:28Z   [OK  ] postrun.fees_rows_in_ledger - expected 2 actual 2
+18:55:28Z   [OK  ] postrun.fees_fields_match_ledger - expected 0 actual 0
+18:55:28Z   [OK  ] postrun.ledger_rows_not_in_fees_file - expected 0 actual 0
+18:55:28Z   [OK  ] postrun.fee_total - expected 13.25 actual 13.25
+18:55:28Z   [OK  ] postrun.account_set_unchanged - expected 0 actual 0/0
+18:55:28Z   [OK  ] postrun.ledger_legs_unknown_account - expected 0 actual 0
+18:55:28Z   [OK  ] postrun.accounts_not_explained_by_ledger - expected 0 actual 0
+18:55:28Z   [OK  ] postrun.balance_total_delta_equals_minus_fees - expected -13.25 actual -13.25
+18:55:28Z   [OK  ] postrun.ledger_duplicate_tran_ids - expected 0 actual 0
+18:55:28Z   [OK  ] postrun.incoming_already_in_ledger - expected 0 actual 0
+18:55:28Z   [OK  ] recon_report_total_equals_fees - report FEE 13.25 vs fees file 13.25
+18:55:28Z   [OK  ] ledger_continuity - 2 Java-day rows + 2 legacy rows = 4
+18:55:28Z 
+18:55:28Z ==============================================================================
+18:55:28Z ROLLBACK DRY RUN: PASS  (33/33 checks)  finished 2026-10-06T18:55:28+00:00
+18:55:28Z ==============================================================================
